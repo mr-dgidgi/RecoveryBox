@@ -1,0 +1,12 @@
+[Unit]
+Description=Kiwix Service
+After=network.target
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/kiwix-serve /var/local/wikipedia_en_simple_all_nopic_2020-02.zim -p 80
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
