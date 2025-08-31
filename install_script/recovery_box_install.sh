@@ -9,8 +9,8 @@
 #
 
 # ajout des repos nécessaires
-echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Raspbian_10/ /' | tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
-curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Raspbian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
+echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Raspbian_12/ /' | sudo tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
+curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Raspbian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
 
 sudo apt update
 
