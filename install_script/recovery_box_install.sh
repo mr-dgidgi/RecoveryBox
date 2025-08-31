@@ -5,7 +5,7 @@
 #
 #
 #
-# Faire un lien symbolique du disque externe vers /data/ avant de lancer le script
+# monter le disque externe vers /data/ avant de lancer le script
 #
 
 # ajout des repos nécessaires
@@ -16,10 +16,14 @@ sudo apt update
 
 
 # kiwix installation
-wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-armhf.tar.gz
-tar -zxvf kiwix-tools_linux-armhf.tar.gz
-mv kiwix-tools_linux-armhf*/* /usr/local/bin/
-rm -r kiwix-tools_linux-armhf*
+wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-x86_64-3.7.0-2.tar.gz 
+tar -zxvf kiwix-tools_linux-x86_64-3.7.0-2.tar.gz 
+mv kiwix-tools_linux-x86_64*/* /usr/local/bin/
+rm -r kiwix-tools_linux-x86_64*
+
+# Download Wikipedia for kiwix
+mkdir /data/kiwix
+wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_fr_all_nopic_2025-08.zim 
 
 # kiwix service creation
 cp kiwix.service /etc/systemd/system/kiwix.service
