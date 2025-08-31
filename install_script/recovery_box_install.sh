@@ -8,12 +8,21 @@
 # monter le disque externe vers /data/ avant de lancer le script
 #
 
+#check if root
+if [[ $(whoami) != root ]]; then 
+    echo "user is not root"
+    exit 1
+fi
+
+
 # ajout des repos nécessaires
 echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Raspbian_12/ /' | sudo tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
 curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Raspbian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
 
 sudo apt update
 
+# Git install
+apt install git -y
 
 # kiwix installation
 wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-x86_64-3.7.0-2.tar.gz 
@@ -53,10 +62,10 @@ cp hostapd.conf /etc/hostapd/hostapd.conf
 sed -i 's|DAEMON_CONF|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 
 #hostapd service
-sudo systemctl daemon-reload
-sudo systemctl unmask hostapd
-sudo systemctl enable hostapd
-sudo systemctl start hostapd
+systemctl daemon-reload
+systemctl unmask hostapd
+systemctl enable hostapd
+systemctl start hostapd
 
 # enable ipv4 routing
 sed -i 's|#net.ipv4.ip_forward=1|net.ipv4.ip_forward=1|' /etc/sysctl.conf
@@ -85,14 +94,23 @@ apt install gpxsee
 
 # Install GQRX
 apt install gqrx-sdr
+
 # Install the last driver for the rtl-sdr 
-apt remove rtl-sdr
-git clone https://github.com/osmocom/rtl-sdr.git
-apt install build-essential cmake usbutils libusb-1.0-0-dev
-cd rtl-sdr
+apt purge rtl-sdr
+apt purge ^librtlsdr
+rm -rvf /usr/lib/librtlsdr* 
+rm -rvf /usr/include/rtl-sdr* 
+rm -rvf /usr/local/lib/librtlsdr* 
+rm -rvf /usr/local/include/rtl-sdr* 
+rm -rvf /usr/local/include/rtl_* 
+rm -rvf /usr/local/bin/rtl_*
+apt install libusb-1.0-0-dev git cmake pkg-config build-essential
+git clone https://github.com/rtlsdrblog/rtl-sdr-blog
+cd rtl-sdr-blog/
 mkdir build
 cd build
-cmake -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON ../
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make
+make install
+cp ../rtl-sdr.rules /etc/udev/rules.d/
 ldconfig
-cd ../..
-cp rtlsdr-blacklist.conf /etc/modprobe.d/rtlsdr-blacklist.conf
