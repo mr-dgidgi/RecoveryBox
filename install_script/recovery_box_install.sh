@@ -25,14 +25,15 @@ sudo apt update
 apt install git -y
 
 # kiwix installation
-wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-x86_64-3.7.0-2.tar.gz 
-tar -zxvf kiwix-tools_linux-x86_64-3.7.0-2.tar.gz 
-mv kiwix-tools_linux-x86_64*/* /usr/local/bin/
-rm -r kiwix-tools_linux-x86_64*
+wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-armv8-3.7.0.tar.gz
+tar -zxvf kiwix-tools_linux-armv8-3.7.0.tar.gz 
+mv kiwix-tools_linux-armv8*/* /usr/local/bin/
+rm -r kiwix-tools_linux-arm*
 
 # Download Wikipedia for kiwix
 mkdir /data/kiwix
 wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_fr_all_nopic_2025-08.zim 
+# This step take time
 
 # kiwix service creation
 cp kiwix.service /etc/systemd/system/kiwix.service
@@ -56,11 +57,6 @@ systemctl start dnsmasq
 apt install -y hostapd
 cp hostapd.conf /etc/hostapd/hostapd.conf
 
-########
-# TODO 
-# Modifier la ligne DAEMON_CONF de /etc/default/hostapd
-sed -i 's|DAEMON_CONF|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
-
 #hostapd service
 systemctl daemon-reload
 systemctl unmask hostapd
@@ -79,32 +75,37 @@ echo 'iptables-restore < /etc/iptables/iptables.ipv4.nat' >> /etc/rc.local
 
 # dump oldu.fr
 wget -P /data/ -mkxKE -e robots=off http://oldu.fr/
+# This step take a lot of time as we dump all the website
 
 # install + conf apache2
 apt install -y apache2
+# missing file !!!
 cp oldu.fr.conf /etc/apache2/sites-available/oldu.fr.conf
-ln -s /etc/apache2/sites-enabled/oldu.fr.conf /etc/apache2/sites/available/oldu.fr.conf
-sed -i 's/LISTEN 80/ LISTEN 80 8080/'
+a2ensite oldu.fr
+a2dissite 000-default
+sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
+systemctl restart apache2
 
 # Install gpxsee
-apt install gpxsee
+apt install gpxsee -y
 
 # TODO default map load => opentopomap
 # sans doute dans /usr/share/gpxsee/maps
 
 # Install GQRX
-apt install gqrx-sdr
+apt purge -y xtrx-dkms
+apt install gqrx-sdr -y
 
 # Install the last driver for the rtl-sdr 
-apt purge rtl-sdr
-apt purge ^librtlsdr
+apt purge rtl-sdr -y
+apt purge -y ^librtlsdr
 rm -rvf /usr/lib/librtlsdr* 
 rm -rvf /usr/include/rtl-sdr* 
 rm -rvf /usr/local/lib/librtlsdr* 
 rm -rvf /usr/local/include/rtl-sdr* 
 rm -rvf /usr/local/include/rtl_* 
 rm -rvf /usr/local/bin/rtl_*
-apt install libusb-1.0-0-dev git cmake pkg-config build-essential
+apt install libusb-1.0-0-dev git cmake pkg-config build-essential -y
 git clone https://github.com/rtlsdrblog/rtl-sdr-blog
 cd rtl-sdr-blog/
 mkdir build
