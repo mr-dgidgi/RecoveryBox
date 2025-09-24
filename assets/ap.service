@@ -1,0 +1,12 @@
+[Unit]
+Description=Access Point Service
+After=network.target
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/etc/ap_config/ap_start.sh
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target
