@@ -91,14 +91,19 @@ systemctl daemon-reload
 systemctl enable iptables.service
 systemctl start iptables.service
 
-# dump oldu.fr --- Site DOWN !!! forum toujours up + blog aussi. Voir pour récupérer les données du site depuis archive.org
+# dump oldu.fr --- Site DOWN !!! forum toujours up + blog aussi. Voir pour récupérer les données du site depuis archive.org si problème persistant
 wget -P /data/ -mkxKE -e robots=off http://oldu.fr/
 # This step take a lot of time as we dump all the website
+
+# dump nopanic.fr
+wget -P /data/ -mkxKE -e robots=off https://nopanic.fr/bookbank/
 
 # install + conf apache2
 apt install -y apache2
 cp assets/oldu.fr.conf /etc/apache2/sites-available/oldu.fr.conf
+cp assets/nopanic.fr.conf /etc/apache2/sites-available/nopanic.fr.conf
 a2ensite oldu.fr
+a2ensite nopanic.fr
 a2dissite 000-default
 sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
 systemctl restart apache2
