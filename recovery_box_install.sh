@@ -15,7 +15,7 @@ if [[ $(whoami) != root ]]; then
 fi
 # check if /data exists
 if [[ ! -d /data ]]; then
-    echo "/data does not exist. Please mount your external drive to /data"
+    echo "/data does not exist. Please mount/create /data"
     echo "example: mount /dev/sda1 /data"
     exit 1
 fi
@@ -24,9 +24,9 @@ if [[ ! -f /etc/debian_version ]]; then
     echo "This script is only for Debian based systems"
     exit 1
 fi
-# check if we are on arm64 architecture
-if [[ $(dpkg --print-architecture) != "arm64" ]]; then
-    echo "This script is only for arm64 architecture"
+# check if we are on amd64 architecture
+if [[ $(dpkg --print-architecture) != "amd64" ]]; then
+    echo "This script is only for amd64 architecture"
     exit 1
 fi
 
@@ -36,8 +36,8 @@ install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Raspbian_12/ /' | tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
-curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Raspbian_12/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
+echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/ /' | sudo tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
+curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Debian_13/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
 
 apt update
 
@@ -45,14 +45,14 @@ apt update
 apt install git -y
 
 # kiwix installation
-wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-armv8-3.7.0.tar.gz
-tar -zxvf kiwix-tools_linux-armv8-3.7.0.tar.gz 
-mv kiwix-tools_linux-armv8*/* /usr/local/bin/
-rm -r kiwix-tools_linux-arm*
+wget https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-x86_64-3.8.2.tar.gz
+tar -zxvf kiwix-tools_linux-x86_64-3.8.2.tar.gz 
+mv kiwix-tools_linux-x86_64*/* /usr/local/bin/
+rm -r kiwix-tools_linux-x86_64*
 
 # Download Wikipedia for kiwix
 mkdir /data/kiwix
-wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_fr_all_nopic_2025-08.zim 
+wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_fon_all_nopic_2026-01.zim 
 # This step take time
 
 # kiwix service creation
@@ -91,7 +91,7 @@ systemctl daemon-reload
 systemctl enable iptables.service
 systemctl start iptables.service
 
-# dump oldu.fr
+# dump oldu.fr --- Site DOWN !!! forum toujours up + blog aussi. Voir pour récupérer les données du site depuis archive.org
 wget -P /data/ -mkxKE -e robots=off http://oldu.fr/
 # This step take a lot of time as we dump all the website
 
