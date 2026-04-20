@@ -40,7 +40,7 @@ fi
 echo "$SRVMSG" "choose your language / choisissez votre langue :"
 echo "$SRVMSG" "1 = English"
 echo "$SRVMSG" "2 = Français"
-echo "$SRVMSG" "2 = Tout/Both"
+echo "$SRVMSG" "3 = Tout/Both"
 read -p "$SRVMSG Enter your choice / Entrez votre choix : " lang_choice
 case $lang_choice in
     1) echo "$SRVMSG" "Language set to English"
@@ -56,27 +56,41 @@ case $lang_choice in
     Lang="fr"
     ;;esac
 
+#######################################################
+# Install basic tools
+#######################################################
+echo "$SRVMSG" "Installing basic tools..."
+apt update -qq
+apt install -y curl gpg ca-certificates git
 
 
 #######################################################
 # Add needed repositories
 #######################################################
 echo "$SRVMSG" "Adding repositories..."
-apt install -y ca-certificates
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-echo 'deb http://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/ /' | tee /etc/apt/sources.list.d/home:tumic:GPXSee.list
-curl -fsSL https://download.opensuse.org/repositories/home:tumic:GPXSee/Debian_13/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_tumic_GPXSee.gpg > /dev/null
+tee /etc/apt/sources.list.d/docker.sources > /dev/null <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
 
-apt update
-
-#######################################################
-# Git install
-#######################################################
-echo "$SRVMSG" "Installing Git..."
-apt install git -y
+curl -fsSL https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/Release.key -o /etc/apt/keyrings/gpxsee.asc
+chmod a+r /etc/apt/keyrings/gpxsee.asc
+tee /etc/apt/sources.list.d/gpxsee.sources > /dev/null <<EOF
+Types: deb
+URIs: https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/
+Suites: /
+Components: 
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/gpxsee.asc
+EOF
+apt update -qq
 
 #######################################################
 # install Docker
@@ -94,11 +108,13 @@ docker pull ghcr.io/kiwix/kiwix-serve:3.8.2
 mkdir /data/kiwix
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
     echo "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..."
-    wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_fr_all_nopic_2026-02.zim
+    FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
+    wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
 fi
 if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
     echo "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..."
-    wget -P /data/kiwix https://download.kiwix.org/zim/wikipedia/wikipedia_en_all_nopic_2026-03.zim
+    FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
+    wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
 fi
 
 # kiwix service creation
