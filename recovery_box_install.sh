@@ -61,7 +61,7 @@ case $lang_choice in
 #######################################################
 echo "$SRVMSG" "Installing basic tools..."
 apt update -qq
-apt install -y curl gpg ca-certificates git
+apt install -y -qq curl gpg ca-certificates git > /dev/null
 
 
 #######################################################
@@ -96,7 +96,7 @@ apt update -qq
 # install Docker
 #######################################################
 echo "$SRVMSG" "Installing Docker..."
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
 #######################################################
 # kiwix installation
@@ -216,7 +216,7 @@ fi
 
 # install + conf apache2
 echo "$SRVMSG" "Installing and configuring Apache2..."
-apt install -y apache2
+apt install -y -qq apache2 > /dev/null
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
     cp assets/enpdf.conf /etc/apache2/sites-available/enpdf.conf
     a2ensite enpdf.conf
@@ -240,7 +240,7 @@ systemctl restart apache2
 
 # Install gpxsee
 echo "$SRVMSG" "Installing GPXSee..."
-apt install gpxsee -y
+apt install gpxsee -y -qq > /dev/null
 # TODO default map load => opentopomap
 # sans doute dans /usr/share/gpxsee/maps
 
@@ -267,7 +267,7 @@ rm -rvf /usr/local/lib/librtlsdr*
 rm -rvf /usr/local/include/rtl-sdr* 
 rm -rvf /usr/local/include/rtl_* 
 rm -rvf /usr/local/bin/rtl_*
-apt install libusb-1.0-0-dev git cmake pkg-config build-essential -y
+apt install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
 git clone https://github.com/rtlsdrblog/rtl-sdr-blog
 cd rtl-sdr-blog/
 mkdir build
