@@ -8,7 +8,8 @@
 # monter /data/ avant de lancer le script
 #
 
-SRVMSG="=+= "
+SRVMSG='\033[0;32m =+= '
+NC='\033[0m'
 
 #######################################################
 # checks / settings
@@ -16,58 +17,58 @@ SRVMSG="=+= "
 
 #check if root
 if [[ $(whoami) != root ]]; then 
-    echo "$SRVMSG" "user is not root"
+    echo -e "$SRVMSG" "user is not root" ${NC}
     exit 1
 fi
 # check if /data exists
 if [[ ! -d /data ]]; then
-    echo "$SRVMSG" "/data does not exist. Please mount/create /data"
-    echo "$SRVMSG" "example: mount /dev/sda1 /data"
+    echo -e "$SRVMSG" "/data does not exist. Please mount/create /data" ${NC}
+    echo -e "$SRVMSG" "example: mount /dev/sda1 /data" ${NC}
     exit 1
 fi
 # check if we are on a debian system
 if [[ ! -f /etc/debian_version ]]; then
-    echo "$SRVMSG" "This script is only for Debian based systems"
+    echo -e "$SRVMSG" "This script is only for Debian based systems" ${NC}
     exit 1
 fi
 # check if we are on amd64 architecture
 if [[ $(dpkg --print-architecture) != "amd64" ]]; then
-    echo "$SRVMSG" "This script is only for amd64 architecture"
+    echo -e "$SRVMSG" "This script is only for amd64 architecture" ${NC}
     exit 1
 fi
 
 # language settings
-echo "$SRVMSG" "choose your language / choisissez votre langue :"
-echo "$SRVMSG" "1 = English"
-echo "$SRVMSG" "2 = Français"
-echo "$SRVMSG" "3 = Tout/Both"
+echo -e "$SRVMSG" "choose your language / choisissez votre langue :" ${NC}
+echo -e "$SRVMSG" "1 = English" ${NC}
+echo -e "$SRVMSG" "2 = Français" ${NC}
+echo -e "$SRVMSG" "3 = Tout/Both" ${NC}
 read -p "$SRVMSG Enter your choice / Entrez votre choix : " lang_choice
 case $lang_choice in
-    1) echo "$SRVMSG" "Language set to English"
+    1) echo -e "$SRVMSG" "Language set to English" ${NC}
     Lang="en"
     ;;
-    2) echo "$SRVMSG" "Langue définie sur Français"
+    2) echo -e "$SRVMSG" "Langue définie sur Français" ${NC}
     Lang="fr"
     ;;
-    3) echo "$SRVMSG" "Language set to English and Français"
+    3) echo -e "$SRVMSG" "Language set to English and Français" ${NC}
     Lang="all"
     ;;
-    *) echo "$SRVMSG" "Invalid choice, defaulting to French"
+    *) echo -e "$SRVMSG" "Invalid choice, defaulting to French" ${NC}
     Lang="fr"
     ;;esac
 
 #######################################################
 # Install basic tools
 #######################################################
-echo "$SRVMSG" "Installing basic tools..."
-apt update -qq
-apt install -y -qq curl gpg ca-certificates git > /dev/null
+echo -e "$SRVMSG" "Installing basic tools..." ${NC}
+apt-get update -qq
+apt-get install -y -qq curl gpg ca-certificates git > /dev/null
 
 
 #######################################################
 # Add needed repositories
 #######################################################
-echo "$SRVMSG" "Adding repositories..."
+echo -e "$SRVMSG" "Adding repositories..." ${NC}
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
@@ -90,35 +91,35 @@ Components:
 Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/gpxsee.asc
 EOF
-apt update -qq
+apt-get update -qq
 
 #######################################################
 # install Docker
 #######################################################
-echo "$SRVMSG" "Installing Docker..."
-sudo apt install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
+echo -e "$SRVMSG" "Installing Docker..." ${NC}
+sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
 #######################################################
 # kiwix installation
 #######################################################
-echo "$SRVMSG" "Installing kiwix..."
+echo -e "$SRVMSG" "Installing kiwix..." ${NC}
 
 docker pull ghcr.io/kiwix/kiwix-serve:3.8.2
 # Download Wikipedia for kiwix
 mkdir /data/kiwix
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
-    echo "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..."
+    echo -e "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." ${NC}
     FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
     wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
 fi
 if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
-    echo "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..."
+    echo -e "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." ${NC}
     FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
     wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
 fi
 
 # kiwix service creation
-echo "$SRVMSG" "Creating kiwix service..."
+echo -e "$SRVMSG" "Creating kiwix service..." ${NC}
 cp assets/kiwix.service /etc/systemd/system/kiwix.service
 systemctl enable kiwix
 systemctl start kiwix
@@ -128,12 +129,12 @@ systemctl start kiwix
 #######################################################
 
 # Disable wpa_supplicant on wlan0
-echo "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..."
+echo -e "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..." ${NC}
 systemctl stop wpa_supplicant@wlan0
 systemctl disable wpa_supplicant@wlan0
 
 # Install the simple-pi-hotspot container
-echo "$SRVMSG" "WiFi Access Point - Installing simple-pi-hotspot container..."
+echo -e "$SRVMSG" "WiFi Access Point - Installing simple-pi-hotspot container..." ${NC}
 docker pull mrdgidgi/simple-pi-hotspot
 mkdir -p /etc/ap_config/
 cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
@@ -146,11 +147,11 @@ systemctl enable ap.service
 systemctl start ap.service
 
 # enable ipv4 routing
-echo "$SRVMSG" "Enabling IPv4 routing..."
+echo -e "$SRVMSG" "Enabling IPv4 routing..." ${NC}
 sed -i 's|#net.ipv4.ip_forward=1|net.ipv4.ip_forward=1|' /etc/sysctl.conf
 
 # Setup IPtables
-echo "$SRVMSG" "Setting up IPtables for NAT and routing..."
+echo -e "$SRVMSG" "Setting up IPtables for NAT and routing..." ${NC}
 mkdir -p /etc/iptables
 cp assets/iptables.sh /etc/iptables/iptables.sh
 chmod +x /etc/iptables/iptables.sh
@@ -164,7 +165,7 @@ systemctl start iptables.service
 #######################################################
 
 if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
-    echo "$SRVMSG" "Downloading English survival PDFs..."
+    echo -e "$SRVMSG" "Downloading English survival PDFs..." ${NC}
     TPDir="/data/enpdf"
     mkdir -p "$TPDir"
     cd "$TPDir" || exit
@@ -210,17 +211,17 @@ wget -P /data/ -mkxKE -e robots=off http://oldu.fr/
 
 # dump nopanic.fr
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
-    echo "$SRVMSG" "Downloading nopanic.fr website..."
+    echo -e "$SRVMSG" "Downloading nopanic.fr website..." ${NC}
     wget -P /data/nopanic -r -l 1 -nd -A pdf,html -H -p -k -e robots=off "https://nopanic.fr/bookbank/"
 fi
 
 # install + conf apache2
-echo "$SRVMSG" "Installing and configuring Apache2..."
-apt install -y -qq apache2 > /dev/null
+echo -e "$SRVMSG" "Installing and configuring Apache2..." ${NC}
+apt-get install -y -qq apache2 > /dev/null
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
     cp assets/enpdf.conf /etc/apache2/sites-available/enpdf.conf
     a2ensite enpdf.conf
-    echo "$SRVMSG" "pdf.recovery.box enabled"
+    echo -e "$SRVMSG" "pdf.recovery.box enabled" ${NC}
 fi
 if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
     #cp assets/oldu.fr.conf /etc/apache2/sites-available/oldu.fr.conf
@@ -228,7 +229,7 @@ if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
     #a2ensite oldu
     #echo "$SRVMSG" "oldu.recovery.box enabled"
     a2ensite nopanic
-    echo "$SRVMSG" "nopanic.recovery.box enabled"
+    echo -e "$SRVMSG" "nopanic.recovery.box enabled" ${NC}
 fi
 a2dissite 000-default
 sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
@@ -239,8 +240,8 @@ systemctl restart apache2
 #######################################################
 
 # Install gpxsee
-echo "$SRVMSG" "Installing GPXSee..."
-apt install gpxsee -y -qq > /dev/null
+echo -e "$SRVMSG" "Installing GPXSee..." ${NC}
+apt-get install gpxsee -y -qq > /dev/null
 # TODO default map load => opentopomap
 # sans doute dans /usr/share/gpxsee/maps
 
@@ -249,7 +250,7 @@ apt install gpxsee -y -qq > /dev/null
 #######################################################
 
 # Install OpenWebRX Plus
-echo "$SRVMSG" "Installing OpenWebRX Plus..."
+echo -e "$SRVMSG" "Installing OpenWebRX Plus..." ${NC}
 mkdir -p /etc/owrx/var /etc/owrx/etc /etc/owrx/plugins/{receiver,map}
 docker pull slechev/openwebrxplus-softmbe:latest
 cp assets/openwebrx.service /etc/systemd/system/openwebrx.service
@@ -258,16 +259,16 @@ systemctl enable openwebrx.service
 systemctl start openwebrx.service
 
 # Install the last driver for the rtl-sdr 
-echo "$SRVMSG" "Managing rtl-sdr drivers..."
-apt purge rtl-sdr -y
-apt purge -y ^librtlsdr
+echo -e "$SRVMSG" "Managing rtl-sdr drivers..." ${NC}
+apt-get purge rtl-sdr -y
+apt-get purge -y ^librtlsdr
 rm -rvf /usr/lib/librtlsdr* 
 rm -rvf /usr/include/rtl-sdr* 
 rm -rvf /usr/local/lib/librtlsdr* 
 rm -rvf /usr/local/include/rtl-sdr* 
 rm -rvf /usr/local/include/rtl_* 
 rm -rvf /usr/local/bin/rtl_*
-apt install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
+apt-get install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
 git clone https://github.com/rtlsdrblog/rtl-sdr-blog
 cd rtl-sdr-blog/
 mkdir build
@@ -281,4 +282,4 @@ ldconfig
 #######################################################
 # Final message
 #######################################################
-echo "$SRVMSG Installation complete! Please reboot the system to apply all changes."
+echo -e "$SRVMSG" "Installation complete! Please reboot the system to apply all changes." ${NC}
