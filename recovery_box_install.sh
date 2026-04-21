@@ -145,31 +145,34 @@ fi
 
 # Download Wikipedia for kiwix
 mkdir /data/kiwix
-if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
-    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." "$MSGNC"
-    FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-    wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
-    if [[ -e /data/kiwix/$FileName ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in French downloaded successfully.${MSGNC}"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "failed to download Wikipedia in French.${MSGNC}"
-        exit 1
+read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
+if [[ "$WikiDown" == "y" ]]; then
+    if [[ "$Lang" == "fr" ]] || [[ "$Lang" == "all" ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." "$MSGNC"
+        FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        if [[ -e /data/kiwix/$FileName ]]; then
+            echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in French downloaded successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "failed to download Wikipedia in French.${MSGNC}"
+            exit 1
+        fi
     fi
-fi
 
-if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
-    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." "$MSGNC"
-    FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-    wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
-    if [[ -e /data/kiwix/$FileName ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in English downloaded successfully.${MSGNC}"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "failed to download Wikipedia in English.${MSGNC}"
-        exit 1
+    if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." "$MSGNC"
+        FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        if [[ -e /data/kiwix/$FileName ]]; then
+            echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in English downloaded successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "failed to download Wikipedia in English.${MSGNC}"
+            exit 1
+        fi
     fi
+else
+    echo -e "$MSGYELLOW" "$SRVMSG" "Skipping Wikipedia download." "$MSGNC"
 fi
-
-
 
 # kiwix service creation
 echo -e "$MSGYELLOW" "$SRVMSG" "Creating kiwix service..." "$MSGNC"
@@ -189,8 +192,8 @@ fi
 echo -e "$MSGYELLOW" "$SRVMSG" "Renaming network interfaces." "$MSGNC"
 # get current interfaces names
 ip -br link
-read -r -p "$MSGYELLOW" "$SRVMSG Which interface is the WAN? : " IntWAN
-read -r -p "$MSGYELLOW" "$SRVMSG Which interface is the Access Point? : " IntAP
+read -r -p "$SRVMSG Which interface is the WAN? : " IntWAN
+read -r -p "$SRVMSG Which interface is the Access Point? : " IntAP
 
 
 #######################################################
@@ -267,7 +270,8 @@ fi
 
 if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
     echo -e "$MSGYELLOW" "$SRVMSG" "installing English survival PDFs..." "$MSGNC"
-    cp -r assets/enpdf /data/enpdf
+    mkdir -p /data/enpdf
+    git clone https://github.com/mr-dgidgi/RecoveryENPDF.git /data/enpdf
     if [[ -d /data/enpdf ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "English survival PDFs installed successfully.${MSGNC}"
     else
