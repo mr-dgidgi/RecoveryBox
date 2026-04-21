@@ -45,7 +45,7 @@ echo -e "$MSGYELLOW" "$SRVMSG" "choose your language / choisissez votre langue :
 echo -e "$MSGYELLOW" "$SRVMSG" "1 = English" "$MSGNC"
 echo -e "$MSGYELLOW" "$SRVMSG" "2 = Français" "$MSGNC"
 echo -e "$MSGYELLOW" "$SRVMSG" "3 = Tout/Both" "$MSGNC"
-read -r -p "$MSGYELLOW" "$SRVMSG Enter your choice / Entrez votre choix : " lang_choice
+read -r -p "$MSGYELLOW $SRVMSG Enter your choice / Entrez votre choix : " lang_choice
 case $lang_choice in
     1) echo -e "$MSGGREEN" "$SRVMSG" "Language set to English" "$MSGNC"
     Lang="en"
