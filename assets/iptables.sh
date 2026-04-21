@@ -1,5 +1,5 @@
 #!/bin/bash
-WAN="eth0"
+WAN="nic0"
 if [[ $1 == "start" ]]; then
     iptables -t nat -A POSTROUTING -o $WAN -j MASQUERADE
     echo "IPtables rules applied"

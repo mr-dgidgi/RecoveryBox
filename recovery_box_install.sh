@@ -184,6 +184,16 @@ else
 fi
 
 #######################################################
+# Rename interfaces
+#######################################################
+echo -e "$MSGYELLOW" "$SRVMSG" "Renaming network interfaces." "$MSGNC"
+# get current interfaces names
+ip -br link
+read -r -p "$MSGYELLOW" "$SRVMSG Which interface is the WAN? : " IntWAN
+read -r -p "$MSGYELLOW" "$SRVMSG Which interface is the Access Point? : " IntAP
+
+
+#######################################################
 # Access Point
 #######################################################
 
@@ -204,6 +214,7 @@ echo -e "$MSGYELLOW""$SRVMSG" "WiFi Access Point - Installing simple-pi-hotspot 
 docker pull mrdgidgi/simple-pi-hotspot
 mkdir -p /etc/ap_config/
 cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
+cp assets/dnsmasq-hosts.conf /etc/ap_config/dnsmasq-hosts.conf
 cp assets/hostapd.conf /etc/ap_config/hostapd.conf
 cp assets/ap_start.sh /etc/ap_config/ap_start.sh
 chmod +x /etc/ap_config/ap_start.sh
