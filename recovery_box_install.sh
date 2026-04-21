@@ -45,7 +45,7 @@ echo -e "$MSGYELLOW" "$SRVMSG" "choose your language / choisissez votre langue :
 echo -e "$MSGYELLOW" "$SRVMSG" "1 = English" "$MSGNC"
 echo -e "$MSGYELLOW" "$SRVMSG" "2 = Français" "$MSGNC"
 echo -e "$MSGYELLOW" "$SRVMSG" "3 = Tout/Both" "$MSGNC"
-read -r -p "$MSGYELLOW $SRVMSG Enter your choice / Entrez votre choix : " lang_choice
+read -r -p "$SRVMSG Enter your choice / Entrez votre choix : " lang_choice
 case $lang_choice in
     1) echo -e "$MSGGREEN" "$SRVMSG" "Language set to English" "$MSGNC"
     Lang="en"
@@ -231,13 +231,18 @@ fi
 
 # enable ipv4 routing
 echo -e "$MSGYELLOW""$SRVMSG" "Enabling IPv4 routing..." "$MSGNC"
-sed -i 's|#net.ipv4.ip_forward=1|net.ipv4.ip_forward=1|' /etc/sysctl.conf
-sysctl -p > /dev/null
 if [[ $(sysctl -n net.ipv4.ip_forward) -eq 1 ]]; then
-    echo -e "$MSGGREEN" "$SRVMSG" "IPv4 routing enabled successfully.${MSGNC}"
+    echo -e "$MSGGREEN" "$SRVMSG" "IPv4 routing already enabled.${MSGNC}"
 else
-    echo -e "$MSGRED" "$SRVMSG" "failed to enable IPv4 routing.${MSGNC}"
-    exit 1
+    echo "net.ipv4.ip_forward=1" >> /usr/lib/sysctl.d/50-default.conf
+    sysctl -p > /dev/null
+
+    if [[ $(sysctl -n net.ipv4.ip_forward) -eq 1 ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "IPv4 routing enabled successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to enable IPv4 routing.${MSGNC}"
+        exit 1
+    fi
 fi
 
 # Setup IPtables
@@ -261,50 +266,14 @@ fi
 #######################################################
 
 if [[ "$Lang" == "en" ]] || [[ "$Lang" == "all" ]]; then
-    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading English survival PDFs..." "$MSGNC"
-    TPDir="/data/enpdf"
-    mkdir -p "$TPDir"
-    curl -sL "https://trueprepper.com/survival-pdfs-downloads/" | grep -oP 'https?://[^"]+\.pdf' | sort -u > pdf_list.txt
-    wget -P"$TPDir" -i pdf_list.txt -A pdf -nc -nv --wait=1 --random-wait 
-    cat <<EOF > "$INDEX_FILE"
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Survival PDF Archive</title>
-    <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: #eee; padding: 20px; }
-        h1 { color: #ffcc00; border-bottom: 2px solid #333; }
-        ul { list-style: none; padding: 0; }
-        li { margin: 8px 0; padding: 10px; background: #2a2a2a; border-radius: 4px; }
-        a { color: #44ff44; text-decoration: none; word-break: break-all; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
-    <h1>True Prepper PDFs</h1>
-    <p>Total : $(ls -1 *.pdf | wc -l) files</p>
-    <ul>
-EOF
-
-    #PDF link creation
-    for file in *.pdf; do
-        echo "        <li><a href=\"$file\" target=\"_blank\">$file</a></li>" >> "$INDEX_FILE"
-    done
-
-    cat <<EOF >> "$INDEX_FILE"
-</ul>
-</body>
-</html>
-EOF
-    rm -y pdf_list.txt
-    if [[ -z $(ls -A "$TPDir"/*.pdf) ]]; then
-        echo -e "$MSGRED" "$SRVMSG" "failed to download English survival PDFs.${MSGNC}"
-        exit 1
+    echo -e "$MSGYELLOW" "$SRVMSG" "installing English survival PDFs..." "$MSGNC"
+    cp -r assets/enpdf /data/enpdf
+    if [[ -d /data/enpdf ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "English survival PDFs installed successfully.${MSGNC}"
     else
-        echo -e "$MSGGREEN" "$SRVMSG" "English survival PDFs downloaded successfully.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to install English survival PDFs.${MSGNC}"
+        exit 1
     fi
-
 fi
 
 # dump oldu.fr --- Site DOWN !!! forum toujours up + blog aussi. Voir pour récupérer les données du site depuis archive.org si problème persistant
