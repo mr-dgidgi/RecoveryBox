@@ -284,15 +284,14 @@ configure_interfaces() {
     cp assets/20-nic0.network /etc/systemd/network/20-nic0.network
     cp assets/20-wlan0.network /etc/systemd/network/20-wlan0.network
 
-    systemctl stop networking.service
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
-    systemctl restart systemd-networkd
-    sleep 2
-    
-    if [[ $(systemctl is-active systemd-networkd) == "active" ]]; then
+
+    if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
+        echo -e "$MSGGREEN" "$SRVMSG" "The system MUST reboot to apply interface renaming and network changes.${MSGNC}"
+
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to configure network interfaces.${MSGNC}"
         exit 1
