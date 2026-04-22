@@ -13,7 +13,7 @@ MSGGREEN='\033[0;32m'
 MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
-LANG="fr"
+LANGUAGE="fr"
 INTWAN=""
 INTAP=""
 
@@ -48,26 +48,46 @@ check_prerequisites() {
 #######################################################
 
 define_language() {
-    # language settings
-    echo -e "$MSGYELLOW" "$SRVMSG" "choose your language / choisissez votre langue :" "$MSGNC"
+    # Language settings
+    echo -e "$MSGYELLOW" "$SRVMSG" "choose your Language / choisissez votre Language :" "$MSGNC"
     echo -e "$MSGYELLOW" "$SRVMSG" "1 = English" "$MSGNC"
     echo -e "$MSGYELLOW" "$SRVMSG" "2 = Français" "$MSGNC"
     echo -e "$MSGYELLOW" "$SRVMSG" "3 = Tout/Both" "$MSGNC"
-    read -r -p "$SRVMSG Enter your choice / Entrez votre choix : " LangChoice
-    case $LangChoice in
+    read -r -p "$SRVMSG Enter your choice / Entrez votre choix : " LanguageChoice
+    case $LanguageChoice in
         1) echo -e "$MSGGREEN" "$SRVMSG" "Language set to English" "$MSGNC"
-        LANG="en"
+        LANGUAGE="en"
         ;;
-        2) echo -e "$MSGGREEN" "$SRVMSG" "Langue définie sur Français" "$MSGNC"
-        LANG="fr"
+        2) echo -e "$MSGGREEN" "$SRVMSG" "Language définie sur Français" "$MSGNC"
+        LANGUAGE="fr"
         ;;
         3) echo -e "$MSGGREEN" "$SRVMSG" "Language set to English and Français" "$MSGNC"
-        LANG="all"
+        LANGUAGE="all"
         ;;
         *) echo -e "$MSGRED" "$SRVMSG" "Invalid choice, defaulting to French" "$MSGNC"
-        LANG="fr"
+        LANGUAGE="fr"
         ;;
         esac
+}
+
+#######################################################
+
+set_keyboard() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Setting keyboard layout..." "$MSGNC"
+    if [[ "$LANGUAGE" == "en" ]]; then
+        localectl set-keymap us
+    elif [[ "$LANGUAGE" == "fr" ]]; then
+        localectl set-keymap fr
+    else
+        localectl set-keymap us
+    fi
+
+    if [ $? -eq 0 ]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Keyboard layout set successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to set keyboard layout.${MSGNC}"
+        exit 1
+    fi
 }
 
 #######################################################
@@ -159,7 +179,7 @@ install_kiwix() {
 #######################################################
 
 download_wikipedia() {
-    if [[ "$LANG" == "fr" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
         wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
@@ -171,7 +191,7 @@ download_wikipedia() {
         fi
     fi
 
-    if [[ "$LANG" == "en" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
         wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
@@ -322,12 +342,12 @@ download_french_pdfs() {
 install_apache() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing and configuring Apache2..." "$MSGNC"
     apt-get install -y -qq apache2 > /dev/null
-    if [[ "$LANG" == "en" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         cp assets/enpdf.conf /etc/apache2/sites-available/enpdf.conf
         a2ensite enpdf.conf
         echo -e "$MSGGREEN" "$SRVMSG" "pdf.recovery.box enabled" "$MSGNC"
     fi
-    if [[ "$LANG" == "fr" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
         cp assets/nopanic.conf /etc/apache2/sites-available/nopanic.conf
         a2ensite nopanic
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
@@ -390,8 +410,10 @@ install_rtlsdr_drivers() {
 main() {
     ## checks / settings
     check_prerequisites
-    ## define language (default french)
+    ## define Language (default french)
     define_language
+    ## set keyboard layout
+    set_keyboard
     ## define interface names
     choose_interfaces_names
     ## Install basic tools
@@ -416,10 +438,10 @@ main() {
     ## Setup IPtables
     setup_iptables
     ## Install PDFs
-    if [[ "$LANG" == "en" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         download_english_pdfs
     fi
-    if [[ "$LANG" == "fr" ]] || [[ "$LANG" == "all" ]]; then
+    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
         download_french_pdfs
     fi
     ## Install Apache2 and configure it
@@ -428,7 +450,7 @@ main() {
     install_openwebrx
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
-    echo -e "$SRVMSG" "Installation complete! Please reboot the system to apply all changes." "$MSGNC"
+    echo -e "$MSGRED" "$SRVMSG" "Installation complete! Please reboot the system to apply all changes." "$MSGNC"
 }
 
 #######################################################
