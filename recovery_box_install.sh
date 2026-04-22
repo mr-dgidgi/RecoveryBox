@@ -74,16 +74,41 @@ define_language() {
 
 set_keyboard() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Setting keyboard layout..." "$MSGNC"
-    if [[ "$LANGUAGE" == "en" ]]; then
-        localectl set-keymap us
-    elif [[ "$LANGUAGE" == "fr" ]]; then
-        localectl set-keymap fr
-    else
-        localectl set-keymap us
-    fi
-
+    
+    local Keymap=""
+    local Variant=""
+    case "$LANGUAGE" in 
+    "en") 
+        Keymap="us" 
+        ;;
+    "fr") 
+        Keymap="fr" 
+        Variant="latin9"
+        ;;
+    "all") 
+        Keymap="fr"
+        Variant="latin9"
+        ;;
+    *) 
+        Keymap="us"
+        ;;
+    esac    
+    # Configure /etc/default/keyboard for persistent configuration
+    cat > /etc/default/keyboard <<EOF
+XKBMODEL="pc105"
+XKBLAYOUT="$Keymap"
+XKBVARIANT="$Variant"
+XKBOPTIONS=""
+BACKSPACE="guess"
+EOF
+    
     if [ $? -eq 0 ]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Keyboard layout set successfully.${MSGNC}"
+        echo -e "$MSGGREEN" "$SRVMSG" "Keyboard layout set to $Keymap.${MSGNC}"
+        
+        # Apply immediately with setupcon if available
+        if command -v setupcon &> /dev/null; then
+            setupcon 2>/dev/null
+        fi
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to set keyboard layout.${MSGNC}"
         exit 1
