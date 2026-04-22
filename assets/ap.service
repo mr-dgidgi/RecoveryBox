@@ -1,12 +1,17 @@
 [Unit]
 Description=Access Point Service
-After=network.target
+After=network-online.target systemd-networkd.service
+Wants=network-online.target
+BindsTo=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device
+
 [Service]
 Type=simple
 User=root
-Group=root
+ExecStartPre=/usr/bin/ip link set wlan0 up
 ExecStart=/etc/ap_config/ap_start.sh
 Restart=always
-RestartSec=3
+RestartSec=5
+
 [Install]
 WantedBy=multi-user.target

@@ -245,8 +245,7 @@ service_kiwix() {
 }
 
 #######################################################
-# Rename interfaces
-#######################################################
+
 choose_interfaces_names() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Renaming network interfaces." "$MSGNC"
     # get current interfaces names
@@ -255,22 +254,67 @@ choose_interfaces_names() {
     read -r -p "$SRVMSG Which interface is the Access Point? : " INTAP
 }
 
+rename_interfaces() {
+    WanMac=$(ip -br l | grep "$INTWAN" | awk -F" " '{print $3}')
+    cat > /etc/systemd/network/10-nic0.link <<EOF
+[Match]
+MACAddress=$WanMac
+
+[Link]
+Name=nic0
+EOF
+
+    ApMac=$(ip -br l | grep "$INTAP" | awk -F" " '{print $3}')
+    cat > /etc/systemd/network/10-wlan0.link <<EOF
+[Match]
+MACAddress=$ApMac
+
+[Link]
+Name=wlan0
+EOF
+    udevadm control --reload-rules
+    udevadm trigger --attr-match=subsystem=net
+}
 
 #######################################################
-# Access Point
+
+configure_interfaces() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
+
+    cp assets/20-nic0.network /etc/systemd/network/20-nic0.network
+    cp assets/20-wlan0.network /etc/systemd/network/20-wlan0.network
+
+    systemctl stop networking.service
+    systemctl disable networking.service
+    systemctl mask networking.service 
+    systemctl enable systemd-networkd
+    systemctl restart systemd-networkd
+    sleep 2
+    
+    if [[ $(systemctl is-active systemd-networkd) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to configure network interfaces.${MSGNC}"
+        exit 1
+    fi
+}
+
+
+
 #######################################################
 
-# Disable wpa_supplicant on wlan0
-# should be useless with x64
-#echo -e "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..." "$MSGNC"
-#systemctl stop wpa_supplicant@wlan0
-#systemctl disable wpa_supplicant@wlan0
-#if [[ $(systemctl is-active wpa_supplicant@wlan0) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlan0) == "disabled" ]]; then
-#    echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlan0 successfully.${MSGNC}"
-#else
-#    echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlan0.${MSGNC}"
-#    exit 1
-#fi
+#Disable wpa_supplicant on wlan0
+disable_wpa_supplicant() {
+    echo -e "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..." "$MSGNC"
+    systemctl stop wpa_supplicant@wlan0
+    systemctl disable wpa_supplicant@wlan0
+    if [[ $(systemctl is-active wpa_supplicant@wlan0) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlan0) == "disabled" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlan0 successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlan0.${MSGNC}"
+        exit 1
+    fi
+}
 
 #######################################################
 
@@ -280,7 +324,6 @@ install_access_point() {
     docker pull mrdgidgi/simple-pi-hotspot
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
-    cp assets/dnsmasq-hosts.conf /etc/ap_config/dnsmasq-hosts.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
     chmod +x /etc/ap_config/ap_start.sh
@@ -378,7 +421,9 @@ install_apache() {
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
     fi
     a2dissite 000-default
-    sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
+    if [[ $(grep "listen 8080" /etc/apache2/ports.conf) -eq 1 ]];then
+        sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
+    fi
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Apache2 configured successfully.${MSGNC}"
@@ -441,6 +486,8 @@ main() {
     set_keyboard
     ## define interface names
     choose_interfaces_names
+    rename_interfaces
+    configure_interfaces
     ## Install basic tools
     install_basic_tools
     ## Add needed repositories
@@ -457,6 +504,7 @@ main() {
     fi
     service_kiwix
     ## Install Access Point
+    disable_wpa_supplicant
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing

@@ -1,0 +1,19 @@
+[Match]
+Name=nic0
+
+[Network]
+DHCP=yes
+# Manual DNS
+DNS=1.1.1.1 9.9.9.9
+IPv6PrivacyExtensions=yes
+KeepConfiguration=yes
+
+[DHCPv4]
+# don't wait to long for the DHCP at boot
+CriticalConnection=true
+# keep our DNS
+UseDNS=yes
+ClientIdentifier=mac
+
+[IPv6AcceptRA]
+Token=static:::1
