@@ -120,7 +120,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-intel-microcode rfkill > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -329,7 +329,6 @@ install_access_point() {
     cp assets/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
-    systemctl start ap.service
     if [[ $(systemctl is-active ap.service) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Access Point service started successfully.${MSGNC}"
     else
