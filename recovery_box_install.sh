@@ -418,6 +418,9 @@ install_apache() {
         a2ensite nopanic
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
     fi
+    cp assets/www.conf /etc/apache2/sites-available/www.conf
+    a2ensite www
+    
     a2dissite 000-default
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
