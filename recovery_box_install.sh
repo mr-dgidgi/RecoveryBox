@@ -120,7 +120,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -419,9 +419,6 @@ install_apache() {
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
     fi
     a2dissite 000-default
-    if [[ $(grep "listen 8080" /etc/apache2/ports.conf) -eq 1 ]];then
-        sed -i 's/Listen 80/ Listen 8080/' /etc/apache2/ports.conf
-    fi
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Apache2 configured successfully.${MSGNC}"
