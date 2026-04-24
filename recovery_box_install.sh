@@ -329,10 +329,10 @@ install_access_point() {
     cp assets/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
-    if [[ $(systemctl is-active ap.service) == "active" ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Access Point service started successfully.${MSGNC}"
+    if [[ $(systemctl is-enabled ap.service) == "enabled" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Access Point service installed successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to start Access Point service.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to install Access Point service.${MSGNC}"
         exit 1
     fi
 }
