@@ -8,7 +8,6 @@ After=sys-subsystem-net-devices-wlan0.device
 [Service]
 Type=simple
 User=root
-ExecStartPre=/usr/bin/ip link set wlan0 up
 ExecStart=/etc/ap_config/ap_start.sh
 Restart=always
 RestartSec=5

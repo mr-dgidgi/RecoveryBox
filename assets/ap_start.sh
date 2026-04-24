@@ -11,4 +11,4 @@ docker run --rm \
     --privileged \
     -v /etc/ap_config/:/etc/conf \
     --name hotspot \
-    mrdgidgi/simple-pi-hotspot
+    mrdgidgi/simple-hotspot

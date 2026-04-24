@@ -120,7 +120,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -317,10 +317,10 @@ disable_wpa_supplicant() {
 
 #######################################################
 
-# Install the simple-pi-hotspot container
+# Install the simple-hotspot container
 install_access_point() {
-    echo -e "$MSGYELLOW""$SRVMSG" "WiFi Access Point - Installing simple-pi-hotspot container..." "$MSGNC"
-    docker pull mrdgidgi/simple-pi-hotspot
+    echo -e "$MSGYELLOW""$SRVMSG" "WiFi Access Point - Installing simple-hotspot container..." "$MSGNC"
+    docker pull mrdgidgi/simple-hotspot
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
