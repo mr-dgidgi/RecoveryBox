@@ -6,6 +6,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=0
 Restart=always
+ExecStartPre=docker rm -f owrx 2>/dev/null
 ExecStart=/usr/bin/docker run --rm --name owrx \
   -p 8073:8073 \
   -e TZ=Europe/Paris \
