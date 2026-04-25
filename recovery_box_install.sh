@@ -518,18 +518,16 @@ main() {
     configure_interfaces
     ## Install basic tools
     install_basic_tools
+    ## set gpsd
+    set_gpsd
+    ## set chrony
+    set_chrony
     ## Add needed repositories
     set_repositories
     ## Install Docker
     install_docker
     ## Install Kiwix
     install_kiwix
-    read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
-    if [[ "$WikiDown" == "y" ]]; then
-        download_wikipedia
-    else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Skipping Wikipedia download." "$MSGNC"
-    fi
     service_kiwix
     ## Install Access Point
     disable_wpa_supplicant
@@ -551,6 +549,13 @@ main() {
     install_openwebrx
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
+    ## Download Wikipedia 
+        read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
+    if [[ "$WikiDown" == "y" ]]; then
+        download_wikipedia
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Skipping Wikipedia download." "$MSGNC"
+    fi
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 }
 
