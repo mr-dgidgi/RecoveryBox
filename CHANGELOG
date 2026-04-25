@@ -1,0 +1,25 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+### Added
+- Monitoring script `rbstatus.sh` support for service health checks and status reporting.
+
+### Changed
+- Planned monitoring enhancements for RecoveryBox service availability tracking.
+
+## [1.0.0] - 2026-04-25
+### Added
+- Complete rewrite and migration from Raspberry Pi architecture to x86_64.
+- Updated installation and configuration scripts for Debian 13/x86_64 environments.
+- Consolidated services and assets for RecoveryBox with new architecture support.
+
+### Changed
+- Reworked project structure to support x86_64 hardware.
+- Improved setup documentation and configuration defaults.
+
+### Removed
+- Raspberry Pi specific setup and configuration files.

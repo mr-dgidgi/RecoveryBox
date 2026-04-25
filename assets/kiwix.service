@@ -1,12 +1,21 @@
 [Unit]
-Description=Kiwix Service
-After=network.target
+Description=Kiwix Offline Server Container
+After=docker.service
+Requires=docker.service
+
 [Service]
-Type=simple
-User=root
-Group=root
-ExecStart=/usr/local/bin/kiwix-serve /data/kiwix/wikipedia_fr_all_nopic_2025-08.zim  -p 80
 Restart=always
 RestartSec=3
+ExecStartPre=docker rm -f kiwix-serve 2>/dev/null
+ExecStart=/usr/bin/docker run --rm --name kiwix-serve\
+  -p 8080:8080\
+  -v /data/kiwix:/data\
+  ghcr.io/kiwix/kiwix-serve:3.8.2\
+  "*.zim"
+
+ExecStop=/usr/bin/docker stop kiwix-serve
+
 [Install]
 WantedBy=multi-user.target
+
+

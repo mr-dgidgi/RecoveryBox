@@ -1,0 +1,25 @@
+[Unit]
+Description=OpenWebRX+ Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=docker rm -f owrx 2>/dev/null
+ExecStart=/usr/bin/docker run --rm --name owrx \
+  -p 8073:8073 \
+  -e TZ=Europe/Paris \
+  -e OPENWEBRX_ADMIN_USER=recoverybox \
+  -e OPENWEBRX_ADMIN_PASSWORD=recoverybox \
+  --device /dev/bus/usb:/dev/bus/usb \
+  -v /etc/owrx/etc:/etc/openwebrx \
+  -v /etc/owrx/var:/var/lib/openwebrx \
+  -v /etc/owrx/plugins:/usr/lib/python3/dist-packages/htdocs/plugins \
+  --tmpfs /tmp:mode=1777 \
+  slechev/openwebrxplus-softmbe:latest
+
+ExecStop=/usr/bin/docker stop owrx
+
+[Install]
+WantedBy=multi-user.target
