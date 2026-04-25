@@ -120,7 +120,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -418,6 +418,8 @@ install_apache() {
         a2ensite nopanic
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
     fi
+    mkdir -p /data/www
+    cp assets/index.html /data/www/index.html
     cp assets/www.conf /etc/apache2/sites-available/www.conf
     a2ensite www
     
@@ -521,7 +523,7 @@ main() {
     install_openwebrx
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
-    echo -e "$MSGRED" "$SRVMSG" "Installation complete! Please reboot the system to apply all changes." "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 }
 
 #######################################################
