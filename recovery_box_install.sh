@@ -120,7 +120,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony> /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -429,6 +429,34 @@ install_apache() {
         echo -e "$MSGGREEN" "$SRVMSG" "Apache2 configured successfully.${MSGNC}"
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to configure Apache2.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
+set_gpsd() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Configuring GPSD..." "$MSGNC"
+    sed -i 's/GPSD_OPTIONS=""/GPSD_OPTIONS="-n"/g' /etc/default/gpsd 
+    systemctl restart gpsd
+    if [[ $(systemctl is-active gpsd) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "GPSD service setup successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to setup GPSD service.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
+set_chrony() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Configuring Chrony..." "$MSGNC"
+    cp assets/000-gps.conf /etc/chrony/conf.d/000-gps.conf
+    systemctl restart chrony
+    if [[ $(systemctl is-active chrony) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Chrony service setup successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to setup Chrony service.${MSGNC}"
         exit 1
     fi
 }

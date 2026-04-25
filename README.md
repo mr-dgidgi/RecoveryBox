@@ -14,10 +14,12 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 ### Connectivité et réseau
 - **Point d'accès WiFi** : Conteneur Docker [simple-hotspot](https://hub.docker.com/repository/docker/mrdgidgi/simple-hotspot/general) créant un réseau WiFi local.
 - **Routage réseau** : IPv4 forwarding, iptables NAT et règles de routage automatiquement configurés.
+- **Synchro du temps via GPS** : Chrony configuré pour fournir l'heure exacte au serveur via GPS
 
 ### Radio et télécommunications
 - **OpenWebRX Plus** : Interface web pour recevoir et écouter les fréquences radio via RTL-SDR.
 - **Pilotes RTL-SDR** : Derniers pilotes compilés pour les clés USB RTL-SDR.
+- **Support des GPS** : GPSD disponible pour les services annexes
 
 ### Cartographie et outils
 - **WIP**
