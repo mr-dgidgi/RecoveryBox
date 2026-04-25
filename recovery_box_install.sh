@@ -1,12 +1,13 @@
 #!/bin/bash
 
+###############################################################
+# Recoverybox Project
+# https://github.com/mr-dgidgi/RecoveryBox
+# autor Ghislain Leblanc aka mrdgidgi
+# contact@dgidgi.ovh
 #
 #
-#
-#
-#
-# monter /data/ avant de lancer le script
-#
+###############################################################
 
 SRVMSG=' =+= '
 MSGGREEN='\033[0;32m'
@@ -120,7 +121,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony> /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -420,8 +421,8 @@ install_apache() {
     fi
     mkdir -p /data/www
     cp assets/index.html /data/www/index.html
-    cp assets/www.conf /etc/apache2/sites-available/www.conf
-    a2ensite www
+    cp assets/000-www.conf /etc/apache2/sites-available/000-www.conf
+    a2ensite 000-www
     
     a2dissite 000-default
     systemctl restart apache2
@@ -483,8 +484,8 @@ install_openwebrx() {
 
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
-    apt-get purge rtl-sdr -y
-    apt-get purge -y ^librtlsdr
+    apt-get purge rtl-sdr -y -qq > /dev/null
+    apt-get purge -y -qq ^librtlsdr > /dev/null
     rm -rvf /usr/lib/librtlsdr* 
     rm -rvf /usr/include/rtl-sdr* 
     rm -rvf /usr/local/lib/librtlsdr* 
