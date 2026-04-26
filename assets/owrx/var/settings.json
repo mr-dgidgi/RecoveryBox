@@ -1,0 +1,388 @@
+{
+    "version": 8,
+    "receiver_name": "Recoverybox",
+    "receiver_location": "Anywhere",
+    "receiver_asl": 0,
+    "receiver_admin": "example@example.com",
+    "bandplan_region": 0,
+    "receiver_country": "FR",
+    "receiver_gps": {
+        "lat": 0.0,
+        "lon": 0.0
+    },
+    "gps_updates": true,
+    "photo_title": "",
+    "photo_desc": "",
+    "max_clients": 10,
+    "max_clients_per_ip": 10,
+    "keep_files": 10,
+    "session_timeout": 0,
+    "usage_policy_url": "policy",
+    "bot_ban_enabled": true,
+    "allow_chat": true,
+    "allow_audio_recording": true,
+    "allow_center_freq_changes": false,
+    "magic_key": "memagic",
+    "receiver_keys": [],
+    "waterfall_scheme": "GoogleTurboWaterfall",
+    "fft_fps": 9,
+    "fft_size": 4096,
+    "fft_voverlap_factor": 0.3,
+    "waterfall_levels": {
+        "min": -88.0,
+        "max": -20.0
+    },
+    "waterfall_auto_levels": {
+        "min": 3.0,
+        "max": 10.0
+    },
+    "waterfall_auto_level_default_mode": false,
+    "waterfall_auto_min_range": 50,
+    "audio_compression": "adpcm",
+    "fft_compression": "adpcm",
+    "ui_theme": "default",
+    "tuning_precision": 2,
+    "eibi_bookmarks_range": 0,
+    "repeater_range": 0,
+    "map_type": "leaflet",
+    "google_maps_api_key": "",
+    "openweathermap_api_key": "",
+    "map_position_retention_time": 7200,
+    "map_call_retention_time": 300,
+    "map_max_calls": 5,
+    "map_ignore_indirect_reports": false,
+    "map_prefer_recent_reports": true,
+    "callsign_url": "https://www.qrzcq.com/call/{}",
+    "vessel_url": "https://www.vesselfinder.com/vessels/details/{}",
+    "flight_url": "https://flightaware.com/live/flight/{}",
+    "modes_url": "https://flightaware.com/live/modes/{}/redirect",
+    "sonde_url": "https://sondehub.org/{}",
+    "sdrs": {
+        "rtlsdr": {
+            "name": "RTL-SDR",
+            "type": "rtl_sdr",
+            "rf_gain": 29,
+            "direct_sampling": 0,
+            "profiles": {
+                "70cm": {
+                    "name": "70cm Repeaters",
+                    "center_freq": 438800000,
+                    "rf_gain": 29,
+                    "samp_rate": 2400000,
+                    "start_freq": 439275000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "2m": {
+                    "name": "2m",
+                    "center_freq": 145000000,
+                    "rf_gain": 29,
+                    "samp_rate": 2048000,
+                    "start_freq": 145725000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "10m": {
+                    "name": "10m + CB",
+                    "center_freq": 28000000,
+                    "samp_rate": 2048000,
+                    "start_freq": 27500000,
+                    "start_mod": "am",
+                    "tuning_step": "500"
+                },
+                "40m": {
+                    "name": "40m",
+                    "center_freq": 7500000,
+                    "samp_rate": 1024000,
+                    "start_freq": 7300000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500",
+                    "direct_sampling": 2
+                },
+                "80m": {
+                    "name": "80m",
+                    "center_freq": 3500000,
+                    "samp_rate": 1024000,
+                    "start_freq": 3700000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500",
+                    "direct_sampling": 2
+                },
+                "160m": {
+                    "name": "160m",
+                    "center_freq": 1500000,
+                    "samp_rate": 1024000,
+                    "start_freq": 1800000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500",
+                    "direct_sampling": 2
+                },
+                "am": {
+                    "name": "AM Broadcast",
+                    "center_freq": 1000000,
+                    "samp_rate": 1024000,
+                    "start_freq": 1200000,
+                    "start_mod": "am",
+                    "tuning_step": "5000",
+                    "direct_sampling": 2
+                },
+                "adsb1090": {
+                    "name": "1090MHz ADSB",
+                    "center_freq": 1090000000,
+                    "rf_gain": 29,
+                    "samp_rate": 2400000,
+                    "start_freq": 1090000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "25000"
+                },
+                "8787616a-4b11-4ed7-abf8-8cea6f1ad87a": {
+                    "name": "APRS",
+                    "center_freq": 144800000,
+                    "samp_rate": 2048000,
+                    "start_freq": 144800000,
+                    "start_mod": "packet",
+                    "tuning_step": 10
+                }
+            }
+        },
+        "airspy": {
+            "name": "Airspy HF+",
+            "type": "airspyhf",
+            "rf_gain": "auto",
+            "profiles": {
+                "20m": {
+                    "name": "20m",
+                    "center_freq": 14150000,
+                    "samp_rate": 384000,
+                    "start_freq": 14070000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "30m": {
+                    "name": "30m",
+                    "center_freq": 10125000,
+                    "samp_rate": 192000,
+                    "start_freq": 10142000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "40m": {
+                    "name": "40m",
+                    "center_freq": 7100000,
+                    "samp_rate": 256000,
+                    "start_freq": 7070000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500"
+                },
+                "80m": {
+                    "name": "80m",
+                    "center_freq": 3650000,
+                    "samp_rate": 384000,
+                    "start_freq": 3570000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500"
+                },
+                "49m": {
+                    "name": "49m Broadcast",
+                    "center_freq": 6050000,
+                    "samp_rate": 384000,
+                    "start_freq": 6070000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                }
+            }
+        },
+        "sdrplay": {
+            "name": "SDRPlay",
+            "type": "sdrplay",
+            "antenna": "Antenna A",
+            "rf_gain": "auto",
+            "profiles": {
+                "70cm": {
+                    "name": "70cm Repeaters",
+                    "center_freq": 443500000,
+                    "samp_rate": 4000000,
+                    "start_freq": 444000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "125cm": {
+                    "name": "1.25m",
+                    "center_freq": 223500000,
+                    "samp_rate": 4000000,
+                    "start_freq": 224000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "2m": {
+                    "name": "2m",
+                    "center_freq": 146000000,
+                    "samp_rate": 4000000,
+                    "start_freq": 147000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "6m": {
+                    "name": "6m",
+                    "center_freq": 52000000,
+                    "samp_rate": 4000000,
+                    "start_freq": 53000000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "10m": {
+                    "name": "10m",
+                    "center_freq": 28850000,
+                    "samp_rate": 2000000,
+                    "start_freq": 29000000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "cb": {
+                    "name": "11m CB",
+                    "center_freq": 27000000,
+                    "samp_rate": 2000000,
+                    "start_freq": 26965000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "12m": {
+                    "name": "12m",
+                    "center_freq": 24940000,
+                    "samp_rate": 250000,
+                    "start_freq": 24950000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "15m": {
+                    "name": "15m",
+                    "center_freq": 21225000,
+                    "samp_rate": 500000,
+                    "start_freq": 21220000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "17m": {
+                    "name": "17m",
+                    "center_freq": 18118000,
+                    "samp_rate": 250000,
+                    "start_freq": 18110000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "20m": {
+                    "name": "20m",
+                    "center_freq": 14175000,
+                    "samp_rate": 500000,
+                    "start_freq": 14070000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "30m": {
+                    "name": "30m",
+                    "center_freq": 10125000,
+                    "samp_rate": 250000,
+                    "start_freq": 10142000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "40m": {
+                    "name": "40m",
+                    "center_freq": 7150000,
+                    "samp_rate": 500000,
+                    "start_freq": 7070000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500"
+                },
+                "60m": {
+                    "name": "60m",
+                    "center_freq": 5350000,
+                    "samp_rate": 250000,
+                    "start_freq": 5357000,
+                    "start_mod": "usb",
+                    "tuning_step": "500"
+                },
+                "80m": {
+                    "name": "80m",
+                    "center_freq": 3750000,
+                    "samp_rate": 500000,
+                    "start_freq": 3570000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500"
+                },
+                "160m": {
+                    "name": "160m",
+                    "center_freq": 1900000,
+                    "samp_rate": 250000,
+                    "start_freq": 1910000,
+                    "start_mod": "lsb",
+                    "tuning_step": "500"
+                },
+                "am": {
+                    "name": "AM Broadcast",
+                    "center_freq": 1100000,
+                    "samp_rate": 1000000,
+                    "start_freq": 1300000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "49m": {
+                    "name": "49m Broadcast",
+                    "center_freq": 6050000,
+                    "samp_rate": 500000,
+                    "start_freq": 6070000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "41m": {
+                    "name": "41m Broadcast",
+                    "center_freq": 7325000,
+                    "samp_rate": 250000,
+                    "start_freq": 7320000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "31m": {
+                    "name": "31m Broadcast",
+                    "center_freq": 9650000,
+                    "samp_rate": 500000,
+                    "start_freq": 9700000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "25m": {
+                    "name": "25m Broadcast",
+                    "center_freq": 11850000,
+                    "samp_rate": 500000,
+                    "start_freq": 12000000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "22m": {
+                    "name": "22m Broadcast",
+                    "center_freq": 13720000,
+                    "samp_rate": 500000,
+                    "start_freq": 13800000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "ism433": {
+                    "name": "433MHz ISM",
+                    "center_freq": 433000000,
+                    "samp_rate": 2000000,
+                    "start_freq": 433000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "25000"
+                },
+                "adsb1090": {
+                    "name": "1090MHz ADSB",
+                    "center_freq": 1090000000,
+                    "samp_rate": 4000000,
+                    "start_freq": 1090000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "25000"
+                }
+            }
+        }
+    }
+}
