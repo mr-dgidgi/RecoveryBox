@@ -483,6 +483,42 @@ install_openwebrx() {
 
 #######################################################
 
+install_tileserver() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Tileserver-gl server..." "$MSGNC"
+    docker pull maptiler/tileserver-gl:latest
+    mkdir -p /data/tileserver/
+    cp assets/tileserver-gl.service /etc/systemd/system/tileserver-gl.service
+    systemctl daemon-reload
+    systemctl enable tileserver-gl.service
+    systemctl start tileserver-gl.service
+    if [[ $(systemctl is-active tileserver-gl) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Tileserver-gl server service started successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to start Tileserver-gl server service.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
+install_planetiler() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Planetiler server..." "$MSGNC"
+    docker pull ghcr.io/onthegomap/planetiler:latest
+    mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
+    cp assets/planetiler.service /etc/systemd/system/planetiler.service
+    systemctl daemon-reload
+    systemctl enable planetiler.service
+    systemctl start planetiler.service
+    if [[ $(systemctl is-active planetiler) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Planetiler server service started successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to start Planetiler server service.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
     apt-get purge rtl-sdr -y -qq > /dev/null
@@ -549,6 +585,10 @@ main() {
     install_apache
     ## Install OpenWebRX Plus
     install_openwebrx
+    ## Install Tileserver-gl
+    install_tileserver
+    ## Install Planetiler
+    install_planetiler
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
     ## Download Wikipedia 
