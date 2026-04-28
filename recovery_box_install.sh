@@ -519,6 +519,20 @@ install_planetiler() {
 
 #######################################################
 
+Install_map_style_liberty() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
+    mkdir -p /data/tileserver/fonts/data/tileserver/styles /data/tileserver/styles/liberty
+
+    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/style.json"
+    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty.json" -O sprite.json
+    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty.png" -O sprite.png
+    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty@2x.json" -O sprite@2x.json
+    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty@2x.png" -O sprite@2x.png
+    git clone https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+}
+
+#######################################################
+
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
     apt-get purge rtl-sdr -y -qq > /dev/null
