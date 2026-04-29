@@ -102,7 +102,7 @@ else
     echo -e "${MSGGREEN}${SRVMSG}Map generation completed successfully.${MSGNC}"
 fi
 
-rm ${WorkDir}/tmp/* -rf
+rm ${WorkDir}/tmp/* -rf 2>/dev/null || true
 rm ${WorkDir}/${Zone}-latest.osm.pbf -f
 
 ####################################

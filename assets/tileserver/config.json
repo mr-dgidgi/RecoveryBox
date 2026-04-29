@@ -1,0 +1,28 @@
+{
+  "options": {
+    "paths": {
+      "root": "/data",
+      "fonts": "fonts",
+      "styles": "styles",
+      "mbtiles": ""
+    },
+    "serve_sources": true,
+    "serve_fonts": true,
+    "cors": true,
+    "public_url": "http://map.recovery.box/tiles/"
+  },
+  "styles": {
+    "liberty": {
+      "style": "liberty/style.json",
+      "tilejson": {
+        "type": "overlay",
+	"format": "png"
+      }
+    }
+  },
+  "data": {
+    "v3": {
+      "mbtiles": "france.mbtiles"
+    }
+  }
+}

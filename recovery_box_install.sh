@@ -121,7 +121,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop net-tools > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop net-tools unzip > /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -234,7 +234,7 @@ download_wikipedia() {
 
 service_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Creating kiwix service..." "$MSGNC"
-    cp assets/kiwix.service /etc/systemd/system/kiwix.service
+    cp assets/systemd/kiwix.service /etc/systemd/system/kiwix.service
     systemctl enable kiwix
     systemctl start kiwix
     if [[ $(systemctl is-active kiwix) == "active" ]]; then
@@ -327,7 +327,7 @@ install_access_point() {
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
     chmod +x /etc/ap_config/ap_start.sh
-    cp assets/ap.service /etc/systemd/system/ap.service
+    cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
     if [[ $(systemctl is-enabled ap.service) == "enabled" ]]; then
@@ -364,7 +364,7 @@ setup_iptables() {
     mkdir -p /etc/iptables
     cp assets/iptables.sh /etc/iptables/iptables.sh
     chmod +x /etc/iptables/iptables.sh
-    cp assets/iptables.service /etc/systemd/system/iptables.service
+    cp assets/systemd/iptables.service /etc/systemd/system/iptables.service
     systemctl daemon-reload
     systemctl enable iptables.service
     systemctl start iptables.service
@@ -409,19 +409,20 @@ download_french_pdfs() {
 install_apache() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing and configuring Apache2..." "$MSGNC"
     apt-get install -y -qq apache2 > /dev/null
+    a2enmod proxy proxy_http rewrite
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/enpdf.conf /etc/apache2/sites-available/enpdf.conf
+        cp assets/sites-availables/enpdf.conf /etc/apache2/sites-available/enpdf.conf
         a2ensite enpdf.conf
         echo -e "$MSGGREEN" "$SRVMSG" "pdf.recovery.box enabled" "$MSGNC"
     fi
     if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/nopanic.conf /etc/apache2/sites-available/nopanic.conf
+        cp assets/sites-availables/nopanic.conf /etc/apache2/sites-available/nopanic.conf
         a2ensite nopanic
         echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
     fi
     mkdir -p /data/www
     cp assets/index.html /data/www/index.html
-    cp assets/000-www.conf /etc/apache2/sites-available/000-www.conf
+    cp assets/sites-availables/000-www.conf /etc/apache2/sites-available/000-www.conf
     a2ensite 000-www
     
     a2dissite 000-default
@@ -469,7 +470,7 @@ install_openwebrx() {
     mkdir -p /etc/owrx/var /etc/owrx/etc /etc/owrx/plugins/{receiver,map}
     docker pull slechev/openwebrxplus-softmbe:latest
     cp assets/owrx/var/settings.json /etc/owrx/var/settings.json
-    cp assets/openwebrx.service /etc/systemd/system/openwebrx.service
+    cp assets/systemd/openwebrx.service /etc/systemd/system/openwebrx.service
     systemctl daemon-reload
     systemctl enable openwebrx.service
     systemctl start openwebrx.service
@@ -487,7 +488,8 @@ install_tileserver() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Tileserver-gl server..." "$MSGNC"
     docker pull maptiler/tileserver-gl:latest
     mkdir -p /data/tileserver/
-    cp assets/tileserver-gl.service /etc/systemd/system/tileserver-gl.service
+    cp assets/systemd/tileserver-gl.service /etc/systemd/system/tileserver-gl.service
+    cp assets/tileserver/config.json /data/tileserver/config.json
     systemctl daemon-reload
     systemctl enable tileserver-gl.service
     systemctl start tileserver-gl.service
@@ -505,32 +507,63 @@ install_planetiler() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Planetiler server..." "$MSGNC"
     docker pull ghcr.io/onthegomap/planetiler:latest
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
-    cp assets/planetiler.service /etc/systemd/system/planetiler.service
+    cp assets/generate_map.sh /usr/local/bin/generate-map
+    chmod +x /usr/local/bin/generate-map
+}
+
+#######################################################
+
+install_map_style_liberty() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
+    mkdir -p /data/tileserver/fonts/data/tileserver/styles /data/tileserver/styles/liberty
+
+    cp assets/tileserver/styles/liberty/style.json /data/tileserver/styles/liberty/style.json
+    cp assets/tileserver/styles/liberty/sprite.png /data/tileserver/styles/liberty/sprite.png
+    cp assets/tileserver/styles/liberty/sprite.json /data/tileserver/styles/liberty/sprite.json
+    cp assets/tileserver/styles/liberty/sprite@2x.png /data/tileserver/styles/liberty/sprite@2x.png
+    cp assets/tileserver/styles/liberty/sprite@2x.json /data/tileserver/styles/liberty/sprite@2x.json
+    git clone https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+}
+
+#######################################################
+
+install_brouter() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing BRouter server..." "$MSGNC"
+    docker pull joeakeem/brouter:v1.7.9
+    mkdir -p /data/brouter/ /data/brouter/segments4 /data/brouter/www
+    cp assets/systemd/brouter.service /etc/systemd/system/brouter.service
+    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading BRouter segments4 data. This step may take some time..." "$MSGNC"
+    wget -q --show-progress -P /data/brouter/www "https://github.com/nrenner/brouter-web/releases/download/0.18.1/brouter-web.0.18.1.zip"
+    unzip -q /data/brouter/www/brouter-web.0.18.1.zip -d /data/brouter/www/
+    rm /data/brouter/www/brouter-web.0.18.1.zip
+    touch /data/brouter/www/keys.js
+    cp assets/brouter-config.js /data/brouter/www/config.js
+    cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
+    a2ensite carto.conf
+    systemctl reload apache2
     systemctl daemon-reload
-    systemctl enable planetiler.service
-    systemctl start planetiler.service
-    if [[ $(systemctl is-active planetiler) == "active" ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Planetiler server service started successfully.${MSGNC}"
+    systemctl enable brouter.service
+    systemctl start brouter.service
+    if [[ $(systemctl is-active brouter) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "BRouter server service started successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to start Planetiler server service.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to start BRouter server service.${MSGNC}"
         exit 1
     fi
 }
 
 #######################################################
 
-Install_map_style_liberty() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
-    mkdir -p /data/tileserver/fonts/data/tileserver/styles /data/tileserver/styles/liberty
-
-    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/style.json"
-    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty.json" -O sprite.json
-    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty.png" -O sprite.png
-    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty@2x.json" -O sprite@2x.json
-    wget -q --show-progress -P /data/tileserver/styles/liberty "https://raw.githubusercontent.com/openmaptiles/osm-liberty-gl-style/master/sprites/osm-liberty@2x.png" -O sprite@2x.png
-    git clone https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+download_brouter_data() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading BRouter segments4 data. This step may take some time..." "$MSGNC"
+    wget -q --show-progress -r -l1 -np -nH --cut-dirs=2 -A "*.rd5" -e robots=off --wait=1 -N -P /data/brouter/segments4 "https://brouter.de/brouter/segments4/"
+    if [[ -e /data/brouter/segments4/W95_S5.rd5 ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "BRouter segments4 data downloaded successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to download BRouter segments4 data.${MSGNC}"
+        exit 1
+    fi
 }
-
 #######################################################
 
 install_rtlsdr_drivers() {
@@ -601,8 +634,11 @@ main() {
     install_openwebrx
     ## Install Tileserver-gl
     install_tileserver
+    install_map_style_liberty
     ## Install Planetiler
     install_planetiler
+    ## Install BRouter
+    install_brouter
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
     ## Download Wikipedia 
@@ -611,8 +647,15 @@ main() {
         download_wikipedia
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping Wikipedia download." "$MSGNC"
+    fi    ## Download BRouter segments4 data
+    read -r -p "$SRVMSG Download routing data for the map ? [y/n] : " BRouterDataDown
+    if [[ "$BRouterDataDown" == "y" ]]; then
+        download_brouter_data
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Skipping routing data download." "$MSGNC"
     fi
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
+
 }
 
 #######################################################
