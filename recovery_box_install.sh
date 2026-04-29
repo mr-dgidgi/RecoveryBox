@@ -470,6 +470,7 @@ install_openwebrx() {
     mkdir -p /etc/owrx/var /etc/owrx/etc /etc/owrx/plugins/{receiver,map}
     docker pull slechev/openwebrxplus-softmbe:latest
     cp assets/owrx/var/settings.json /etc/owrx/var/settings.json
+    cp assets/owrx/custom-leaflet.js /etc/owrx/custom-leaflet.js
     cp assets/systemd/openwebrx.service /etc/systemd/system/openwebrx.service
     systemctl daemon-reload
     systemctl enable openwebrx.service
@@ -566,6 +567,17 @@ download_brouter_data() {
 }
 #######################################################
 
+download_world_mbtiles() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Downloading world.mbtiles for TileServer GL. This step may take some time..." "$MSGNC"
+    wget -q --show-progress -P /data/tileserver/world.mbtiles "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles" -O /data/tileserver/world.mbtiles
+    if [[ -e /data/tileserver/world.mbtiles ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "world.mbtiles downloaded successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to download world.mbtiles.${MSGNC}"
+        exit 1
+    fi
+}
+
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
     apt-get purge rtl-sdr -y -qq > /dev/null
@@ -647,7 +659,15 @@ main() {
         download_wikipedia
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping Wikipedia download." "$MSGNC"
-    fi    ## Download BRouter segments4 data
+    fi    
+    ## Download world.mbtiles for TileServer GL
+    read -r -p "$SRVMSG Download world map ? [y/n] : " WorldMapDown
+    if [[ "$WorldMapDown" == "y" ]]; then
+        download_world_mbtiles
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Skipping world map download." "$MSGNC"
+    fi
+    ## Download BRouter segments4 data
     read -r -p "$SRVMSG Download routing data for the map ? [y/n] : " BRouterDataDown
     if [[ "$BRouterDataDown" == "y" ]]; then
         download_brouter_data
