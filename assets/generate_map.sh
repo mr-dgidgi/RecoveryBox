@@ -107,8 +107,24 @@ rm ${WorkDir}/${Zone}-latest.osm.pbf -f
 
 ####################################
 
-echo -e "${SRVMSG} Moving .mbtiles file to tileserver directory ---"
+echo -e "${MSGYELLOW}${SRVMSG} Moving .mbtiles file to tileserver directory ---"
 mv "$WorkDir/output/${Zone}.mbtiles" "$TileserverDir/"
+
+if [ -e $TileserverDir/map.mbtiles ]; then
+    echo -e "${MSGYELLOW}${SRVMSG}Fusioning map files...${MSGNC}"
+    mv $TileserverDir/map.mbtiles $TileserverDir/world.mbtiles 2>/dev/null || true
+    tile-join -o $TileserverDir/map.mbtiles $TileserverDir/world.mbtiles ${Zone}.mbtiles
+    if [ $? -ne 0 ]; then
+        echo -e "${MSGRED}${SRVMSG}Error during map fusion. Rollback...${MSGNC}"
+        mv $TileserverDir/world.mbtiles $TileserverDir/map.mbtiles 2>/dev/null || true
+        exit 1
+    else
+        echo -e "${MSGGREEN}${SRVMSG}Map fusion completed successfully.${MSGNC}"
+        rm $TileserverDir/world.mbtiles -f
+    fi
+else
+    mv ${Zone}.mbtiles $TileserverDir/map.mbtiles
+fi
 
 
 read -p "${MSGYELLOW}Would you restart the tile server now ? (y/n) : ${MSGNC}" RestartOption
