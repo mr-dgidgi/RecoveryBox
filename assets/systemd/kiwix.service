@@ -6,14 +6,14 @@ Requires=docker.service
 [Service]
 Restart=always
 RestartSec=3
-ExecStartPre=docker rm -f kiwix-serve 2>/dev/null
-ExecStart=/usr/bin/docker run --rm --name kiwix-serve\
+ExecStartPre=docker rm -f kiwix-server 2>/dev/null
+ExecStart=/usr/bin/docker run --rm --name kiwix-server\
   -p 8080:8080\
   -v /data/kiwix:/data\
   ghcr.io/kiwix/kiwix-serve:3.8.2\
   "*.zim"
 
-ExecStop=/usr/bin/docker stop kiwix-serve
+ExecStop=/usr/bin/docker stop kiwix-server
 
 [Install]
 WantedBy=multi-user.target
