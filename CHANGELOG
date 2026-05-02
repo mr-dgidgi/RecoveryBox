@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 - Monitoring script `rbstatus.sh` for service health checks and status reporting.
 - jq added to default tools
+- `tileserver-gl` service added for offline map serving.
+- Custom `tileserver-gl` config, style and sprite assets for offline map rendering.
+- `brouter` service added for routing.
+- Apache proxy/site configuration added for `brouter` and `tileserver-gl` access.
+- `generate_map.sh` created to manage map importation.
+- OWRX updated to use `tileserver-gl` tiles with custom Leaflet settings.
+
+### Changed
+- Updated project structure asset structure, and OWRX configuration.
+- `recovery_box_install.sh` reviewed, for the new features and is more interactive
+- `index.html` updated to include map.recovery.box
 
 ## [1.0.0] - 2026-04-25
 ### Added
