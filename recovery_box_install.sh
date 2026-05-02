@@ -516,7 +516,7 @@ install_planetiler() {
 
 install_map_style_liberty() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
-    mkdir -p /data/tileserver/fonts/data/tileserver/styles /data/tileserver/styles/liberty
+    mkdir -p /data/tileserver/fonts /data/tileserver/styles /data/tileserver/styles/liberty
 
     cp assets/tileserver/styles/liberty/style.json /data/tileserver/styles/liberty/style.json
     cp assets/tileserver/styles/liberty/sprite.png /data/tileserver/styles/liberty/sprite.png
@@ -570,7 +570,7 @@ download_brouter_data() {
 download_world_mbtiles() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Downloading world.mbtiles for TileServer GL. This step may take some time..." "$MSGNC"
     wget -q --show-progress -P /data/tileserver/world.mbtiles "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles" -O /data/tileserver/map.mbtiles
-    if [[ -e /data/tileserver/world.mbtiles ]]; then
+    if [[ -e /data/tileserver/map.mbtiles ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "world.mbtiles downloaded successfully.${MSGNC}"
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to download world.mbtiles.${MSGNC}"
@@ -677,7 +677,7 @@ main() {
     ## Download more map
     read -r -p "$SRVMSG Do you want to download a continent/country map ? [y/n] : " CustomMapGen
     if [[ "$CustomMapGen" == "y" ]]; then
-        ./assets/generate_map.sh
+        /bin/bash ./assets/generate_map.sh
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping custom map generation." "$MSGNC"
     fi
