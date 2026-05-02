@@ -121,7 +121,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop net-tools unzip tippecanoe > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe> /dev/null
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
     else
@@ -602,6 +602,18 @@ install_rtlsdr_drivers() {
     )
 }
 
+install_rbstatus() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
+    cp assets/rbstatus.sh /usr/local/bin/rbstatus
+    chmod +x /usr/local/bin/rbstatus
+    if [[ -f /usr/local/bin/rbstatus ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install rbstatus.${MSGNC}"
+        exit 1
+    fi
+}
+
 main() {
     ## checks / settings
     check_prerequisites
@@ -653,6 +665,8 @@ main() {
     install_brouter
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
+    ## Install rbstatus
+    install_rbstatus
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then
