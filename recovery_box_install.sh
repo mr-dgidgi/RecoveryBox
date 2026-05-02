@@ -569,7 +569,7 @@ download_brouter_data() {
 
 download_world_mbtiles() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Downloading world.mbtiles for TileServer GL. This step may take some time..." "$MSGNC"
-    wget -q --show-progress -P /data/tileserver/world.mbtiles "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles" -O /data/tileserver/world.mbtiles
+    wget -q --show-progress -P /data/tileserver/world.mbtiles "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles" -O /data/tileserver/map.mbtiles
     if [[ -e /data/tileserver/world.mbtiles ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "world.mbtiles downloaded successfully.${MSGNC}"
     else
@@ -674,6 +674,14 @@ main() {
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping routing data download." "$MSGNC"
     fi
+    ## Download more map
+    read -r -p "$SRVMSG Do you want to download a continent/country map ? [y/n] : " CustomMapGen
+    if [[ "$CustomMapGen" == "y" ]]; then
+        ./assets/generate_map.sh
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Skipping custom map generation." "$MSGNC"
+    fi
+    ## Final message
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 
 }

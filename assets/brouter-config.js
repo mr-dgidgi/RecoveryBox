@@ -37,25 +37,14 @@
     // Set the initial position and zoom level of the map
     BR.conf.initialMapLocation = [50.99, 9.86];
     BR.conf.initialMapZoom = 5;
+    BR.conf.maxZoom = 18;
 
     BR.conf.profiles = [
         'trekking',
         'fastbike',
-        'car-eco',
-        'car-fast',
-        'safety',
         'shortest',
-        'trekking-ignore-cr',
-        'trekking-steep',
-        'trekking-noferries',
-        'trekking-nosteps',
         'moped',
-        'rail',
         'river',
-        'vm-forum-liegerad-schnell',
-        'vm-forum-velomobil-schnell',
-        'fastbike-lowtraffic',
-        'fastbike-asia-pacific',
         'hiking-mountain',
     ];
 
@@ -76,7 +65,7 @@
         //'Mapsforge Tile Server': 'http://localhost:6090/{z}/{x}/{y}.png'
     //};
     BR.conf.baseLayers = {
-        'RecoveryBox Local': '/tiles/styles/liberty/512/{z}/{x}/{y}.png'
+        'RecoveryBox Local': '/tiles/styles/liberty/{z}/{x}/{y}.png'
     }
 
     // Base layer to show on start, as position number in the layer switcher, starting from 0, default is first
