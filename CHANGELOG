@@ -4,12 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - 2026-05-03
 ### Added
-- Monitoring script `rbstatus.sh` support for service health checks and status reporting.
+- Monitoring script `rbstatus.sh` for service health checks and status reporting.
+- jq added to default tools
+- `tileserver-gl` service added for offline map serving.
+- Custom `tileserver-gl` config, style and sprite assets for offline map rendering.
+- `brouter` service added for routing.
+- Apache proxy/site configuration added for `brouter` and `tileserver-gl` access.
+- `generate_map.sh` created to manage map importation.
+- OWRX updated to use `tileserver-gl` tiles with custom Leaflet settings.
 
 ### Changed
-- Planned monitoring enhancements for RecoveryBox service availability tracking.
+- Updated project structure asset structure, and OWRX configuration.
+- `recovery_box_install.sh` reviewed, for the new features and is more interactive
+- `index.html` updated to include map.recovery.box
 
 ## [1.0.0] - 2026-04-25
 ### Added

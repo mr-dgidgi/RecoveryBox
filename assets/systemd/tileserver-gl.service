@@ -1,0 +1,17 @@
+[Unit]
+Description=RecoveryBox Map Server (TileServer-GL)
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=10
+Restart=always
+ExecStartPre=/usr/bin/docker rm -f tileserver-gl 2>/dev/null
+ExecStart=/usr/bin/docker run --rm --name tileserver-gl \
+    -v /data/tileserver:/data \
+    -p 8090:8080 \
+    maptiler/tileserver-gl
+ExecStop=/usr/bin/docker stop tileserver-gl
+
+[Install]
+WantedBy=multi-user.target

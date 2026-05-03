@@ -1,0 +1,17 @@
+[Unit]
+Description=BRouter Routing Engine
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=10
+Restart=always
+ExecStartPre=/usr/bin/docker rm -f brouter 2>/dev/null
+ExecStart=/usr/bin/docker run --rm --name brouter \
+    -v /data/brouter/segments4:/segments4 \
+    -p 17777:17777 \
+    joeakeem/brouter:v1.7.9
+ExecStop=/usr/bin/docker stop brouter
+
+[Install]
+WantedBy=multi-user.target

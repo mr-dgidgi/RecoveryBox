@@ -23,11 +23,14 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 - **Pilotes RTL-SDR** : Derniers pilotes compilés pour les clés USB RTL-SDR.
 - **Support des GPS** : GPSD disponible pour les services annexes
 
-### Cartographie et outils
-- **WIP**
+### Cartographie 
+- **brouter** : Frontend web capable de calculer des intinéraires en se basant sur différents profiles
+- **tileserver-gl** : Serveur de rendu graphique qui permet de servir des cartes au format vectoriel ou raster en utilisant des cartes locales ce qui permet un fonctionnement complètement offline.
+- **generate_map** : Un outils développé pour générer les cartes locales. Il se base sur les ressource de geofabrik.de, génère les fichiers mbtiles et les fusionne à ceux déjà présent sur la machine. 
 
 ### Infrastructure
-- **Docker** : Conteneurs pour Kiwix, point d'accès et OpenWebRX Plus.
+- **Docker** : Conteneurs pour Kiwix, point d'accès, OpenWebRX Plus, brouter, tileserver-gl et planetiler.
+- **Iptables** : Configuration iptables personalisable dans le fichier iptables.sh
 
 ## Ajouts futurs prévus
 - **Logiciel de cartographie web** : Gestionnaire de cartographie web avec support complet de la gestion des fichiers GPX
@@ -40,6 +43,8 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 2. Exécutez le script en tant que root : `sudo ./recovery_box_install.sh`.
 3. Choisissez la langue (anglais, français, ou les deux).
 4. Le script installera automatiquement tous les composants. Cela peut prendre du temps en raison des téléchargements.
+
+Pour une installation complète avec une cartographie de la France, **prévoir 4 à 5h** avec une bonne connexion internet et une machine moyenne.
 
 Après installation, redémarrez le système pour activer tous les services.
 
@@ -71,11 +76,14 @@ This project is built upon a **Debian 13** installation chain using a custom pre
 * **RTL-SDR Drivers**: The latest compiled drivers for RTL-SDR USB dongles.
 * **GPS Support**: GPSD is available for auxiliary location and timing services.
 
-### Mapping & Tools
-* **WIP** (Work In Progress)
+### Mapping
+* **BRouter**: A web frontend for computing routes using different profiles.
+* **tileserver-gl**: A map renderer serving vector and raster tiles from local map data for fully offline operation.
+* **generate_map.sh**: A utility that downloads map data from geofabrik.de, generates MBTiles, and merges them with existing local maps.
 
 ### Infrastructure
-* **Docker**: Containerized environment for Kiwix, the Access Point, and OpenWebRX Plus.
+* **Docker**: Containerized environment for Kiwix, the Access Point, OpenWebRX Plus, BRouter, tileserver-gl, and planetiler.
+* **iptables**: Customizable firewall and NAT rules managed through the `iptables.sh` script.
 
 ## Roadmap & Planned Features
 * **Web Mapping Software**: Web-based map manager with full GPX file support.
@@ -89,4 +97,7 @@ This project is built upon a **Debian 13** installation chain using a custom pre
 3. Select your preferred language (English, French, or both).
 4. The script will automatically install all components. **Note:** This process may take a significant amount of time depending on download sizes.
 
+For a complete installation with French map data, expect approximately **4 to 5 hours** with a good internet connection and an average machine.
+
 Once the installation is complete, **reboot the system** to activate all services.
+s.
