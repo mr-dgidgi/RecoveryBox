@@ -121,7 +121,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe bridge-utils > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -283,8 +283,8 @@ EOF
 configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
-    cp assets/20-nic0.network /etc/systemd/network/20-nic0.network
-    cp assets/20-wlan0.network /etc/systemd/network/20-wlan0.network
+    cp assets/network/20-nic0.network /etc/systemd/network/20-nic0.network
+    cp assets/network/20-wlan0.network /etc/systemd/network/20-wlan0.network
 
     systemctl disable networking.service
     systemctl mask networking.service 

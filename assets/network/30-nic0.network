@@ -1,0 +1,5 @@
+[Match]
+Name=nic0
+
+[Network]
+Bridge=wan
