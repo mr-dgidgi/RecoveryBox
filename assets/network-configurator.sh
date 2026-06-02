@@ -36,13 +36,13 @@ check_root() {
 }
 
 create_bridges() {
-    cat <<EOF > "$PATHCONFIG"/20-wan.netdev
+    cat <<EOF > "$PATHCONFIG"/30-wan.netdev
 [NetDev]
 Name=$WAN
 Kind=bridge
 EOF
 
-    cat <<EOF > "$PATHCONFIG"/20-lan.netdev
+    cat <<EOF > "$PATHCONFIG"/30-lan.netdev
 [NetDev]
 Name=$LAN
 Kind=bridge
@@ -53,12 +53,12 @@ EOF
 link_interfaces() {
     Interface=$1
     VInterface=$2
-    File="$PATHCONFIG"/20-${Interface}.network
+    File="$PATHCONFIG"/30-${Interface}.network
     if [[ -f "$File" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $File to ${File}.bak" "$MSGNC"
         cp "$File" "${File}.bak"
     fi
-    cat <<EOF > "$PATHCONFIG"/20-${Interface}.network
+    cat <<EOF > "$PATHCONFIG"/30-${Interface}.network
 [Match]
 Name=${Interface}
 
@@ -71,7 +71,7 @@ EOF
 unlink_interfaces() {
     Interface=$1
     VInterface=$2
-    File="$PATHCONFIG"/20-${Interface}.network
+    File="$PATHCONFIG"/30-${Interface}.network
     if [[ -f "$File" ]]; then
         if grep -q "Bridge=${VInterface}" "$File"; then
             rm -f "$File"
@@ -84,6 +84,31 @@ unlink_interfaces() {
     fi
 }
 
+set_interface_name() {
+    MacAddress=$1
+    NewName=$2
+    File="$PATHCONFIG"/10-${NewName}.link
+    if [[ -f "$File" ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $File to ${File}.bak" "$MSGNC"
+        cp "$File" "${File}.bak"
+    fi
+    MacUsed=$(grep "${MacAddress}" "$PATHCONFIG"/10-*.link 2>/dev/null | awk -F":" '{print $1}')
+    if [[ -n "$MacUsed" ]]; then
+        NameUsed=$(grep -m1 '^Name=' "$MacUsed" | cut -d'=' -f2-)
+        echo -e "$MSGYELLOW" "$SRVMSG" "Interface already named ${NameUsed}" "$MSGNC"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $MacUsed to ${MacUsed}.bak" "$MSGNC"
+        mv "$MacUsed" "${MacUsed}.bak"
+    fi
+    cat <<EOF > "$File"
+[Match]
+MACAddress=${MacAddress}
+
+[Link]
+Name=${NewName}
+EOF
+    echo -e "$MSGGREEN" "$SRVMSG" "Interface ${MacAddress} renamed to ${NewName}" "$MSGNC"
+}
+
 set_interfaces() {
     local VInterface=$1
     local Dhcp=$2
@@ -94,7 +119,7 @@ set_interfaces() {
     local DHCPv4Options=$7
     local IPv6AcceptRAOption=$8
     # create network conf files for bridges
-    cat <<EOF > "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF > "$PATHCONFIG"/30-"${VInterface}".network
 [Match]
 Name=${VInterface}
 
@@ -102,31 +127,31 @@ Name=${VInterface}
 DHCP=${Dhcp}
 EOF
 if [[ $Dhcp == "no" ]]; then
-    cat <<EOF >> "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 Address=${Address}
 Gateway=${Gateway}
 EOF
 fi
 if [[ $Dns != "no" ]]; then
-    cat <<EOF >> "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 DNS=${Dns}
 EOF
 fi
 if [[ $NetworkOptions != "no" ]]; then
-    cat <<EOF >> "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 ${NetworkOptions}
 
 EOF
 fi
 if [[ $DHCPv4Options != "no" ]]; then
-    cat <<EOF >> "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 [DHCPv4]
 ${DHCPv4Options}
 
 EOF
 fi
 if [[ $IPv6AcceptRAOption != "no" ]]; then
-    cat <<EOF >> "$PATHCONFIG"/20-"${VInterface}".network
+    cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 [IPv6AcceptRA]
 ${IPv6AcceptRAOption}
 
@@ -137,13 +162,18 @@ fi
 get_vinterfaces_config() {
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Current network configuration of $1:" "$MSGNC"
-    cat "$PATHCONFIG"/20-"$1".network
+    cat "$PATHCONFIG"/30-"$1".network
 }
 
 get_physical_interfaces() {
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Available physical interfaces :" "$MSGNC"
-    ip -c -br link | grep 'en\|eth\|wl\|nic'
+    for IntPath in /sys/class/net/*; do
+        if [ -d "${IntPath}/device" ]; then
+            IntName=$(basename "${IntPath}")
+            ip -c -br link show "$IntName"
+        fi
+    done
 }
 
 get_bridged_interfaces() {
@@ -179,6 +209,40 @@ get_interfaces_status() {
     get_physical_interfaces
 }
 
+menu_rename_interfaces() {
+    get_physical_interfaces
+    while true; do
+        read -p "Enter the name of the interface you want to rename : " IfaceToRename
+        if ! ip link show "$IfaceToRename" > /dev/null 2>&1; then
+            echo -e "$MSGRED" "$SRVMSG" "Interface $IfaceToRename not found." "$MSGNC"
+        else
+            break
+        fi
+    done
+    while true; do
+        read -p "Enter the new name for $IfaceToRename : " NewName
+        if [[ -z "$NewName" ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "New name cannot be empty." "$MSGNC"
+        elif [[ "$NewName" == "$WAN" || "$NewName" == "$LAN" ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "New name cannot be $WAN or $LAN." "$MSGNC"
+        elif [[ ! "$NewName" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]*$ ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "New name contains invalid characters. Allowed: letters, digits, underscore, dot, hyphen, and must not start with a hyphen." "$MSGNC"
+        elif ip link show "$NewName" > /dev/null 2>&1; then
+            echo -e "$MSGRED" "$SRVMSG" "Interface $NewName already exists." "$MSGNC"
+        elif [[ ${#NewName} -gt 15 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "New name cannot be longer than 15 characters." "$MSGNC"
+        else
+            MacAddress=$(ip link show "$IfaceToRename" | awk '/ether/ {print $2}')
+            if [[ -z "$MacAddress" ]]; then
+                echo -e "$MSGRED" "$SRVMSG" "Unable to determine MAC address for $IfaceToRename." "$MSGNC"
+                return 1
+            fi
+            set_interface_name "$MacAddress" "$NewName"
+            break
+        fi
+    done
+}
+
 menu_link_interfaces() {
     for Viface in $WAN $LAN; do
         echo -e "#########################################################"
@@ -199,7 +263,7 @@ menu_link_interfaces() {
                         echo -e "$MSGRED" "$SRVMSG" "Interface $IfaceChoosed not found." "$MSGNC"
                         continue
                     fi
-                    if [[ -f "$PATHCONFIG"/20-${IfaceChoosed}.network ]] && grep -q "Bridge=${Viface}" "$PATHCONFIG"/20-${IfaceChoosed}.network; then
+                    if [[ -f "$PATHCONFIG"/30-${IfaceChoosed}.network ]] && grep -q "Bridge=${Viface}" "$PATHCONFIG"/30-${IfaceChoosed}.network; then
                         echo -e "$MSGYELLOW" "$SRVMSG" "$IfaceChoosed already linked to $Viface" "$MSGNC"
                     else
                         link_interfaces "$IfaceChoosed" "$Viface"
@@ -254,9 +318,9 @@ menu_set_interfaces() {
             read -p "Do you want to set Manual DNS (yes/no) : " DnsChoice
             DnsChoice=$(yes_no_check "$DnsChoice")
             if [[ $DnsChoice -eq 1 ]]; then
-                read -p "DNS servers, comma separated. Default : 1.1.1.1, 8.8.8.8  (Enter for default): " Dns
+                read -p "DNS servers, comma separated. Default : 1.1.1.1 9.9.9.9  (Enter for default): " Dns
                 if [[ -z "$Dns" ]]; then
-                    Dns="1.1.1.1, 8.8.8.8"
+                    Dns="1.1.1.1 9.9.9.9"
                 fi
                 echo -e "$MSGGREEN" "$SRVMSG" "DNS set to $Dns" "$MSGNC"
                 break
@@ -274,9 +338,9 @@ menu_set_interfaces() {
     else
         read -p "Static IP address with mask (e.g., 192.168.1.10/24) : " Address
         read -p "Gateway (or press Enter to skip) : " Gateway
-        read -p "DNS servers, comma separated. Default : 1.1.1.1, 8.8.8.8  (Enter for default): " Dns
+        read -p "DNS servers, comma separated. Default : 1.1.1.1 9.9.9.9  (Enter for default): " Dns
         if [[ -z "$Dns" ]]; then
-            Dns="1.1.1.1, 8.8.8.8"
+            Dns="1.1.1.1 9.9.9.9"
         fi
         echo -e "$MSGGREEN" "$SRVMSG" "DNS set to $Dns" "$MSGNC"
     fi
@@ -316,7 +380,8 @@ menu_interface_configuration() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Network configuration menu :" "$MSGNC"
         echo -e "1. Configure network interface"
         echo -e "2. Link physical interfaces to bridges"
-        echo -e "3. Back to main menu"
+        echo -e "3. Rename physical interfaces"
+        echo -e "4. Back to main menu"
         read -p "Choose an option : " OptionChoosed
         
         case $OptionChoosed in
@@ -329,7 +394,7 @@ menu_interface_configuration() {
                     if [[ "$InterfaceChoosed" == "$WAN" || "$InterfaceChoosed" == "$LAN" ]]; then
                         break
                     elif ip link show "$InterfaceChoosed" > /dev/null 2>&1; then
-                        if [[ -f "$PATHCONFIG"/20-"${InterfaceChoosed}".network ]] && grep -q "Bridge=" "$PATHCONFIG"/20-"${InterfaceChoosed}".network; then
+                        if [[ -f "$PATHCONFIG"/30-"${InterfaceChoosed}".network ]] && grep -q "Bridge=" "$PATHCONFIG"/30-"${InterfaceChoosed}".network; then
                             echo -e "$MSGYELLOW" "$SRVMSG" "Warning: $InterfaceChoosed is currently linked to a bridge. Changes will affect the bridge configuration." "$MSGNC"
                         else
                             echo -e "$MSGYELLOW" "$SRVMSG" "Configuring physical interface $InterfaceChoosed" "$MSGNC"
@@ -351,6 +416,11 @@ menu_interface_configuration() {
                 apply_changes
                 ;;
             3)
+                clear
+                menu_rename_interfaces
+                apply_changes
+                ;;
+            4)
                 break
                 ;;
             *)
@@ -383,15 +453,53 @@ continue_enter() {
 initial_setup() {
     check_root
     create_bridges
-    continue_enter
+    echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "which interface should be used for the access point?" "$MSGNC"
+    get_physical_interfaces
+
+    while true; do
+        read -p "Do you want to rename other physical interfaces before linking (yes/no) : " RenameChoice
+        RenameChoice=$(yes_no_check "$RenameChoice")
+        if [[ $RenameChoice -eq 1 ]]; then
+            menu_rename_interfaces
+            break
+        elif [[ $RenameChoice -eq 0 ]]; then
+            break
+        elif [[ $RenameChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
     menu_link_interfaces
     continue_enter
-    menu_set_interfaces "$WAN"
-    continue_enter
-    menu_set_interfaces "$LAN"
-    continue_enter
+    while true; do
+        read -p "Do you want to configure manually $WAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            menu_set_interfaces "$WAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            set_interfaces "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac" "Token=static:::1"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
+    while true; do
+        read -p "Do you want to configure manually $LAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            menu_set_interfaces "$LAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            set_interfaces "$LAN" "no" "192.168.200.1/24" "no" "no" $'IPv6AcceptRA=no\nLinkLocalAddressing=no' "no" "no"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
     get_vinterfaces_config "$WAN"
     get_vinterfaces_config "$LAN"
+    continue_enter
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd

@@ -616,6 +616,18 @@ install_rbstatus() {
     fi
 }
 
+install_network-configurator() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
+    cp assets/network-configurator.sh /usr/local/bin/network-configurator
+    chmod +x /usr/local/bin/network-configurator
+    if [[ -f /usr/local/bin/network-configurator ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install network configurator.${MSGNC}"
+        exit 1
+    fi
+}
+
 main() {
     ## checks / settings
     check_prerequisites
@@ -623,6 +635,8 @@ main() {
     define_language
     ## set keyboard layout
     set_keyboard
+    ## Install network configurator
+    install_network-configurator
     ## define interface names
     choose_interfaces_names
     rename_interfaces
