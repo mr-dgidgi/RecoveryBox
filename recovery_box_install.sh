@@ -606,6 +606,7 @@ install_rtlsdr_drivers() {
 install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
+    cp assets/cron/rbstatus /etc/cron.d/rbstatus
     chmod +x /usr/local/bin/rbstatus
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
