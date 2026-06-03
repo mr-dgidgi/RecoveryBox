@@ -8,7 +8,9 @@ MSGNC='\033[0m'
 
 WAN=wan
 LAN=lan
-PATHCONFIG="/etc/systemd/network"
+#PATHCONFIG="/etc/systemd/network"
+PATHCONFIG="/home/dgidgi/Documents/github/Test"
+
 
 ## Systemd Networkd files order :
 # 10-*.link
@@ -36,15 +38,9 @@ check_root() {
 }
 
 create_bridges() {
-    cat <<EOF > "$PATHCONFIG"/30-wan.netdev
+    cat <<EOF > "$PATHCONFIG"/20-${1}.netdev
 [NetDev]
-Name=$WAN
-Kind=bridge
-EOF
-
-    cat <<EOF > "$PATHCONFIG"/30-lan.netdev
-[NetDev]
-Name=$LAN
+Name=${1}
 Kind=bridge
 EOF
 
@@ -92,7 +88,7 @@ set_interface_name() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $File to ${File}.bak" "$MSGNC"
         cp "$File" "${File}.bak"
     fi
-    MacUsed=$(grep "${MacAddress}" "$PATHCONFIG"/10-*.link 2>/dev/null | awk -F":" '{print $1}')
+    MacUsed=$(grep -l "${MacAddress}" "$PATHCONFIG"/10-*.link 2>/dev/null)
     if [[ -n "$MacUsed" ]]; then
         NameUsed=$(grep -m1 '^Name=' "$MacUsed" | cut -d'=' -f2-)
         echo -e "$MSGYELLOW" "$SRVMSG" "Interface already named ${NameUsed}" "$MSGNC"
@@ -160,9 +156,21 @@ fi
 }
 
 get_vinterfaces_config() {
-    echo -e "#########################################################"
-    echo -e "$MSGYELLOW" "$SRVMSG" "Current network configuration of $1:" "$MSGNC"
-    cat "$PATHCONFIG"/30-"$1".network
+    if [[ -z "$1" ]]; then
+        find "$PATHCONFIG" -type f -name "*.network" -print0 | while IFS= read -r -d '' VInt; do
+            if ! grep -q "Bridge" "$VInt"; then
+                IntName=$(grep "Name=" "$VInt" | awk -F"=" '{print $2}')
+                echo -e "#########################################################"
+                echo -e "$MSGYELLOW $SRVMSG Current network configuration of $MSGGREEN $IntName $MSGNC"
+                cat "$VInt"
+                echo -e "\n"
+            fi
+        done
+    else
+        echo -e "#########################################################"
+        echo -e "$MSGYELLOW $SRVMSG Current network configuration of $MSGGREEN $1 $MSGNC"
+        cat "$PATHCONFIG"/30-"${1}".network
+    fi
 }
 
 get_physical_interfaces() {
@@ -172,14 +180,15 @@ get_physical_interfaces() {
         if [ -d "${IntPath}/device" ]; then
             MacAddress=$(cat "${IntPath}/address")
             if grep -q "$MacAddress" "$PATHCONFIG"/10-*.link 2>/dev/null; then
-                IntName=$(grep "Name=" "$PATHCONFIG"/10-*.link | awk -F"=" '{print $2}')
+                LinkFile=$(grep -l "$MacAddress" "$PATHCONFIG"/10-*.link)
+                IntName=$(grep "Name=" "$LinkFile" | awk -F"=" '{print $2}')
             else
                 IntName=$(basename "${IntPath}")
             fi
             if ip -c -br link show "$IntName" > /dev/null 2>&1; then
                 ip -c -br link show "$IntName"
             else
-                echo -e "$IntName\t\t\tWAITING\t\t\t$MacAddress"
+                echo -e "$IntName\t\tWAITING\t\t$MacAddress"
             fi
         fi
     done
@@ -204,14 +213,25 @@ get_bridged_interfaces() {
     echo -e "\n"
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $WAN :" "$MSGNC"
-    ip -c -br link show master $WAN 2>/dev/null
+    get_linked_interfaces "$WAN"
 
     echo -e "\n"
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $LAN :" "$MSGNC"
-    ip -c -br link show master $LAN 2>/dev/null
+    get_linked_interfaces "$LAN"
     echo -e "\n"
 
+}
+
+get_linked_interfaces() {
+    ip -c -br link show master $1 2>/dev/null
+    for Int in $(grep "$1" "$PATHCONFIG"/30-*.network 2>/dev/null | grep Bridge | awk -F: '{print $1}'); do
+        IntName=$(grep "Name=" "$Int" | awk -F"=" '{print $2}')
+        if ! ip -c -br link show "$IntName" > /dev/null 2>&1; then
+            echo -e "$IntName\t\tWAITING\t\t$MacAddress"
+        fi
+                
+    done
 }
 
 get_interfaces_status() {
@@ -256,11 +276,11 @@ menu_rename_interfaces() {
 menu_link_interfaces() {
     for Viface in $WAN $LAN; do
         echo -e "#########################################################"
-        echo -e "$MSGYELLOW" "$SRVMSG" "Manage links for $Viface:" "$MSGNC"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Manage links for $MSGGREEN $Viface" "$MSGNC"
         echo -e "#########################################################"
         echo -e "$MSGYELLOW" "$SRVMSG" "Currently linked interfaces :" "$MSGNC"
+        get_linked_interfaces "$Viface"
         get_physical_interfaces
-        ip -c -br link show master $Viface 2>/dev/null
         while true; do
             read -p "Action for $Viface? (a)dd / (r)emove / (n)ext : " Action
             case "$Action" in
@@ -287,6 +307,7 @@ menu_link_interfaces() {
                     unlink_interfaces "$IfaceChoosed" "$Viface"
                     ;;
                 n|N|"")
+                    clear
                     break
                     ;;
                 *)
@@ -398,7 +419,7 @@ menu_interface_configuration() {
             1)
                 clear
                 while true; do
-                    get_physical_interfaces
+                    get_interfaces_status
                     echo -e "#########################################################"
                     read -p "Choose interface to configure - $WAN / $LAN / Other (enter the name of the interface): " InterfaceChoosed
                     if [[ "$InterfaceChoosed" == "$WAN" || "$InterfaceChoosed" == "$LAN" ]]; then
@@ -460,6 +481,9 @@ continue_enter() {
     clear
 }
 
+
+#########################
+## To move to main script
 initial_setup() {
     check_root
     create_bridges
@@ -507,20 +531,28 @@ initial_setup() {
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
         fi
     done
-    get_vinterfaces_config "$WAN"
-    get_vinterfaces_config "$LAN"
+    get_vinterfaces_config
     continue_enter
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
 }
+#########################
+
 
 help() {
-    echo -e "Usage: $0 [option]"
+    echo -e "Usage: $0 [option] [args...]"
     echo -e "Options:"
-    echo -e "  setup   : Run initial setup to create bridges and configure network"
-    echo -e "  status  : Show current status of interfaces and bridges"
-    echo -e "  help    : Show this help message"
+    echo -e "  CreateBridge <name>      : Create a bridge netdev file for <name>"
+    echo -e "  GetPhysicalInterfaces    : Show available physical network interfaces"
+    echo -e "  RenameInterface <mac> <new_name> : Rename a physical interface by MAC address"
+    echo -e "  LinkInterface            : Enter the interactive link management menu"
+    echo -e "  SetInterface <name> <DHCP yes|no> <address> <gateway> <dns> <network-options> <dhcpv4-options> <ipv6-accept-ra-options>"
+    echo -e "                            : Create or update a network configuration file for <name>"
+    echo -e "  MenuSetInterface <name>  : Enter the interactive configuration menu for <name>"
+    echo -e "  status                   : Show current status of interfaces and bridges"
+    echo -e "  help                     : Show this help message"
+    echo -e "If no option is provided, the interactive main menu is started."
 }
 
 main() {
@@ -540,8 +572,7 @@ main() {
                 continue_enter
                 ;;
             2)
-                get_vinterfaces_config "$WAN"
-                get_vinterfaces_config "$LAN"
+                get_vinterfaces_config
                 continue_enter
                 ;;
             3)
@@ -559,16 +590,35 @@ main() {
     done
 }
 
-
-if [[ $1 == "setup" ]]; then
-    initial_setup
-elif [[ $1 == "status" ]]; then
-    get_interfaces_status
-elif [[ $1 == "help" ]]; then
-    help
-else
-    check_root
-    clear
-    main
-fi
+case "$1" in
+    CreateBridge)
+        create_bridges "$2"
+        ;;
+    GetPhysicalInterfaces)
+        get_physical_interfaces
+        ;;
+    RenameInterface)
+        set_interface_name "$2" "$3"
+        ;;
+    LinkInterface)
+        menu_link_interfaces
+        ;;
+    SetInterface)
+        set_interfaces "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
+        ;;
+    MenuSetInterface)
+        menu_set_interfaces "$2"
+        ;;
+    status)
+        get_interfaces_status
+        ;;
+    help)
+        help
+        ;;
+    *)
+        check_root
+        clear
+        main
+        ;;
+esac
 
