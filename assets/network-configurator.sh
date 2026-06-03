@@ -170,8 +170,17 @@ get_physical_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Available physical interfaces :" "$MSGNC"
     for IntPath in /sys/class/net/*; do
         if [ -d "${IntPath}/device" ]; then
-            IntName=$(basename "${IntPath}")
-            ip -c -br link show "$IntName"
+            MacAddress=$(cat "${IntPath}/address")
+            if grep -q "$MacAddress" "$PATHCONFIG"/10-*.link 2>/dev/null; then
+                IntName=$(grep "Name=" "$PATHCONFIG"/10-*.link | awk -F"=" '{print $2}')
+            else
+                IntName=$(basename "${IntPath}")
+            fi
+            if ip -c -br link show "$IntName" > /dev/null 2>&1; then
+                ip -c -br link show "$IntName"
+            else
+                echo -e "$IntName\t\t\tWAITING\t\t\t$MacAddress"
+            fi
         fi
     done
 }
@@ -195,12 +204,13 @@ get_bridged_interfaces() {
     echo -e "\n"
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $WAN :" "$MSGNC"
-    ip -c -br link show master $WAN
+    ip -c -br link show master $WAN 2>/dev/null
 
     echo -e "\n"
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $LAN :" "$MSGNC"
-    ip -c -br link show master $LAN
+    ip -c -br link show master $LAN 2>/dev/null
+    echo -e "\n"
 
 }
 
@@ -250,7 +260,7 @@ menu_link_interfaces() {
         echo -e "#########################################################"
         echo -e "$MSGYELLOW" "$SRVMSG" "Currently linked interfaces :" "$MSGNC"
         get_physical_interfaces
-        ip -c -br link show master $Viface
+        ip -c -br link show master $Viface 2>/dev/null
         while true; do
             read -p "Action for $Viface? (a)dd / (r)emove / (n)ext : " Action
             case "$Action" in
@@ -259,7 +269,7 @@ menu_link_interfaces() {
                     if [[ -z "$IfaceChoosed" ]]; then
                         continue
                     fi
-                    if ! ip link show "$IfaceChoosed" > /dev/null 2>&1; then
+                    if ! grep -q "$IfaceChoosed" $PATHCONFIG/10-*.link && ! ip link show "$IfaceChoosed" > /dev/null 2>&1; then
                         echo -e "$MSGRED" "$SRVMSG" "Interface $IfaceChoosed not found." "$MSGNC"
                         continue
                     fi
