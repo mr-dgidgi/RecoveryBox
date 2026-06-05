@@ -15,12 +15,24 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 LANGUAGE="fr"
-INTWAN=""
-INTAP=""
 
 #######################################################
 # Functions
 #######################################################
+
+yes_no_check () {
+	if [ "$1" = "Y" ] || [ "$1" = "y" ] || [ "$1" = "Yes" ] || [ "$1" = "yes" ] || [ "$1" = "Oui" ] || [ "$1" = "OUI" ] || [ "$1" = "oui" ] || [ "$1" = "O" ]; then
+		echo 1
+
+	elif [ "$1" = "N" ] || [ "$1" = "n" ] || [ "$1" = "No" ] || [ "$1" = "no" ] || [ "$1" = "Non" ] || [ "$1" = "NON" ] || [ "$1" = "non" ] || [ "$1" = "N" ]; then
+		echo 0
+
+	else
+		echo 99
+
+	fi
+}
+
 check_prerequisites() {
     
     #check if root
@@ -209,7 +221,7 @@ download_wikipedia() {
     if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/"${FileName}"
         if [[ -e /data/kiwix/$FileName ]]; then
             echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in French downloaded successfully.${MSGNC}"
         else
@@ -221,7 +233,7 @@ download_wikipedia() {
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/"${FileName}"
         if [[ -e /data/kiwix/$FileName ]]; then
             echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in English downloaded successfully.${MSGNC}"
         else
@@ -246,46 +258,47 @@ service_kiwix() {
     fi
 }
 
-#######################################################
-
-choose_interfaces_names() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Renaming network interfaces." "$MSGNC"
-    # get current interfaces names
-    ip -br link
-    read -r -p "$SRVMSG Which interface is the WAN? : " INTWAN
-    read -r -p "$SRVMSG Which interface is the Access Point? : " INTAP
-}
-
-rename_interfaces() {
-    WanMac=$(ip -br l | grep "$INTWAN" | awk -F" " '{print $3}')
-    cat > /etc/systemd/network/10-nic0.link <<EOF
-[Match]
-MACAddress=$WanMac
-
-[Link]
-Name=nic0
-EOF
-
-    ApMac=$(ip -br l | grep "$INTAP" | awk -F" " '{print $3}')
-    cat > /etc/systemd/network/10-wlan0.link <<EOF
-[Match]
-MACAddress=$ApMac
-
-[Link]
-Name=wlan0
-EOF
-    udevadm control --reload-rules
-    udevadm trigger --attr-match=subsystem=net
-}
 
 #######################################################
 
 configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
-    cp assets/network/20-nic0.network /etc/systemd/network/20-nic0.network
-    cp assets/network/20-wlan0.network /etc/systemd/network/20-wlan0.network
+    network-configurator CreateBridge "$WAN"
+    network-configurator CreateBridge "$LAN"
+    echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
+    network-configurator MenuRenameInterface wlanAP
+    network-configurator LinkInterface
 
+    while true; do
+        read -rp "Do you want to configure manually $WAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            network-configurator MenuSetInterface "$WAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac" "Token=static:::1"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
+    while true; do
+        read -rp "Do you want to configure manually $LAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            network-configurator MenuSetInterface "$LAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            network-configurator SetInterface "$LAN" "no" "192.168.200.1/24" "no" "no" $'IPv6AcceptRA=no\nLinkLocalAddressing=no' "no" "no"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
+    network-configurator GetVInterfacesConfig
+
+    read -rp "Press Enter to continue"
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
@@ -304,15 +317,15 @@ configure_interfaces() {
 
 #######################################################
 
-#Disable wpa_supplicant on wlan0
+#Disable wpa_supplicant on wlanAP
 disable_wpa_supplicant() {
-    echo -e "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..." "$MSGNC"
-    systemctl stop wpa_supplicant@wlan0
-    systemctl disable wpa_supplicant@wlan0
-    if [[ $(systemctl is-active wpa_supplicant@wlan0) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlan0) == "disabled" ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlan0 successfully.${MSGNC}"
+    echo -e "$SRVMSG" "WiFi Access Point - preparing wlanAP interface..." "$MSGNC"
+    systemctl stop wpa_supplicant@wlanAP
+    systemctl disable wpa_supplicant@wlanAP
+    if [[ $(systemctl is-active wpa_supplicant@wlanAP) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlanAP) == "disabled" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlanAP successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlan0.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlanAP.${MSGNC}"
         exit 1
     fi
 }
@@ -635,14 +648,12 @@ main() {
     define_language
     ## set keyboard layout
     set_keyboard
+    ## Install basic tools
+    install_basic_tools
     ## Install network configurator
     install_network-configurator
     ## define interface names
-    choose_interfaces_names
-    rename_interfaces
     configure_interfaces
-    ## Install basic tools
-    install_basic_tools
     ## set gpsd
     set_gpsd
     ## set chrony
