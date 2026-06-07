@@ -1,5 +1,6 @@
 #!/bin/bash
-WAN="nic0"
+## Managed by network-configurator
+WAN=("Wan")
 if [[ $1 == "start" ]]; then
     ################################################
     # All rules should be placed below this line
@@ -11,12 +12,16 @@ if [[ $1 == "start" ]]; then
 
     ## FORWARD rules
     # Allow Forwarding trafic to WAN
-    iptables -I FORWARD -o $WAN -j ACCEPT
+    for interface in "${WAN[@]}"; do
+        iptables -I FORWARD -o "$interface" -j ACCEPT
+    done
     iptables -I FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
     ## NAT rules
     # "Auto NAT" trafic to WAN
-    iptables -t nat -A POSTROUTING -o $WAN -j MASQUERADE
+    for interface in "${WAN[@]}"; do
+        iptables -t nat -A POSTROUTING -o "$interface" -j MASQUERADE
+    done
 
     ################################################
     # All rules should be placed above this line

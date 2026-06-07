@@ -15,6 +15,8 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 LANGUAGE="fr"
+WAN="Wan"
+LAN="Lan"
 
 #######################################################
 # Functions
@@ -268,7 +270,7 @@ configure_interfaces() {
     network-configurator CreateBridge "$LAN"
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
     network-configurator MenuRenameInterface wlanAP
-    network-configurator LinkInterface
+    ##wlanAP is automaticaly bridged to Lan interface when the container start
 
     while true; do
         read -rp "Do you want to configure manually $WAN (yes/no) : " ConfigureChoice
@@ -277,7 +279,7 @@ configure_interfaces() {
             network-configurator MenuSetInterface "$WAN"
             break
         elif [[ $ConfigureChoice -eq 0 ]]; then
-            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac" "Token=static:::1"
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac\nRouteMetric=100" "Token=static:::1"
             break
         elif [[ $ConfigureChoice -eq 99 ]]; then
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
@@ -290,7 +292,7 @@ configure_interfaces() {
             network-configurator MenuSetInterface "$LAN"
             break
         elif [[ $ConfigureChoice -eq 0 ]]; then
-            network-configurator SetInterface "$LAN" "no" "192.168.200.1/24" "no" "no" $'IPv6AcceptRA=no\nLinkLocalAddressing=no' "no" "no"
+            network-configurator SetInterface "$LAN" "no" "192.168.200.1/24" "no" "no" $'IPv6AcceptRA=no\nLinkLocalAddressing=no\nConfigureWithoutCarrier=yes' "no" "no"
             break
         elif [[ $ConfigureChoice -eq 99 ]]; then
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"

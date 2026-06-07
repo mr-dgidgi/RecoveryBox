@@ -1,14 +1,17 @@
 #!/bin/bash
 
+# Color codes for console output
 SRVMSG=' =+= '
 MSGGREEN='\033[0;32m'
 MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 
-WAN=wan
-LAN=lan
+# Network interface and configuration paths
+WAN="Wan"
+LAN="Lan"
 PATHCONFIG="/etc/systemd/network"
+IPTABLESFILE="/etc/iptables/iptables.sh"
 
 
 ## Systemd Networkd files order :
@@ -16,6 +19,7 @@ PATHCONFIG="/etc/systemd/network"
 # 20-*.netdev
 # 30-*.network
 
+# Convert user input to yes/no values (1=yes, 0=no, 99=invalid)
 yes_no_check () {
 	if [ "$1" = "Y" ] || [ "$1" = "y" ] || [ "$1" = "Yes" ] || [ "$1" = "yes" ] || [ "$1" = "Oui" ] || [ "$1" = "OUI" ] || [ "$1" = "oui" ] || [ "$1" = "O" ]; then
 		echo 1
@@ -29,6 +33,7 @@ yes_no_check () {
 	fi
 }
 
+# Verify script is running as root
 check_root() {
     if [[ $EUID -ne 0 ]]; then
         echo -e "$MSGRED" "$SRVMSG" "This script must be run as root. Please run with sudo or as root user." "$MSGNC"
@@ -36,8 +41,10 @@ check_root() {
     fi
 }
 
+# Create a bridge network device
 create_bridges() {
     cat <<EOF > "$PATHCONFIG"/20-"${1}".netdev
+## Managed by network-configurator
 [NetDev]
 Name=${1}
 Kind=bridge
@@ -45,6 +52,7 @@ EOF
 
 }
 
+# Link a physical interface to a bridge
 link_interfaces() {
     Interface=$1
     VInterface=$2
@@ -54,6 +62,7 @@ link_interfaces() {
         cp "$File" "${File}.bak"
     fi
     cat <<EOF > "$PATHCONFIG"/30-"${Interface}".network
+## Managed by network-configurator
 [Match]
 Name=${Interface}
 
@@ -63,6 +72,7 @@ EOF
     echo -e "$MSGGREEN" "$SRVMSG" "Linked ${Interface} to ${VInterface}" "$MSGNC"
 }
 
+# Remove a physical interface from a bridge
 unlink_interfaces() {
     Interface=$1
     VInterface=$2
@@ -79,6 +89,7 @@ unlink_interfaces() {
     fi
 }
 
+# Rename a physical interface by MAC address (requires reboot)
 set_interface_name() {
     MacAddress=$1
     NewName=$2
@@ -95,6 +106,7 @@ set_interface_name() {
         mv "$MacUsed" "${MacUsed}.bak"
     fi
     cat <<EOF > "$File"
+## Managed by network-configurator
 [Match]
 MACAddress=${MacAddress}
 
@@ -102,8 +114,58 @@ MACAddress=${MacAddress}
 Name=${NewName}
 EOF
     echo -e "$MSGGREEN" "$SRVMSG" "Interface ${MacAddress} renamed to ${NewName}" "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "The system MUST reboot to apply interface renaming" "$MSGNC"
 }
 
+# Add an interface to firewall WAN configuration
+set_iptables() {
+    # Verify iptables file exists before modifying
+    if [[ ! -f "$IPTABLESFILE" ]]; then
+        echo -e "$MSGRED" "$SRVMSG" "Firewall configuration file not found: $IPTABLESFILE" "$MSGNC"
+        return 1
+    fi
+    
+    if grep -q "WAN=.*$1" "$IPTABLESFILE"; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Interface $1 already set in firewall" "$MSGNC"
+    else 
+        # Backup existing file
+        if ! cp "$IPTABLESFILE" "${IPTABLESFILE}.bak"; then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to backup $IPTABLESFILE" "$MSGNC"
+            return 1
+        fi
+        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILE to ${IPTABLESFILE}.bak" "$MSGNC"
+        
+        # Extract current WAN interfaces safely
+        if ! ActualWan=$(grep "WAN=" "$IPTABLESFILE" | cut -d'(' -f2 | cut -d')' -f1); then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to extract current WAN configuration" "$MSGNC"
+            return 1
+        fi
+        
+        NewWan="WAN=( $ActualWan \"$1\" )"
+        
+        # Apply sed change
+        if ! sed -i "s#WAN=.*#$NewWan#" "$IPTABLESFILE"; then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to update firewall configuration" "$MSGNC"
+            # Restore backup on failure
+            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
+            echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
+            return 1
+        fi
+        
+        # Restart iptables service
+        if ! systemctl restart iptables 2>/dev/null; then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to restart iptables service" "$MSGNC"
+            # Restore backup on failure
+            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
+            echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
+            return 1
+        fi
+        
+        echo -e "$MSGGREEN" "$SRVMSG" "Interface $1 added to firewall" "$MSGNC"
+    fi
+}
+
+# Create or update network configuration file for an interface
 set_interfaces() {
     local VInterface=$1
     local Dhcp=$2
@@ -113,8 +175,8 @@ set_interfaces() {
     local NetworkOptions=$6
     local DHCPv4Options=$7
     local IPv6AcceptRAOption=$8
-    # create network conf files for bridges
     cat <<EOF > "$PATHCONFIG"/30-"${VInterface}".network
+## Managed by network-configurator
 [Match]
 Name=${VInterface}
 
@@ -154,41 +216,55 @@ EOF
 fi
 }
 
+# Configure a wireless interface as WiFi client
 set_wlan_client () {
-    if [[ ! -f "/etc/wpa_supplicant/wpa_supplicant-$1.conf" ]];then
-        cat <<EOF > "/etc/wpa_supplicant/wpa_supplicant-$1.conf"
+    export WPA_CLI_CTRL_IFACE_DIR="/var/run/wpa_supplicant"
+    local WPAConfFile
+    WPAConfFile="/etc/wpa_supplicant/wpa_supplicant-$1.conf"
+    if [[ ! -f "$WPAConfFile" ]];then
+        cat <<EOF > "$WPAConfFile"
+## Managed by network-configurator
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 EOF
     fi
     systemctl restart wpa_supplicant@"$1".service
-    wpa_cli -i "$1" scan > /dev/null
     echo -e "#########################################################"
+    echo -e "$MSGYELLOW $SRVMSG Enabling interface $1... $MSGNC"
+    sleep 2
+    wpa_cli -i "$1" scan > /dev/null
     echo -e "$MSGYELLOW $SRVMSG Scanning for WiFi networks on $1... $MSGNC"
     sleep 2
-    wpa_cli -i "$1" scan_results
+    ScanCache=$(wpa_cli -i "$1" scan_results)
+    echo -e "$ScanCache"
     while true; do
         read -rp "Enter SSID name: " SSIDChoosed
         if [[ -z "$SSIDChoosed" ]]; then
             echo -e "$MSGRED $SRVMSG SSID cannot be empty. Please enter a valid SSID name. $MSGNC"
-        elif ! wpa_cli -i "$1" scan_results | grep -q "$SSIDChoosed"; then
+        elif ! echo "$ScanCache" | grep -q "$SSIDChoosed"; then
             echo -e "$MSGRED $SRVMSG SSID not found. Please enter a valid SSID name. $MSGNC"
         else
             break
         fi
     done
     read -s -rp "Enter password: " SSIDPassword
-    IDInterface=$(wpa_cli -i "$1" add_network | tail -n 1)
-    wpa_cli -i "$1" set_network "$IDInterface" ssid "\"$SSIDChoosed\"" > /dev/null
-    wpa_cli -i "$1" set_network "$IDInterface" psk "\"$SSIDPassword\"" > /dev/null
-    wpa_cli -i "$1" select_network "$IDInterface" > /dev/null
-    wpa_cli -i "$1" enable_network "$IDInterface" > /dev/null
-    wpa_cli -i "$1" save_config > /dev/null
-    echo -e "$MSGGREEN $SRVMSG Radio configuration for $SSIDChoosed is set $MSGNC"
+    if grep -q "ssid=\"$SSIDChoosed\"" "$WPAConfFile" && grep -q "psk=\"$SSIDPassword\"" "$WPAConfFile"; then
+        echo -e "$MSGYELLOW $SRVMSG SSID $SSIDChoosed already configured with the same password. $MSGNC"    
+    else
+        IDInterface=$(wpa_cli -i "$1" add_network | tail -n 1)
+        wpa_cli -i "$1" set_network "$IDInterface" ssid "\"$SSIDChoosed\"" > /dev/null
+        wpa_cli -i "$1" set_network "$IDInterface" psk "\"$SSIDPassword\"" > /dev/null
+        wpa_cli -i "$1" select_network "$IDInterface" > /dev/null
+        wpa_cli -i "$1" enable_network "$IDInterface" > /dev/null
+        wpa_cli -i "$1" save_config > /dev/null
+        echo -e "\n"
+        echo -e "$MSGGREEN $SRVMSG Radio configuration for $SSIDChoosed is set $MSGNC"
+    fi
     continue_enter
     menu_set_interfaces "$1"
 }
 
+# Display current network configuration for interface(s)
 get_vinterfaces_config() {
     if [[ -z "$1" ]]; then
         find "$PATHCONFIG" -type f -name "*.network" -print0 | while IFS= read -r -d '' VInt; do
@@ -207,6 +283,7 @@ get_vinterfaces_config() {
     fi
 }
 
+# List all physical network interfaces with MAC addresses
 get_physical_interfaces() {
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Available physical interfaces :" "$MSGNC"
@@ -228,6 +305,7 @@ get_physical_interfaces() {
     done
 }
 
+# List all wireless network interfaces
 get_wireless_interfaces() {
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Available wireless interfaces :" "$MSGNC"
@@ -249,35 +327,37 @@ get_wireless_interfaces() {
     done
 }
 
+# Display bridge status and linked interfaces
 get_bridged_interfaces() {
+    local IsBridge=()
+    local IntName
+    for IntPath in /sys/class/net/*; do
+        if [ -d "${IntPath}/bridge" ]; then
+            IntName=$(basename "$IntPath")
+            if [ "$IntName" != "docker" ]; then
+                IsBridge+=("$IntName")
+            fi
+        fi
+    done
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Bridge virtual interfaces status :" "$MSGNC"
-    WanStatus=$(bridge link | grep "$WAN" | grep -c ",UP,")
-    LanStatus=$(bridge link | grep "$LAN" | grep -c ",UP,")
-    if [[ $WanStatus -gt 0 ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$WAN bridge is UP" "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "$WAN bridge is DOWN" "$MSGNC"
-    fi
-    if [[ $LanStatus -gt 0 ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$LAN bridge is UP" "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "$LAN bridge is DOWN" "$MSGNC"
-    fi
+    for BInt in "${IsBridge[@]}"; do
+        if ip -c -br link show "$BInt" > /dev/null 2>&1; then
+            ip -c -br link show "$BInt"
+        else
+            echo -e "$BInt\t\tWAITING"
+        fi       
+    done
 
-    echo -e "\n"
-    echo -e "#########################################################"
-    echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $WAN :" "$MSGNC"
-    get_linked_interfaces "$WAN"
-
-    echo -e "\n"
-    echo -e "#########################################################"
-    echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $LAN :" "$MSGNC"
-    get_linked_interfaces "$LAN"
-    echo -e "\n"
-
+    for BInt in "${IsBridge[@]}"; do
+        echo -e "\n"
+        echo -e "#########################################################"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Interfaces linked to $BInt :" "$MSGNC"
+        get_linked_interfaces "$BInt"  
+    done
 }
 
+# List physical interfaces linked to a specific bridge
 get_linked_interfaces() {
     ip -c -br link show master "$1" 2>/dev/null
     # shellcheck disable=SC2013
@@ -289,11 +369,13 @@ get_linked_interfaces() {
     done
 }
 
+# Display complete network status overview
 get_interfaces_status() {
     get_bridged_interfaces
     get_physical_interfaces
 }
 
+# Interactive menu for configuring wireless interface
 menu_set_wlan () {
     get_wireless_interfaces
     while true; do
@@ -309,6 +391,7 @@ menu_set_wlan () {
     get_vinterfaces_config "$WlanClient"
 }
 
+# Interactive menu for renaming physical interfaces
 menu_rename_interfaces() {
     while true; do
         get_physical_interfaces
@@ -365,6 +448,7 @@ menu_rename_interfaces() {
     done
 }
 
+# Interactive menu for linking interfaces to bridges
 menu_link_interfaces() {
     BridgeList=$(grep -l "bridge" "$PATHCONFIG"/20-*.netdev  | xargs -n1 basename | sed 's/20-//;s/.netdev//')
     for Viface in $BridgeList; do
@@ -412,6 +496,7 @@ menu_link_interfaces() {
 
 }
 
+# Interactive menu for configuring network interface parameters
 menu_set_interfaces() {
     local Dhcp="" 
     local Address=""
@@ -494,9 +579,22 @@ menu_set_interfaces() {
         fi
     done
     set_interfaces "$1" "$Dhcp" "$Address" "$Gateway" "$Dns" "$NetworkOptions" "$DHCPv4Options" "$IPv6AcceptRAOption"
+    while true; do
+        read -rp "Is $1 an internet access / WAN access ?(yes/no) : " IPtablesChoice
+        IPtablesChoice=$(yes_no_check "$IPtablesChoice")
+        if [[ $IPtablesChoice -eq 1 ]]; then
+            set_iptables "$1"
+            break
+        elif [[ $IPtablesChoice -eq 0 ]];then
+            break
+        else 
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
 
 }
 
+# Main configuration menu with all network management options
 menu_interface_configuration() {
     while true; do
         clear
@@ -548,7 +646,6 @@ menu_interface_configuration() {
             4)
                 clear
                 menu_rename_interfaces
-                apply_changes
                 ;;
             5)
                 break
@@ -560,6 +657,7 @@ menu_interface_configuration() {
     done
 }
 
+# Ask user and apply network changes (restart systemd-networkd)
 apply_changes() {
     while true; do
         read -rp "Do you want to apply changes now (yes/no) : " ApplyChoice
@@ -576,11 +674,13 @@ apply_changes() {
     done
 }
 
+# Pause execution and wait for user to press Enter
 continue_enter() {
     read -rp "Press Enter to continue"
     clear
 }
 
+# Display help message with all available command-line options
 help() {
     echo -e "Usage: $0 [option] [args...]"
     echo -e "Options:"
@@ -599,6 +699,7 @@ help() {
     echo -e "If no option is provided, the interactive main menu is started."
 }
 
+# Main interactive menu (displayed when no arguments given)
 main() {
     while true; do
         echo -e "#########################################################"
@@ -634,6 +735,7 @@ main() {
     done
 }
 
+# Command-line argument parser - handles direct execution with parameters
 case "$1" in
     CreateBridge)
         create_bridges "$2"
