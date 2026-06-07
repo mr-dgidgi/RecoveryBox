@@ -654,6 +654,8 @@ main() {
     install_basic_tools
     ## Install network configurator
     install_network-configurator
+    ## Setup IPtables
+    setup_iptables
     ## define interface names
     configure_interfaces
     ## set gpsd
@@ -672,8 +674,6 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
-    ## Setup IPtables
-    setup_iptables
     ## Install PDFs
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         download_english_pdfs
