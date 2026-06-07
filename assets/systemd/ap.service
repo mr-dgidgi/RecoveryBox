@@ -2,8 +2,8 @@
 Description=Access Point Service
 After=network-online.target systemd-networkd.service
 Wants=network-online.target
-BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device
+BindsTo=sys-subsystem-net-devices-wlanAP.device
+After=sys-subsystem-net-devices-wlanAP.device
 
 [Service]
 Type=simple
