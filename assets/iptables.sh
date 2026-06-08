@@ -7,8 +7,10 @@ if [[ $1 == "start" ]]; then
     ################################################
 
     ## INPUT rules
+    iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     iptables -A INPUT -i Lan -j ACCEPT
     for interface in "${WAN[@]}"; do
+        iptables -A INPUT -i "$interface" -p icmp -j ACCEPT
         iptables -A INPUT -i "$interface" -p tcp --dport 22 -j ACCEPT
         iptables -A INPUT -i "$interface" -j DROP
     done
@@ -21,6 +23,8 @@ if [[ $1 == "start" ]]; then
     for interface in "${WAN[@]}"; do
         iptables -A FORWARD -o "$interface" -j ACCEPT
     done
+    # Allow traffic to container
+    iptables -A FORWARD -o docker0 -j ACCEPT
 
     ## NAT rules
     # "Auto NAT" trafic to WAN
