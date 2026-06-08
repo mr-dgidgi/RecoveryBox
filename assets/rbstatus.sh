@@ -89,7 +89,7 @@ StatResolve=$(Get_InternetResolve)
 systemctl is-active --quiet chrony.service && StatChrony=0 || StatChrony=1
 systemctl is-active --quiet brouter.service && StatBrouter=0 || StatBrouter=1
 systemctl is-active --quiet tileserver-gl.service && StatTileserver=0 || StatTileserver=1
-
+systemctl is-active --quiet shellinabox.service && StatSIAB=0 || StatSIAB=1
 
 
 Print_Temp() {
@@ -169,6 +169,7 @@ main() {
     Print_Status "$StatApache" "Apache server"
     Print_Status "$StatPDF" "Web English PDF"
     Print_Status "$StatNopanic" "Web French PDF"
+    Print_Status "$StatSIAB" "Web Console"
     Print_Status "$StatKiwix" "Kiwix Server"
     Print_Status "$StatOWRX" "OpenWebRX"
     Print_Status "$StatBrouter" "Brouter (carto)"
