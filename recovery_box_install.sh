@@ -271,6 +271,8 @@ configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
     network-configurator MenuRenameInterface wlanAP
     ##wlanAP is automaticaly bridged to Lan interface when the container start
+    echo -e "$MSGYELLOW" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
+    network-configurator LinkInterface
 
     while true; do
         read -rp "Do you want to configure manually $WAN (yes/no) : " ConfigureChoice

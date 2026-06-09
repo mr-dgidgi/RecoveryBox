@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-06-09
+### Added
+- `network-configurator`: tool to configure network interfaces, bridges and WiFi settings.
+- `Web Console`: shellinabox added 
+- Add cron to display `rbstatus` on TTY1
+- firmware `firmware-iwlwifi` for AX210 wifi card
+
+### Fixed
+- Fixes to `rbstatus` monitoring script :
+  - Service status methode
+  - GPS status
+- Add cleanup to Tileserver in `generate_map.sh`
+
+### Changed
+- Rework of the network behavior: 
+  - Adding bridge interfaces for LAN and WAN
+  - link wlanAP to LAN bridge
+  - Link network interface to WAN
+  - Route priority on WAN bridge
+  - WAN Access through wlan available
+- Rework iptables :
+  - Auto generate rules for WAN interface (icmp + ssh)
+- Homepage http://recovery.box updated
+
+
 ## [1.1.0] - 2026-05-03
 ### Added
 - Monitoring script `rbstatus.sh` for service health checks and status reporting.
