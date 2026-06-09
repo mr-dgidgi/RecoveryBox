@@ -17,6 +17,7 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 - **Point d'accès WiFi** : Conteneur Docker [simple-hotspot](https://hub.docker.com/repository/docker/mrdgidgi/simple-hotspot/general) créant un réseau WiFi local.
 - **Routage réseau** : IPv4 forwarding, iptables NAT et règles de routage automatiquement configurés.
 - **Synchro du temps via GPS** : Chrony configuré pour fournir l'heure exacte au serveur via GPS
+- **network-configurator** : Outil de configuration des interfaces réseau, brigdes et wifi
 
 ### Radio et télécommunications
 - **OpenWebRX Plus** : Interface web pour recevoir et écouter les fréquences radio via RTL-SDR.
@@ -31,12 +32,11 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 ### Infrastructure
 - **Docker** : Conteneurs pour Kiwix, point d'accès, OpenWebRX Plus, brouter, tileserver-gl et planetiler.
 - **Iptables** : Configuration iptables personalisable dans le fichier iptables.sh
+- **Web Console** : Terminal disponible via le navigateur web
 
 ## Ajouts futurs prévus
-- **Logiciel de cartographie web** : Gestionnaire de cartographie web avec support complet de la gestion des fichiers GPX
 - **Fonctionnalités APRS** : Ajout de fonctionnalités APRS (Automatic Packet Reporting System) pour la transmission de données en temps réel
 - **Utilitaire de gestion des services** : Interface pour gérer, démarrer, arrêter et monitorer les services
-- **Utilitaire de reconfiguration réseau** : Outil de reconfiguration des interfaces réseau et du point d'accès WiFi
 
 ## Comment lancer le script
 1. Montez une partition sur `/data` (ex: `mount /dev/sda1 /data`).
@@ -56,30 +56,31 @@ Après installation, redémarrez le système pour activer tous les services.
 
 
 ## Description
-**RecoveryBox** is an installation script designed to set up an offline emergency server providing access to essential resources during internet outages. It transforms an **amd64 Debian** system into a WiFi Access Point, offering local access to Wikipedia, survival PDFs, archived websites, maps, and SDR radio tools.
+**RecoveryBox** is an installation script that configures an offline emergency server to provide access to essential resources during internet outages. It converts an **amd64 Debian** system into a WiFi Access Point offering local access to Wikipedia, survival PDFs, archived websites, maps, and SDR radio tools.
 
-This project is built upon a **Debian 13** installation chain using a custom preseed. For more information on the base system configuration, visit [debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB).
+This project is developed to rely on a **Debian 13** installation chain using a custom preseed. See [debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) for more details on the base system configuration.
 
-## Features & Installed Services
+## Installed and Available
 
 ### Offline Resources & Web Access
 * **Kiwix**: A Docker container serving Wikipedia offline (French and/or English via ZIM files).
 * **Apache2**: A web server hosting survival PDFs (from trueprepper.com) and archived websites (from nopanic.fr).
 
 ### Connectivity & Networking
-* **WiFi Access Point**: Powered by the [simple-hotspot](https://hub.docker.com/repository/docker/mrdgidgi/simple-hotspot/general) Docker container to create a local wireless network.
-* **Network Routing**: Automatic configuration of IPv4 forwarding, iptables NAT, and routing rules.
-* **GPS Time Synchronization**: Chrony is configured to provide precise system time via GPS, ensuring accuracy even without internet.
+- **WiFi Access Point**: Docker container [simple-hotspot](https://hub.docker.com/repository/docker/mrdgidgi/simple-hotspot/general) creating a local WiFi network.
+- **Network Routing**: Automatic configuration of IPv4 forwarding, iptables NAT and routing rules.
+- **GPS Time Synchronization**: Chrony configured to provide precise time to the server via GPS.
+- **network-configurator**: Tool to configure network interfaces, bridges and WiFi settings.
 
 ### Radio & Telecommunications
-* **OpenWebRX Plus**: A web interface for receiving and monitoring radio frequencies via RTL-SDR.
-* **RTL-SDR Drivers**: The latest compiled drivers for RTL-SDR USB dongles.
-* **GPS Support**: GPSD is available for auxiliary location and timing services.
+- **OpenWebRX Plus**: Web interface to receive and listen to radio frequencies via RTL-SDR.
+- **RTL-SDR Drivers**: Latest compiled drivers for RTL-SDR USB dongles.
+- **GPS Support**: GPSD available for auxiliary services.
 
 ### Mapping
-* **BRouter**: A web frontend for computing routes using different profiles.
-* **tileserver-gl**: A map renderer serving vector and raster tiles from local map data for fully offline operation.
-* **generate_map.sh**: A utility that downloads map data from geofabrik.de, generates MBTiles, and merges them with existing local maps.
+- **BRouter**: Web frontend capable of computing routes using different profiles.
+- **tileserver-gl**: Renderer serving vector or raster maps from local data for fully offline operation.
+- **generate_map**: Utility to generate local maps. It relies on Geofabrik resources, creates MBTiles and merges them with maps already present on the machine.
 
 ### Infrastructure
 * **Docker**: Containerized environment for Kiwix, the Access Point, OpenWebRX Plus, BRouter, tileserver-gl, and planetiler.
@@ -100,4 +101,3 @@ This project is built upon a **Debian 13** installation chain using a custom pre
 For a complete installation with French map data, expect approximately **4 to 5 hours** with a good internet connection and an average machine.
 
 Once the installation is complete, **reboot the system** to activate all services.
-s.
