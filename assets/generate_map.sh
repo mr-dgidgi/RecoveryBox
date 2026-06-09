@@ -16,6 +16,14 @@ ZoomLevel=6
 
 mkdir -p "$WorkDir" "$WorkDir/output" "$WorkDir/tmp" "$TileserverDir"
 
+cleanup_pt() {
+    rm -rf "${WorkDir}/tmp/"* 2>/dev/null || true
+    rm -f "${WorkDir}/${Zone}-latest.osm.pbf"
+    rm -rf "${WorkDir}/sources/"* 2>/dev/null || true
+    rm -f "${WorkDir}/tile_weights.tsv.gz"
+}
+trap cleanup_pt EXIT
+
 ####################################
 
 echo -e "${MSGGREEN}\n\n############################################################################################## "
@@ -30,19 +38,19 @@ echo -e "${SRVMSG} Generate the map for :"
 echo -e "1) Continent"
 echo -e "2) Country"
 while true; do
-    read -p "Choose an option (1 or 2): " MapOption
+    read -rp "Choose an option (1 or 2): " MapOption
     case $MapOption in
         1)
             echo -e "${SRVMSG} Continents available: africa, antartica,asia, australia-oceania, central-america, europe, north-america, south-america"
-            read -p "Enter the continent name : " Continent
+            read -rp "Enter the continent name : " Continent
             Zone="$Continent"
             break
             ;;
         2)
-            read -p "Enter the country name (e.g., france, germany): " MapCountry
+            read -rp "Enter the country name (e.g., france, germany): " MapCountry
             Zone="$MapCountry"
             echo -e "${SRVMSG} Continents available: africa, antartica,asia, australia-oceania, central-america, europe, north-america, south-america"
-            read -p "In which continent is the country located ? (e.g., europe, asia): " Continent
+            read -rp "In which continent is the country located ? (e.g., europe, asia): " Continent
             ZoneCont="$Continent/"
             break
             ;;
@@ -61,7 +69,7 @@ echo -e "3) Operational (Zoom 12) - Urban details & Local coordination"
 echo -e "4) High Precision (Zoom 14) - Full terrain details & Buildings"
 echo -e "Note: High Precision (Zoom 14) can be up to 50x larger than Overview."
 while true; do
-    read -p "Choose a zoom level (1-4): " ZoomOption
+    read -rp "Choose a zoom level (1-4): " ZoomOption
     case $ZoomOption in
         1)
             ZoomLevel=6
@@ -98,6 +106,8 @@ fi
 
 echo -e "${MSGGREEN}${SRVMSG} Generating .mbtiles file ---"
 
+rm -rf "${WorkDir}/tmp/"* 2>/dev/null || true
+
 docker run --rm \
   -e JAVA_OPTS="-Xmx${MemoryLimit}g" \
   -v "${WorkDir}:/data" \
@@ -111,13 +121,15 @@ docker run --rm \
 
 if [ $? -ne 0 ]; then
     echo -e "${MSGRED}${SRVMSG}Error during map generation.${MSGNC}"
+    cleanup_pt
     exit 1
 else
     echo -e "${MSGGREEN}${SRVMSG}Map generation completed successfully.${MSGNC}"
 fi
 
-rm ${WorkDir}/tmp/* -rf 2>/dev/null || true
-rm ${WorkDir}/${Zone}-latest.osm.pbf -f
+cleanup_pt
+
+
 
 ####################################
 
@@ -142,7 +154,7 @@ fi
 
 
 while true; do
-    read -p "${MSGYELLOW}Would you restart the tile server now ? (y/n) : ${MSGNC}" RestartOption
+    read -rp "${MSGYELLOW}Would you restart the tile server now ? (y/n) : ${MSGNC}" RestartOption
     case $RestartOption in
     y|Y)
         echo -e "${SRVMSG} Restarting tile server ---"

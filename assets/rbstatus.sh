@@ -7,7 +7,7 @@ Get_InternetPing() {
     PingCloudflare=$(ping -c 1 1.1.1.1 &> /dev/null; echo $?)
     PingYandex=$(ping -c 1 77.88.8.8 &> /dev/null; echo $?)
 
-    if [ $PingGoogle -eq 0 ] || [ $PingCloudflare -eq 0 ] || [ $PingYandex -eq 0 ]; then
+    if [ "$PingGoogle" -eq 0 ] || [ "$PingCloudflare" -eq 0 ] || [ "$PingYandex" -eq 0 ]; then
         echo "0"
     else
         echo "1"
@@ -19,7 +19,7 @@ Get_InternetResolve() {
     ResolveCloudflare=$(nslookup cloudflare.com &> /dev/null; echo $?)
     ResolveYandex=$(nslookup yandex.com &> /dev/null; echo $?)
 
-    if [ $ResolveGoogle -eq 0 ] || [ $ResolveCloudflare -eq 0 ] || [ $ResolveYandex -eq 0 ]; then
+    if [ "$ResolveGoogle" -eq 0 ] || [ "$ResolveCloudflare" -eq 0 ] || [ "$ResolveYandex" -eq 0 ]; then
         echo "0"
     else
         echo "1"
@@ -48,20 +48,20 @@ Print_GPSstatus() {
 }
 
 Print_GPSloc() {
-    local GPSData=$(gpspipe -w -n 5 | grep "TPV" | tail -n 1)
-    local mode=$(echo "$gps_json" | jq -r '.mode')
-    local Lat=$(echo "$GPSData" | jq -r '.lat')
-    local Lon=$(echo "$GPSData" | jq -r '.lon')
-    local Alt=$(echo "$GPSData" | jq -r '.alt')
+    GPSData=$(gpspipe -w -n 5 | grep "TPV" | tail -n 1)
+    mode=$(echo "$GPSData" | jq -r '.mode')
+    Lat=$(echo "$GPSData" | jq -r '.lat')
+    Lon=$(echo "$GPSData" | jq -r '.lon')
+    Alt=$(echo "$GPSData" | jq -r '.alt')
 
     case "$mode" in
         2)
             Status="\033[0;33m 2D Lock \033[0m"
-            Pos="Lat: $Lat, Lon: $Lon"
+            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon"
             ;;
         3)
             Status="\033[0;32m 3D Lock \033[0m"
-            Pos="Lat: $Lat, Lon: $Lon, Alt: ${Alt}m"
+            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon\n\t\t\t\t\t\t Alt: ${Alt}m"
             ;;
         *)
             Status="\033[0;31m No Fix \033[0m"
@@ -76,15 +76,21 @@ Print_GPSloc() {
     fi
 }
 
-StatKiwix=$(systemctl is-active kiwix)
-StatAP=$(systemctl is-active ap.service)
+systemctl is-active --quiet kiwix.service && StatKiwix=0 || StatKiwix=1
+systemctl is-active --quiet ap.service && StatAP=0 || StatAP=1
+systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
+
 StatApache=$(systemctl is-active apache2 > /dev/null 2>&1; echo $?)
 StatPDF=$(if [[ "$(curl -q -I -H "Host: pdf.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 StatNopanic=$(if [[ "$(curl -q -I -H "Host: nopanic.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1|cut -d$' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
-StatOWRX=$(systemctl is-active openwebrx.service > /dev/null 2>&1; echo $?)
+systemctl is-active --quiet openwebrx.service && StatOWRX=0 || StatOWRX=1
 StatPing=$(Get_InternetPing)
 StatResolve=$(Get_InternetResolve)
-StatChrony=$(systemctl is-active chrony.service > /dev/null 2>&1; echo $?)
+systemctl is-active --quiet chrony.service && StatChrony=0 || StatChrony=1
+systemctl is-active --quiet brouter.service && StatBrouter=0 || StatBrouter=1
+systemctl is-active --quiet tileserver-gl.service && StatTileserver=0 || StatTileserver=1
+systemctl is-active --quiet shellinabox.service && StatSIAB=0 || StatSIAB=1
+
 
 Print_Temp() {
     # On initialise les valeurs
@@ -102,7 +108,7 @@ Print_Temp() {
         else
             color="\033[0;32m"
         fi
-        Temp[$k]="${color}${val}°C\033[0m"
+        Temp[k]="${color}${val}°C\033[0m"
     done
 
     echo -e "=+= System Temp : \t\t\t\t  ${Temp[0]}"
@@ -111,8 +117,8 @@ Print_Temp() {
 }
 
 Print_CpuUsage() {
-    local CpuUsage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
-    local CpuInt=${CpuUsage%.*}
+    CpuUsage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
+    CpuInt=${CpuUsage%.*}
     if [[ $CpuInt -gt 80 ]]; then
         color="\033[0;31m"
     elif [[ $CpuInt -gt 60 ]]; then
@@ -124,7 +130,7 @@ Print_CpuUsage() {
 }
 
 Print_RamUsage() {
-    local RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}')
+    RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}')
     local RamInt=${RamUsage%.*}
     if [[ $RamInt -gt 80 ]]; then
         color="\033[0;31m"
@@ -137,8 +143,8 @@ Print_RamUsage() {
 }
 
 Print_SwapUsage() {
-    local SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}')
-    local SwapInt=${SwapUsage%.*}
+    SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}')
+    SwapInt=${SwapUsage%.*}
     if [[ $SwapInt -gt 80 ]]; then
         color="\033[0;31m"
     elif [[ $SwapInt -gt 60 ]]; then
@@ -163,8 +169,11 @@ main() {
     Print_Status "$StatApache" "Apache server"
     Print_Status "$StatPDF" "Web English PDF"
     Print_Status "$StatNopanic" "Web French PDF"
+    Print_Status "$StatSIAB" "Web Console"
     Print_Status "$StatKiwix" "Kiwix Server"
     Print_Status "$StatOWRX" "OpenWebRX"
+    Print_Status "$StatBrouter" "Brouter (carto)"
+    Print_Status "$StatTileserver" "Tilesrv (carto)"
     echo -e "#########################################################"
     echo -e "## GPS"
 

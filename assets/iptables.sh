@@ -1,22 +1,36 @@
 #!/bin/bash
-WAN="nic0"
+## Managed by network-configurator
+WAN=("Wan")
 if [[ $1 == "start" ]]; then
     ################################################
     # All rules should be placed below this line
     ################################################
 
     ## INPUT rules
+    iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -A INPUT -i Lan -j ACCEPT
+    for interface in "${WAN[@]}"; do
+        iptables -A INPUT -i "$interface" -p icmp -j ACCEPT
+        iptables -A INPUT -i "$interface" -p tcp --dport 22 -j ACCEPT
+        iptables -A INPUT -i "$interface" -j DROP
+    done
 
     ## OUTPUT rules
 
     ## FORWARD rules
     # Allow Forwarding trafic to WAN
-    iptables -I FORWARD -o $WAN -j ACCEPT
-    iptables -I FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    for interface in "${WAN[@]}"; do
+        iptables -A FORWARD -o "$interface" -j ACCEPT
+    done
+    # Allow traffic to container
+    iptables -A FORWARD -o docker0 -j ACCEPT
 
     ## NAT rules
     # "Auto NAT" trafic to WAN
-    iptables -t nat -A POSTROUTING -o $WAN -j MASQUERADE
+    for interface in "${WAN[@]}"; do
+        iptables -t nat -A POSTROUTING -o "$interface" -j MASQUERADE
+    done
 
     ################################################
     # All rules should be placed above this line

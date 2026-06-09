@@ -15,12 +15,26 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 LANGUAGE="fr"
-INTWAN=""
-INTAP=""
+WAN="Wan"
+LAN="Lan"
 
 #######################################################
 # Functions
 #######################################################
+
+yes_no_check () {
+	if [ "$1" = "Y" ] || [ "$1" = "y" ] || [ "$1" = "Yes" ] || [ "$1" = "yes" ] || [ "$1" = "Oui" ] || [ "$1" = "OUI" ] || [ "$1" = "oui" ] || [ "$1" = "O" ]; then
+		echo 1
+
+	elif [ "$1" = "N" ] || [ "$1" = "n" ] || [ "$1" = "No" ] || [ "$1" = "no" ] || [ "$1" = "Non" ] || [ "$1" = "NON" ] || [ "$1" = "non" ] || [ "$1" = "N" ]; then
+		echo 0
+
+	else
+		echo 99
+
+	fi
+}
+
 check_prerequisites() {
     
     #check if root
@@ -121,7 +135,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-iwlwifi intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -209,7 +223,7 @@ download_wikipedia() {
     if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in French. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_fr_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/"${FileName}"
         if [[ -e /data/kiwix/$FileName ]]; then
             echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in French downloaded successfully.${MSGNC}"
         else
@@ -221,7 +235,7 @@ download_wikipedia() {
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Downloading Wikipedia in English. This step may take some time..." "$MSGNC"
         FileName=$(curl -s "https://download.kiwix.org/zim/wikipedia/" | grep -oP 'wikipedia_en_all_nopic_\d{4}-\d{2}\.zim' | sort -V | tail -1)
-        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/${FileName}
+        wget -q --show-progress -P /data/kiwix https://download.kiwix.org/zim/wikipedia/"${FileName}"
         if [[ -e /data/kiwix/$FileName ]]; then
             echo -e "$MSGGREEN" "$SRVMSG" "Wikipedia in English downloaded successfully.${MSGNC}"
         else
@@ -246,46 +260,49 @@ service_kiwix() {
     fi
 }
 
-#######################################################
-
-choose_interfaces_names() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Renaming network interfaces." "$MSGNC"
-    # get current interfaces names
-    ip -br link
-    read -r -p "$SRVMSG Which interface is the WAN? : " INTWAN
-    read -r -p "$SRVMSG Which interface is the Access Point? : " INTAP
-}
-
-rename_interfaces() {
-    WanMac=$(ip -br l | grep "$INTWAN" | awk -F" " '{print $3}')
-    cat > /etc/systemd/network/10-nic0.link <<EOF
-[Match]
-MACAddress=$WanMac
-
-[Link]
-Name=nic0
-EOF
-
-    ApMac=$(ip -br l | grep "$INTAP" | awk -F" " '{print $3}')
-    cat > /etc/systemd/network/10-wlan0.link <<EOF
-[Match]
-MACAddress=$ApMac
-
-[Link]
-Name=wlan0
-EOF
-    udevadm control --reload-rules
-    udevadm trigger --attr-match=subsystem=net
-}
 
 #######################################################
 
 configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
-    cp assets/20-nic0.network /etc/systemd/network/20-nic0.network
-    cp assets/20-wlan0.network /etc/systemd/network/20-wlan0.network
+    network-configurator CreateBridge "$WAN"
+    network-configurator CreateBridge "$LAN"
+    echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
+    network-configurator MenuRenameInterface wlanAP
+    ##wlanAP is automaticaly bridged to Lan interface when the container start
+    echo -e "$MSGYELLOW" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
+    network-configurator LinkInterface
 
+    while true; do
+        read -rp "Do you want to configure manually $WAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            network-configurator MenuSetInterface "$WAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac\nRouteMetric=100" "Token=static:::1"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
+    while true; do
+        read -rp "Do you want to configure manually $LAN (yes/no) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            network-configurator MenuSetInterface "$LAN"
+            break
+        elif [[ $ConfigureChoice -eq 0 ]]; then
+            network-configurator SetInterface "$LAN" "no" "192.168.200.1/24" "no" "no" $'IPv6AcceptRA=no\nLinkLocalAddressing=no\nConfigureWithoutCarrier=yes' "no" "no"
+            break
+        elif [[ $ConfigureChoice -eq 99 ]]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
+        fi
+    done
+    network-configurator GetVInterfacesConfig
+
+    read -rp "Press Enter to continue"
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
@@ -304,16 +321,32 @@ configure_interfaces() {
 
 #######################################################
 
-#Disable wpa_supplicant on wlan0
+#Disable wpa_supplicant on wlanAP
 disable_wpa_supplicant() {
-    echo -e "$SRVMSG" "WiFi Access Point - preparing wlan0 interface..." "$MSGNC"
-    systemctl stop wpa_supplicant@wlan0
-    systemctl disable wpa_supplicant@wlan0
-    if [[ $(systemctl is-active wpa_supplicant@wlan0) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlan0) == "disabled" ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlan0 successfully.${MSGNC}"
+    echo -e "$SRVMSG" "WiFi Access Point - preparing wlanAP interface..." "$MSGNC"
+    systemctl stop wpa_supplicant@wlanAP
+    systemctl disable wpa_supplicant@wlanAP
+    if [[ $(systemctl is-active wpa_supplicant@wlanAP) == "inactive" ]] && [[ $(systemctl is-enabled wpa_supplicant@wlanAP) == "disabled" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "wpa_supplicant disabled on wlanAP successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlan0.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlanAP.${MSGNC}"
         exit 1
+    fi
+}
+
+install_console() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Web Console (shellinabox)..." "$MSGNC"
+    apt install -y -qq shellinabox > /dev/null
+    cp assets/shellinabox /etc/default/shellinabox 
+    cp assets/sites-availables/console.conf /etc/apache2/sites-available/console.conf
+    a2ensite console.conf
+    systemctl reload apache2
+    systemctl restart shellinabox
+    if systemctl is-active --quiet shellinabox.service; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Shellinabox installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install Shellinabox.${MSGNC}"
+        exit 1        
     fi
 }
 
@@ -606,11 +639,24 @@ install_rtlsdr_drivers() {
 install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
+    cp assets/cron/rbstatus /etc/cron.d/rbstatus
     chmod +x /usr/local/bin/rbstatus
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to install rbstatus.${MSGNC}"
+        exit 1
+    fi
+}
+
+install_network-configurator() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
+    cp assets/network-configurator.sh /usr/local/bin/network-configurator
+    chmod +x /usr/local/bin/network-configurator
+    if [[ -f /usr/local/bin/network-configurator ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install network configurator.${MSGNC}"
         exit 1
     fi
 }
@@ -622,12 +668,14 @@ main() {
     define_language
     ## set keyboard layout
     set_keyboard
-    ## define interface names
-    choose_interfaces_names
-    rename_interfaces
-    configure_interfaces
     ## Install basic tools
     install_basic_tools
+    ## Install network configurator
+    install_network-configurator
+    ## Setup IPtables
+    setup_iptables
+    ## define interface names
+    configure_interfaces
     ## set gpsd
     set_gpsd
     ## set chrony
@@ -644,8 +692,8 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
-    ## Setup IPtables
-    setup_iptables
+    ## Install Web Console
+    install_console
     ## Install PDFs
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         download_english_pdfs
