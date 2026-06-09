@@ -135,7 +135,7 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-iwlwifi intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe bridge-utils > /dev/null
+    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-iwlwifi intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -329,6 +329,22 @@ disable_wpa_supplicant() {
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to disable wpa_supplicant on wlanAP.${MSGNC}"
         exit 1
+    fi
+}
+
+install_console() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Web Console (shellinabox)..." "$MSGNC"
+    apt install -y -qq shellinabox > /dev/null
+    cp assets/shellinabox /etc/default/shellinabox 
+    cp assets/sites-availables/console.conf /etc/apache2/sites-available/console.conf
+    a2ensite console.conf
+    systemctl reload apache2
+    systemctl restart shellinabox
+    if systemctl is-active --quiet shellinabox.service; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Shellinabox installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install Shellinabox.${MSGNC}"
+        exit 1        
     fi
 }
 
@@ -674,6 +690,8 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
+    ## Install Web Console
+    install_console
     ## Install PDFs
     if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
         download_english_pdfs
