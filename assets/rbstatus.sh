@@ -187,4 +187,19 @@ main() {
     Print_Temp
 }
 
-main
+light () {
+    Print_Status "$StatChrony" "Time Sync"
+    Print_Status "$StatAP" "AccessPoint"
+    Print_Status "$StatApache" "Apache server"
+    Print_Status "$StatSIAB" "Web Console"
+    Print_Status "$StatKiwix" "Kiwix Server"
+    Print_Status "$StatOWRX" "OpenWebRX"
+    Print_Status "$StatBrouter" "Brouter (carto)"
+    Print_Status "$StatTileserver" "Tilesrv (carto)"
+}
+
+if [[ "$1" == "light" ]];then
+    light
+else
+    main
+fi

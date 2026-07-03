@@ -649,6 +649,18 @@ install_rbstatus() {
     fi
 }
 
+install-services-manager () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
+    cp assets/services-manager.sh /usr/local/bin/services-manager
+    chmod +x /usr/local/bin/services-manager
+    if [[ -f /usr/local/bin/services-manager ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "services-manager installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install services-manager.${MSGNC}"
+        exit 1
+    fi
+}
+
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
@@ -716,6 +728,8 @@ main() {
     install_rtlsdr_drivers
     ## Install rbstatus
     install_rbstatus
+    ## Install service manager
+    install-services-manager
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then
