@@ -761,7 +761,7 @@ case "$1" in
     MenuRenameInterface)
         menu_rename_interfaces "$2"
         ;;
-    MenuSetVlan)
+    MenuSetWlan)
         menu_set_wlan "$2"
         ;;
     ApplyChanges)
