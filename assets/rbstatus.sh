@@ -15,9 +15,9 @@ Get_InternetPing() {
 }
 
 Get_InternetResolve() {
-    ResolveGoogle=$(nslookup google.com &> /dev/null; echo $?)
-    ResolveCloudflare=$(nslookup cloudflare.com &> /dev/null; echo $?)
-    ResolveYandex=$(nslookup yandex.com &> /dev/null; echo $?)
+    ResolveGoogle=$(nslookup -timeout=3 google.com &> /dev/null; echo $?)
+    ResolveCloudflare=$(nslookup -timeout=3 cloudflare.com &> /dev/null; echo $?)
+    ResolveYandex=$(nslookup -timeout=3 yandex.com &> /dev/null; echo $?)
 
     if [ "$ResolveGoogle" -eq 0 ] || [ "$ResolveCloudflare" -eq 0 ] || [ "$ResolveYandex" -eq 0 ]; then
         echo "0"
@@ -30,15 +30,24 @@ Print_Status() {
     Name="$2"
     if [[ "$1" -eq 0 ]]; then
         Status="\033[0;32m Running \033[0m"
-    else
+    elif [[ "$1" -eq 1 ]]; then
         Status="\033[0;31m Critical \033[0m"
+    else
+        Status="\033[0;33m Disabled \033[0m"
     fi
 
     echo -e "=+= $Name : \t\t\t\t $Status"
 }
 
 Print_GPSstatus() {
-    if [[ $(gpspipe -w -n 5 | grep -c "TPV") -ge 1 ]]; then
+    # Use a timeout to avoid blocking when no GPS is connected
+    gps_count=$(timeout 3s gpspipe -w -n 5 2>/dev/null | grep -c "TPV" 2>/dev/null)
+    rc=$?
+    gps_count=${gps_count:-0}
+
+    if [[ $rc -eq 124 ]]; then
+        Status="\033[0;31m No GPS device \033[0m"
+    elif [[ "$gps_count" -ge 1 ]]; then
         Status="\033[0;32m Running \033[0m"
     else
         Status="\033[0;31m Reception error \033[0m"
@@ -48,11 +57,20 @@ Print_GPSstatus() {
 }
 
 Print_GPSloc() {
-    GPSData=$(gpspipe -w -n 5 | grep "TPV" | tail -n 1)
-    mode=$(echo "$GPSData" | jq -r '.mode')
-    Lat=$(echo "$GPSData" | jq -r '.lat')
-    Lon=$(echo "$GPSData" | jq -r '.lon')
-    Alt=$(echo "$GPSData" | jq -r '.alt')
+    # Collect one TPV line but avoid blocking if no GPS is connected
+    GPSData=$(timeout 3s gpspipe -w -n 5 2>/dev/null | grep "TPV" | tail -n 1)
+
+    if [[ -z "$GPSData" ]]; then
+        mode=0
+        Lat=""
+        Lon=""
+        Alt=""
+    else
+        mode=$(echo "$GPSData" | jq -r '.mode' 2>/dev/null || echo 0)
+        Lat=$(echo "$GPSData" | jq -r '.lat' 2>/dev/null || echo "")
+        Lon=$(echo "$GPSData" | jq -r '.lon' 2>/dev/null || echo "")
+        Alt=$(echo "$GPSData" | jq -r '.alt' 2>/dev/null || echo "")
+    fi
 
     case "$mode" in
         2)
@@ -72,25 +90,37 @@ Print_GPSloc() {
     if [[ "$mode" -ge 2 ]]; then
         echo -e "=+= GPS Position: \t\t\t\t \033[0;34m$Pos\033[0m"
     else
-        echo -e "=+= GPS Position: \t\t\t\t  \033[0;31mUnknown\033[0m"
+        # Distinguish between no GPS device and lack of fix
+        if [[ -z "$GPSData" ]]; then
+            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31mNo GPS device\033[0m"
+        else
+            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31m$Pos\033[0m"
+        fi
     fi
 }
 
 systemctl is-active --quiet kiwix.service && StatKiwix=0 || StatKiwix=1
+systemctl is-enabled --quiet kiwix.service || StatKiwix=2
 systemctl is-active --quiet ap.service && StatAP=0 || StatAP=1
+systemctl is-enabled --quiet ap.service || StatAP=2
 systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
+systemctl is-enabled --quiet apache2.service || StatApache=2
 
-StatApache=$(systemctl is-active apache2 > /dev/null 2>&1; echo $?)
+systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
+systemctl is-enabled --quiet apache2.service || StatApache=2
 StatPDF=$(if [[ "$(curl -q -I -H "Host: pdf.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 StatNopanic=$(if [[ "$(curl -q -I -H "Host: nopanic.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1|cut -d$' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 systemctl is-active --quiet openwebrx.service && StatOWRX=0 || StatOWRX=1
 StatPing=$(Get_InternetPing)
 StatResolve=$(Get_InternetResolve)
 systemctl is-active --quiet chrony.service && StatChrony=0 || StatChrony=1
+systemctl is-enabled --quiet chrony.service || StatChrony=2
 systemctl is-active --quiet brouter.service && StatBrouter=0 || StatBrouter=1
+systemctl is-enabled --quiet brouter.service || StatBrouter=2
 systemctl is-active --quiet tileserver-gl.service && StatTileserver=0 || StatTileserver=1
+systemctl is-enabled --quiet tileserver-gl.service || StatTileserver=2
 systemctl is-active --quiet shellinabox.service && StatSIAB=0 || StatSIAB=1
-
+systemctl is-enabled --quiet shellinabox.service || StatSIAB=2
 
 Print_Temp() {
     # On initialise les valeurs

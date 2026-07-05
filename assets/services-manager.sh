@@ -218,3 +218,6 @@ main() {
         esac
     done
 }
+
+check_root
+main
