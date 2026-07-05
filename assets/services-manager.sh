@@ -83,7 +83,7 @@ select_service () {
                 break
                 ;;
             5) 
-                CURRENTSERVICE="kiwix-serve.service"
+                CURRENTSERVICE="kiwix.service"
                 break
                 ;;
             6) 

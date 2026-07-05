@@ -111,6 +111,7 @@ systemctl is-enabled --quiet apache2.service || StatApache=2
 StatPDF=$(if [[ "$(curl -q -I -H "Host: pdf.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 StatNopanic=$(if [[ "$(curl -q -I -H "Host: nopanic.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1|cut -d$' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 systemctl is-active --quiet openwebrx.service && StatOWRX=0 || StatOWRX=1
+systemctl is-enabled --quiet openwebrx.service || StatOWRX=2
 StatPing=$(Get_InternetPing)
 StatResolve=$(Get_InternetResolve)
 systemctl is-active --quiet chrony.service && StatChrony=0 || StatChrony=1
