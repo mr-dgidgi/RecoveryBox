@@ -360,7 +360,7 @@ install_access_point() {
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
-    chmod +x /etc/ap_config/ap_start.sh
+    chmod 655 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
@@ -397,7 +397,7 @@ setup_iptables() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Setting up IPtables for NAT and routing..." "$MSGNC"
     mkdir -p /etc/iptables
     cp assets/iptables.sh /etc/iptables/iptables.sh
-    chmod +x /etc/iptables/iptables.sh
+    chmod 655 /etc/iptables/iptables.sh
     cp assets/systemd/iptables.service /etc/systemd/system/iptables.service
     systemctl daemon-reload
     systemctl enable iptables.service
@@ -543,7 +543,7 @@ install_planetiler() {
     docker pull ghcr.io/onthegomap/planetiler:latest
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
     cp assets/generate_map.sh /usr/local/bin/generate-map
-    chmod +x /usr/local/bin/generate-map
+    chmod 655 /usr/local/bin/generate-map
 }
 
 #######################################################
@@ -640,7 +640,7 @@ install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
     cp assets/cron/rbstatus /etc/cron.d/rbstatus
-    chmod +x /usr/local/bin/rbstatus
+    chmod 655 /usr/local/bin/rbstatus
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
@@ -649,10 +649,22 @@ install_rbstatus() {
     fi
 }
 
+install-services-manager () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
+    cp assets/services-manager.sh /usr/local/bin/services-manager
+    chmod 655 /usr/local/bin/services-manager
+    if [[ -f /usr/local/bin/services-manager ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "services-manager installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install services-manager.${MSGNC}"
+        exit 1
+    fi
+}
+
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
-    chmod +x /usr/local/bin/network-configurator
+    chmod 655 /usr/local/bin/network-configurator
     if [[ -f /usr/local/bin/network-configurator ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
     else
@@ -716,6 +728,8 @@ main() {
     install_rtlsdr_drivers
     ## Install rbstatus
     install_rbstatus
+    ## Install service manager
+    install-services-manager
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then
