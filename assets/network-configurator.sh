@@ -260,6 +260,7 @@ EOF
         echo -e "\n"
         echo -e "$MSGGREEN $SRVMSG Radio configuration for $SSIDChoosed is set $MSGNC"
     fi
+    systemctl enable wpa_supplicant@"$1".service
     continue_enter
     menu_set_interfaces "$1"
 }
