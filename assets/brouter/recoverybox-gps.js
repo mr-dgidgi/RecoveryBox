@@ -1,0 +1,65 @@
+// recoverybox-gps.js
+(function() {
+    let mapInstance = null;
+    let gpsMarker = null;
+
+    // Icône personnalisée
+    const boxIcon = L.icon({
+        iconUrl: 'dist/images/marker-icon.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [0, -41]
+    });
+
+    function updatePosition() {
+        if (!mapInstance) return;
+
+        fetch('recoverybox.json?t=' + new Date().getTime())
+            .then(response => {
+                if (!response.ok) throw new Error("Fichier JSON non disponible");
+                return response.json();
+            })
+            .then(data => {
+                if (data.features && data.features.length > 0) {
+                    const feature = data.features[0];
+                    if (feature.geometry && feature.geometry.coordinates) {
+                        const lon = feature.geometry.coordinates[0];
+                        const lat = feature.geometry.coordinates[1];
+                        const pos = [lat, lon];
+                        
+                        console.log("RecoveryBox GPS - Position lue :", pos);
+
+                        if (!gpsMarker) {
+                            gpsMarker = L.marker(pos, { icon: boxIcon }).addTo(mapInstance);
+                            gpsMarker.bindPopup("<b>RecoveryBox</b><br>server location");
+                        } else {
+                            gpsMarker.setLatLng(pos);
+                        }
+                    }
+                }
+            })
+            .catch(err => console.log("Erreur suivi GPS RecoveryBox :", err));
+    }
+
+    // Interception propre de la création de la carte par Leaflet
+    function hookLeaflet() {
+        if (typeof L !== 'undefined' && L.Map) {
+            console.log("RecoveryBox GPS : Leaflet détecté, injection du hook...");
+            
+            // On surcharge la méthode d'initialisation native de Leaflet
+            L.Map.addInitHook(function () {
+                mapInstance = this;
+                console.log("RecoveryBox GPS : Instance de la carte interceptée avec succès !");
+                
+                // Lance le premier appel et le rafraîchissement
+                updatePosition();
+                setInterval(updatePosition, 60000);
+            });
+        } else {
+            // Si Leaflet lui-même n'est pas encore chargé, on attend un peu
+            setTimeout(hookLeaflet, 100);
+        }
+    }
+
+    hookLeaflet();
+})();

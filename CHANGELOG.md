@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 - `service-manager` added
+- `brouter` : la position GPS de la recoverybox est maintenant affichée si un module GPS est présent.
 
 ### Fixed
 - `network-configurator` - Command `MenuSetVlan` renamed `MenuSetWlan`

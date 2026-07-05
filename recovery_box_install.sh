@@ -603,7 +603,21 @@ install_brouter() {
     unzip -q /data/brouter/www/brouter-web.0.18.1.zip -d /data/brouter/www/
     rm /data/brouter/www/brouter-web.0.18.1.zip
     touch /data/brouter/www/keys.js
-    cp assets/brouter-config.js /data/brouter/www/config.js
+    cp assets/brouter/brouter-config.js /data/brouter/www/config.js
+    chmod 644 /data/brouter/www/config.js
+
+    # GPS integration for BRouter
+    cp assets/brouter/recoverybox.json  /data/brouter/www/recoverybox.json    
+    cp assets/brouter/recoverybox-gps.js  /data/brouter/www/recoverybox-gps.js
+    cp assets/brouter/gps-to-json.sh  /data/brouter/gps-to-json.sh
+    cp assets/cron/gps-to-json /etc/cron.d/gps-to-json
+    chmod 644 /data/brouter/www/recoverybox.json
+    chmod 644 /data/brouter/www/recoverybox-gps.js
+    chmod 755 /data/brouter/gps-to-json.sh
+    if [[ -f /data/brouter/www/index.html ]]; then
+        sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+    fi
+
     cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
     a2ensite carto.conf
     systemctl reload apache2
