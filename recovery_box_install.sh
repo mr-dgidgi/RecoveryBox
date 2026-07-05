@@ -135,7 +135,27 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-iwlwifi intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
+    apt-get install -y -qq curl \
+    gpg \
+    ca-certificates \
+    git \
+    wget \
+    firmware-realtek \
+    firmware-iwlwifi \
+    intel-microcode \
+    rfkill \
+    iw \
+    tcpdump \
+    gpsd \
+    gpsd-clients \
+    chrony \
+    wpasupplicant \
+    htop \
+    jq \
+    net-tools \
+    unzip \
+    tippecanoe \
+    systemd-resolved > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -266,6 +286,12 @@ service_kiwix() {
 configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
+    ## Check if there is a working wlan interface available for the access point
+    if ! find /sys/class/net/*/wireless ; then
+        echo -e "$MSGRED" "$SRVMSG" "No wireless interface found. Please connect a wireless interface for the access point or check the drivers." "$MSGNC"
+        exit 1
+    fi
+
     network-configurator CreateBridge "$WAN"
     network-configurator CreateBridge "$LAN"
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
@@ -306,6 +332,11 @@ configure_interfaces() {
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
+
+    # set systemd-resolver
+    systemctl enable systemd-resolved
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
@@ -674,6 +705,9 @@ install_network-configurator() {
 }
 
 main() {
+    if [[ -f /etc/rb_version ]]; then
+        echo -e "-upgrading" >> /etc/rb_version
+    fi
     ## checks / settings
     check_prerequisites
     ## define Language (default french)
@@ -758,6 +792,7 @@ main() {
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping custom map generation." "$MSGNC"
     fi
+    cp VERSION /etc/rb_version
     ## Final message
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 
