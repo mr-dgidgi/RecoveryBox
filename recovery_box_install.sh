@@ -607,7 +607,6 @@ install_brouter() {
     chmod 644 /data/brouter/www/config.js
 
     # GPS integration for BRouter
-    cp assets/brouter/recoverybox.json  /data/brouter/www/recoverybox.json    
     cp assets/brouter/recoverybox-gps.js  /data/brouter/www/recoverybox-gps.js
     cp assets/brouter/gps-to-json.sh  /data/brouter/gps-to-json.sh
     cp assets/cron/gps-to-json /etc/cron.d/gps-to-json
@@ -615,7 +614,9 @@ install_brouter() {
     chmod 644 /data/brouter/www/recoverybox-gps.js
     chmod 755 /data/brouter/gps-to-json.sh
     if [[ -f /data/brouter/www/index.html ]]; then
-        sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+        if ! grep -q '<script src="recoverybox-gps.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
     fi
 
     cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
@@ -741,6 +742,21 @@ install_meshtastic-python () {
     python3 -m venv /data/meshtastic_env
     /data/meshtastic_env/bin/pip install --upgrade pip > /dev/null
     /data/meshtastic_env/bin/pip install meshtastic > /dev/null
+    cp assets/brouter/recoverybox-mesh.js /data/brouter/www/recoverybox-mesh.js
+    cp assets/meshtastic-daemon.py /data/brouter/meshtastic-daemon.py
+    cp assets/mesh-node.png /data/brouter/www/mesh-node.png
+    cp assets/cron/meshtastic-daemon /etc/cron.d/meshtastic-daemon
+    chmod 644 /data/brouter/www/recoverybox-mesh.js
+    chmod 755 /data/brouter/meshtastic-daemon.py
+    chmod 644 /data/brouter/www/mesh-node.png
+    if [[ -f /data/brouter/www/index.html ]]; then
+        if ! grep '<script src="recoverybox-mesh.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-mesh.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
+    fi
+    echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Python installed successfully.${MSGNC}"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set a static IP for the Meshtastic device in /etc/ap_config/dnsmasq.conf (dhcp-host=<mac>,<ip>)." "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set the Meshtastic device IP in the cron file /etc/cron.d/meshtastic-daemon." "$MSGNC"
 
 }
 

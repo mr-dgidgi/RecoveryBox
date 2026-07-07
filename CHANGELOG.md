@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 - `service-manager` added
-- `brouter` : la position GPS de la recoverybox est maintenant affichée si un module GPS est présent.
+- `brouter` : The RecoveryBox GPS position in now displayer if a GPS module is connected
+- `mestastic-web` : Meshtastic web client no use nodes connected to the recoverybox hotspot or on the client device in bluetooth or webserial
+- `meshtastic-daemon` : a service connecting to a meshtastic node on the hotspot and showing the node that it detect on brouter map 
 
 ### Fixed
 - `network-configurator` - Command `MenuSetVlan` renamed `MenuSetWlan`
