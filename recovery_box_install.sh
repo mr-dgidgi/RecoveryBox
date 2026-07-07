@@ -718,6 +718,32 @@ install_network-configurator() {
     fi
 }
 
+install_meshtastic-web () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Web..." "$MSGNC"
+    docker pull mrdgidgi/meshtastic-web-client:2.7.1
+    cp assets/systemd/meshtastic-web.service /etc/systemd/system/meshtastic-web.service
+    cp assets/sites-availables/meshtastic-web.conf /etc/apache2/sites-available/meshtastic-web.conf
+    a2ensite meshtastic-web.conf
+    systemctl daemon-reload
+    systemctl enable meshtastic-web.service
+    systemctl start meshtastic-web.service
+    if [[ $(systemctl is-active meshtastic-web) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Web service started successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to start Meshtastic Web service.${MSGNC}"
+        exit 1
+    fi
+}
+
+install_meshtastic-python () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Python..." "$MSGNC"
+    apt-get install -y -qq python3-venv python3-pip > /dev/null
+    python3 -m venv /data/meshtastic_env
+    /data/meshtastic_env/bin/pip install --upgrade pip > /dev/null
+    /data/meshtastic_env/bin/pip install meshtastic > /dev/null
+
+}
+
 main() {
     if [[ -f /etc/rb_version ]]; then
         echo -e "-upgrading" >> /etc/rb_version
