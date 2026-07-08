@@ -391,7 +391,7 @@ install_access_point() {
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
-    chmod 655 /etc/ap_config/ap_start.sh
+    chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
@@ -428,7 +428,7 @@ setup_iptables() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Setting up IPtables for NAT and routing..." "$MSGNC"
     mkdir -p /etc/iptables
     cp assets/iptables.sh /etc/iptables/iptables.sh
-    chmod 655 /etc/iptables/iptables.sh
+    chmod 755 /etc/iptables/iptables.sh
     cp assets/systemd/iptables.service /etc/systemd/system/iptables.service
     systemctl daemon-reload
     systemctl enable iptables.service
@@ -574,7 +574,7 @@ install_planetiler() {
     docker pull ghcr.io/onthegomap/planetiler:latest
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
     cp assets/generate_map.sh /usr/local/bin/generate-map
-    chmod 655 /usr/local/bin/generate-map
+    chmod 755 /usr/local/bin/generate-map
 }
 
 #######################################################
@@ -610,7 +610,6 @@ install_brouter() {
     cp assets/brouter/recoverybox-gps.js  /data/brouter/www/recoverybox-gps.js
     cp assets/brouter/gps-to-json.sh  /data/brouter/gps-to-json.sh
     cp assets/cron/gps-to-json /etc/cron.d/gps-to-json
-    chmod 644 /data/brouter/www/recoverybox.json
     chmod 644 /data/brouter/www/recoverybox-gps.js
     chmod 755 /data/brouter/gps-to-json.sh
     if [[ -f /data/brouter/www/index.html ]]; then
@@ -686,7 +685,7 @@ install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
     cp assets/cron/rbstatus /etc/cron.d/rbstatus
-    chmod 655 /usr/local/bin/rbstatus
+    chmod 755 /usr/local/bin/rbstatus
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
@@ -695,10 +694,10 @@ install_rbstatus() {
     fi
 }
 
-install-services-manager () {
+install_services-manager () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
     cp assets/services-manager.sh /usr/local/bin/services-manager
-    chmod 655 /usr/local/bin/services-manager
+    chmod 755 /usr/local/bin/services-manager
     if [[ -f /usr/local/bin/services-manager ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "services-manager installed successfully.${MSGNC}"
     else
@@ -710,7 +709,7 @@ install-services-manager () {
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
-    chmod 655 /usr/local/bin/network-configurator
+    chmod 755 /usr/local/bin/network-configurator
     if [[ -f /usr/local/bin/network-configurator ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
     else
@@ -819,7 +818,10 @@ main() {
     ## Install rbstatus
     install_rbstatus
     ## Install service manager
-    install-services-manager
+    install_services-manager
+    ## Install Meshtastic tools
+    install_meshtastic-web
+    install_meshtastic-python
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then

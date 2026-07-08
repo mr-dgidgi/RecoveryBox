@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.3.0] - 2026-07-05
+## [1.3.0] - 2026-07-08
 
 ### Added
 - `service-manager` added
@@ -15,8 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 - `network-configurator` - Command `MenuSetVlan` renamed `MenuSetWlan`
 - `rbstatus`: The commande don't block if there is no gps
-- `rbstatus`: **disabled** services are no more displayed as **critical**
+
+### Changes
 - `rbstatus`: 3s Timeout added on DNS check for a quicker execution
+- `rbstatus`: **disabled** services are no more displayed as **critical**
 
 
 ## [1.2.0] - 2026-06-09
