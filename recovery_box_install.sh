@@ -391,7 +391,7 @@ install_access_point() {
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
-    chmod 655 /etc/ap_config/ap_start.sh
+    chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
@@ -428,7 +428,7 @@ setup_iptables() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Setting up IPtables for NAT and routing..." "$MSGNC"
     mkdir -p /etc/iptables
     cp assets/iptables.sh /etc/iptables/iptables.sh
-    chmod 655 /etc/iptables/iptables.sh
+    chmod 755 /etc/iptables/iptables.sh
     cp assets/systemd/iptables.service /etc/systemd/system/iptables.service
     systemctl daemon-reload
     systemctl enable iptables.service
@@ -574,7 +574,7 @@ install_planetiler() {
     docker pull ghcr.io/onthegomap/planetiler:latest
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
     cp assets/generate_map.sh /usr/local/bin/generate-map
-    chmod 655 /usr/local/bin/generate-map
+    chmod 755 /usr/local/bin/generate-map
 }
 
 #######################################################
@@ -607,15 +607,15 @@ install_brouter() {
     chmod 644 /data/brouter/www/config.js
 
     # GPS integration for BRouter
-    cp assets/brouter/recoverybox.json  /data/brouter/www/recoverybox.json    
     cp assets/brouter/recoverybox-gps.js  /data/brouter/www/recoverybox-gps.js
     cp assets/brouter/gps-to-json.sh  /data/brouter/gps-to-json.sh
     cp assets/cron/gps-to-json /etc/cron.d/gps-to-json
-    chmod 644 /data/brouter/www/recoverybox.json
     chmod 644 /data/brouter/www/recoverybox-gps.js
     chmod 755 /data/brouter/gps-to-json.sh
     if [[ -f /data/brouter/www/index.html ]]; then
-        sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+        if ! grep -q '<script src="recoverybox-gps.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
     fi
 
     cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
@@ -685,7 +685,7 @@ install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
     cp assets/cron/rbstatus /etc/cron.d/rbstatus
-    chmod 655 /usr/local/bin/rbstatus
+    chmod 755 /usr/local/bin/rbstatus
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
@@ -694,10 +694,10 @@ install_rbstatus() {
     fi
 }
 
-install-services-manager () {
+install_services-manager () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
     cp assets/services-manager.sh /usr/local/bin/services-manager
-    chmod 655 /usr/local/bin/services-manager
+    chmod 755 /usr/local/bin/services-manager
     if [[ -f /usr/local/bin/services-manager ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "services-manager installed successfully.${MSGNC}"
     else
@@ -709,13 +709,54 @@ install-services-manager () {
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
-    chmod 655 /usr/local/bin/network-configurator
+    chmod 755 /usr/local/bin/network-configurator
     if [[ -f /usr/local/bin/network-configurator ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to install network configurator.${MSGNC}"
         exit 1
     fi
+}
+
+install_meshtastic-web () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Web..." "$MSGNC"
+    docker pull mrdgidgi/meshtastic-web-client:2.7.1
+    cp assets/systemd/meshtastic-web.service /etc/systemd/system/meshtastic-web.service
+    cp assets/sites-availables/meshtastic-web.conf /etc/apache2/sites-available/meshtastic-web.conf
+    a2ensite meshtastic-web.conf
+    systemctl daemon-reload
+    systemctl enable meshtastic-web.service
+    systemctl start meshtastic-web.service
+    if [[ $(systemctl is-active meshtastic-web) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Web service started successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to start Meshtastic Web service.${MSGNC}"
+        exit 1
+    fi
+}
+
+install_meshtastic-python () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Python..." "$MSGNC"
+    apt-get install -y -qq python3-venv python3-pip > /dev/null
+    python3 -m venv /data/meshtastic_env
+    /data/meshtastic_env/bin/pip install --upgrade pip > /dev/null
+    /data/meshtastic_env/bin/pip install meshtastic > /dev/null
+    cp assets/brouter/recoverybox-mesh.js /data/brouter/www/recoverybox-mesh.js
+    cp assets/meshtastic-daemon.py /data/brouter/meshtastic-daemon.py
+    cp assets/mesh-node.png /data/brouter/www/mesh-node.png
+    cp assets/cron/meshtastic-daemon /etc/cron.d/meshtastic-daemon
+    chmod 644 /data/brouter/www/recoverybox-mesh.js
+    chmod 755 /data/brouter/meshtastic-daemon.py
+    chmod 644 /data/brouter/www/mesh-node.png
+    if [[ -f /data/brouter/www/index.html ]]; then
+        if ! grep '<script src="recoverybox-mesh.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-mesh.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
+    fi
+    echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Python installed successfully.${MSGNC}"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set a static IP for the Meshtastic device in /etc/ap_config/dnsmasq.conf (dhcp-host=<mac>,<ip>)." "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set the Meshtastic device IP in the cron file /etc/cron.d/meshtastic-daemon." "$MSGNC"
+
 }
 
 main() {
@@ -777,7 +818,10 @@ main() {
     ## Install rbstatus
     install_rbstatus
     ## Install service manager
-    install-services-manager
+    install_services-manager
+    ## Install Meshtastic tools
+    install_meshtastic-web
+    install_meshtastic-python
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then
