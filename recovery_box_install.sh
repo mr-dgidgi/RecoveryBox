@@ -18,6 +18,10 @@ LANGUAGE="fr"
 WAN="Wan"
 LAN="Lan"
 
+VERSION_library="1.0"
+VERSION_fonts="main"
+VERSION_rtlsdr="v1.3.6"
+
 #######################################################
 # Functions
 #######################################################
@@ -443,28 +447,18 @@ setup_iptables() {
 
 #######################################################
 
-download_english_pdfs() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "installing English survival PDFs..." "$MSGNC"
-    mkdir -p /data/enpdf
-    git clone https://github.com/mr-dgidgi/RecoveryENPDF.git /data/enpdf
-    if [[ -d /data/enpdf ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "English survival PDFs installed successfully.${MSGNC}"
+install_library() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "installing PDF collection..." "$MSGNC"
+    mkdir -p /data/library
+    git clone --branch $VERSION_library --depth 1 https://github.com/mr-dgidgi/rb-library.git /data/library
+    cp assets/sites-availables/library.conf /etc/apache2/sites-available/library.conf
+    a2ensite library
+    systemctl reload apache2
+    echo -e "$MSGGREEN" "$SRVMSG" "library.recovery.box enabled" "$MSGNC"
+    if [[ -d /data/library ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "PDFs collection installed successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to install English survival PDFs.${MSGNC}"
-        exit 1
-    fi
-}
-
-#######################################################
-
-download_french_pdfs() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "installing French survival PDFs..." "$MSGNC"
-    mkdir -p /data/frpdf
-    git clone https://github.com/mr-dgidgi/RecoveryFRPDF.git /data/frpdf
-    if [[ -d /data/frpdf ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "French survival PDFs installed successfully.${MSGNC}"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "failed to install French survival PDFs.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to install PDFs collection.${MSGNC}"
         exit 1
     fi
 }
@@ -475,21 +469,10 @@ install_apache() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing and configuring Apache2..." "$MSGNC"
     apt-get install -y -qq apache2 > /dev/null
     a2enmod proxy proxy_http rewrite
-    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/sites-availables/enpdf.conf /etc/apache2/sites-available/enpdf.conf
-        a2ensite enpdf.conf
-        echo -e "$MSGGREEN" "$SRVMSG" "pdf.recovery.box enabled" "$MSGNC"
-    fi
-    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/sites-availables/nopanic.conf /etc/apache2/sites-available/nopanic.conf
-        a2ensite nopanic
-        echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
-    fi
     mkdir -p /data/www
     cp assets/index.html /data/www/index.html
     cp assets/sites-availables/000-www.conf /etc/apache2/sites-available/000-www.conf
     a2ensite 000-www
-    
     a2dissite 000-default
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
@@ -588,7 +571,7 @@ install_map_style_liberty() {
     cp assets/tileserver/styles/liberty/sprite.json /data/tileserver/styles/liberty/sprite.json
     cp assets/tileserver/styles/liberty/sprite@2x.png /data/tileserver/styles/liberty/sprite@2x.png
     cp assets/tileserver/styles/liberty/sprite@2x.json /data/tileserver/styles/liberty/sprite@2x.json
-    git clone https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+    git clone --branch $VERSION_fonts --depth 1 https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
 }
 
 #######################################################
@@ -657,6 +640,8 @@ download_world_mbtiles() {
     fi
 }
 
+#######################################################
+
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
     apt-get purge rtl-sdr -y -qq > /dev/null
@@ -669,7 +654,7 @@ install_rtlsdr_drivers() {
     rm -rvf /usr/local/bin/rtl_*
     apt-get install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
     (
-        git clone https://github.com/rtlsdrblog/rtl-sdr-blog
+        git clone --branch $VERSION_rtlsdr --depth 1 https://github.com/rtlsdrblog/rtl-sdr-blog
         cd rtl-sdr-blog/ || exit
         mkdir build
         cd build || exit
@@ -680,6 +665,8 @@ install_rtlsdr_drivers() {
         ldconfig
     )
 }
+
+#######################################################
 
 install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
@@ -694,6 +681,8 @@ install_rbstatus() {
     fi
 }
 
+#######################################################
+
 install_services-manager () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
     cp assets/services-manager.sh /usr/local/bin/services-manager
@@ -706,6 +695,8 @@ install_services-manager () {
     fi
 }
 
+#######################################################
+
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
@@ -717,6 +708,8 @@ install_network-configurator() {
         exit 1
     fi
 }
+
+#######################################################
 
 install_meshtastic-web () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Web..." "$MSGNC"
@@ -734,6 +727,8 @@ install_meshtastic-web () {
         exit 1
     fi
 }
+
+#######################################################
 
 install_meshtastic-python () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Python..." "$MSGNC"
@@ -759,6 +754,9 @@ install_meshtastic-python () {
 
 }
 
+#######################################################
+#######################################################
+#######################################################
 main() {
     if [[ -f /etc/rb_version ]]; then
         echo -e "-upgrading" >> /etc/rb_version
@@ -795,15 +793,10 @@ main() {
     enable_ipv4_routing
     ## Install Web Console
     install_console
-    ## Install PDFs
-    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        download_english_pdfs
-    fi
-    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        download_french_pdfs
-    fi
     ## Install Apache2 and configure it
     install_apache
+    ## Install library
+    install_library
     ## Install OpenWebRX Plus
     install_openwebrx
     ## Install Tileserver-gl
