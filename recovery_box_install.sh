@@ -704,7 +704,9 @@ install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
     cp assets/cron/rbstatus /etc/cron.d/rbstatus
+    cp assets/services.json /etc/recoverybox/services.json
     chmod 755 /usr/local/bin/rbstatus
+    chmod 644 /etc/recoverybox/services.json
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
@@ -791,8 +793,9 @@ install_meshtastic-python () {
 #######################################################
 #######################################################
 main() {
-    if [[ -f /etc/rb_version ]]; then
-        echo -e "-upgrading" >> /etc/rb_version
+    mkdir -p /etc/recoverybox
+    if [[ -f /etc/recoverybox/rb_version ]]; then
+        echo -e "-upgrading" >> /etc/recoverybox/rb_version
     fi
     ## checks / settings
     check_prerequisites
@@ -880,7 +883,7 @@ main() {
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping custom map generation." "$MSGNC"
     fi
-    cp VERSION /etc/rb_version
+    cp VERSION /etc/recoverybox/rb_version
     ## Final message
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 
