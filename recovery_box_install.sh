@@ -18,9 +18,12 @@ LANGUAGE="fr"
 WAN="Wan"
 LAN="Lan"
 
-VERSION_library="1.0"
+VERSION_library="1.0.1"
 VERSION_fonts="main"
 VERSION_rtlsdr="v1.3.6"
+
+INSTALL_Brouter=false
+INSTALL_apache=false
 
 #######################################################
 # Functions
@@ -221,7 +224,14 @@ install_docker() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Docker..." "$MSGNC"
     apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
     if [ $? -eq 0 ]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Docker installed successfully.${MSGNC}"
+        systemctl enable docker > /dev/null 2>&1
+        systemctl start docker > /dev/null 2>&1
+        if systemctl is-active --quiet docker; then
+            echo -e "$MSGGREEN" "$SRVMSG" "Docker installed successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "Docker service failed to start.${MSGNC}"
+            exit 1
+        fi
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to install Docker.${MSGNC}"
         exit 1
@@ -231,7 +241,7 @@ install_docker() {
 
 install_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing kiwix..." "$MSGNC"
-    mkdir /data/kiwix
+    mkdir -p /data/kiwix
     docker pull ghcr.io/kiwix/kiwix-serve:3.8.2
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Kiwix installed successfully.${MSGNC}"
@@ -374,7 +384,7 @@ install_console() {
     apt install -y -qq shellinabox > /dev/null
     cp assets/shellinabox /etc/default/shellinabox 
     cp assets/sites-availables/console.conf /etc/apache2/sites-available/console.conf
-    a2ensite console.conf
+    a2ensite console.conf > /dev/null
     systemctl reload apache2
     systemctl restart shellinabox
     if systemctl is-active --quiet shellinabox.service; then
@@ -450,9 +460,27 @@ setup_iptables() {
 install_library() {
     echo -e "$MSGYELLOW" "$SRVMSG" "installing PDF collection..." "$MSGNC"
     mkdir -p /data/library
-    git clone --branch $VERSION_library --depth 1 https://github.com/mr-dgidgi/rb-library.git /data/library
+
+    if [[ -d /data/library/.git ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Updating existing library repository..." "$MSGNC"
+        git -C /data/library remote set-url origin https://github.com/mr-dgidgi/rb-library.git > /dev/null 2>&1 || true
+        git -C /data/library fetch origin --tags --prune > /dev/null 2>&1
+
+        if git -C /data/library rev-parse --verify --quiet "refs/tags/$VERSION_library" >/dev/null 2>&1; then
+            git -C /data/library checkout -f "$VERSION_library" > /dev/null 2>&1
+            git -C /data/library reset --hard "$VERSION_library" > /dev/null 2>&1
+        else
+            echo -e "$MSGRED" "$SRVMSG" "Target version '$VERSION_library' was not found as a branch or tag in the repository." "$MSGNC"
+            exit 1
+        fi
+    else
+        rm -rf /data/library
+        git clone --depth 1 --branch "$VERSION_library" https://github.com/mr-dgidgi/rb-library.git /data/library
+    fi
+
+    mkdir -p /data/library/pdf/custom
     cp assets/sites-availables/library.conf /etc/apache2/sites-available/library.conf
-    a2ensite library
+    a2ensite library > /dev/null
     systemctl reload apache2
     echo -e "$MSGGREEN" "$SRVMSG" "library.recovery.box enabled" "$MSGNC"
     if [[ -d /data/library ]]; then
@@ -472,11 +500,12 @@ install_apache() {
     mkdir -p /data/www
     cp assets/index.html /data/www/index.html
     cp assets/sites-availables/000-www.conf /etc/apache2/sites-available/000-www.conf
-    a2ensite 000-www
-    a2dissite 000-default
+    a2ensite 000-www > /dev/null
+    a2dissite 000-default > /dev/null
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Apache2 configured successfully.${MSGNC}"
+        INSTALL_apache=true
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to configure Apache2.${MSGNC}"
         exit 1
@@ -564,14 +593,15 @@ install_planetiler() {
 
 install_map_style_liberty() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
-    mkdir -p /data/tileserver/fonts /data/tileserver/styles /data/tileserver/styles/liberty
+    mkdir -p /data/tileserver/styles /data/tileserver/styles/liberty
 
     cp assets/tileserver/styles/liberty/style.json /data/tileserver/styles/liberty/style.json
     cp assets/tileserver/styles/liberty/sprite.png /data/tileserver/styles/liberty/sprite.png
     cp assets/tileserver/styles/liberty/sprite.json /data/tileserver/styles/liberty/sprite.json
     cp assets/tileserver/styles/liberty/sprite@2x.png /data/tileserver/styles/liberty/sprite@2x.png
     cp assets/tileserver/styles/liberty/sprite@2x.json /data/tileserver/styles/liberty/sprite@2x.json
-    git clone --branch $VERSION_fonts --depth 1 https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+    rm -rf /data/tileserver/fonts
+    git clone --branch "$VERSION_fonts" --depth 1 https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
 }
 
 #######################################################
@@ -602,13 +632,14 @@ install_brouter() {
     fi
 
     cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
-    a2ensite carto.conf
+    a2ensite carto.conf > /dev/null
     systemctl reload apache2
     systemctl daemon-reload
     systemctl enable brouter.service
     systemctl start brouter.service
     if [[ $(systemctl is-active brouter) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "BRouter server service started successfully.${MSGNC}"
+        INSTALL_Brouter=true
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to start BRouter server service.${MSGNC}"
         exit 1
@@ -654,8 +685,9 @@ install_rtlsdr_drivers() {
     rm -rvf /usr/local/bin/rtl_*
     apt-get install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
     (
-        git clone --branch $VERSION_rtlsdr --depth 1 https://github.com/rtlsdrblog/rtl-sdr-blog
-        cd rtl-sdr-blog/ || exit
+        rm -rf /tmp/rtl-sdr-blog
+        git clone --branch "$VERSION_rtlsdr" --depth 1 https://github.com/rtlsdrblog/rtl-sdr-blog /tmp/rtl-sdr-blog
+        cd /tmp/rtl-sdr-blog || exit
         mkdir build
         cd build || exit
         cmake ../ -DINSTALL_UDEV_RULES=ON
@@ -716,7 +748,7 @@ install_meshtastic-web () {
     docker pull mrdgidgi/meshtastic-web-client:2.7.1
     cp assets/systemd/meshtastic-web.service /etc/systemd/system/meshtastic-web.service
     cp assets/sites-availables/meshtastic-web.conf /etc/apache2/sites-available/meshtastic-web.conf
-    a2ensite meshtastic-web.conf
+    a2ensite meshtastic-web.conf > /dev/null
     systemctl daemon-reload
     systemctl enable meshtastic-web.service
     systemctl start meshtastic-web.service
@@ -733,6 +765,7 @@ install_meshtastic-web () {
 install_meshtastic-python () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Python..." "$MSGNC"
     apt-get install -y -qq python3-venv python3-pip > /dev/null
+    rm -rf /data/meshtastic_env
     python3 -m venv /data/meshtastic_env
     /data/meshtastic_env/bin/pip install --upgrade pip > /dev/null
     /data/meshtastic_env/bin/pip install meshtastic > /dev/null
@@ -744,7 +777,7 @@ install_meshtastic-python () {
     chmod 755 /data/brouter/meshtastic-daemon.py
     chmod 644 /data/brouter/www/mesh-node.png
     if [[ -f /data/brouter/www/index.html ]]; then
-        if ! grep '<script src="recoverybox-mesh.js"></script>' /data/brouter/www/index.html; then
+        if ! grep -Fq '<script src="recoverybox-mesh.js"></script>' /data/brouter/www/index.html; then
             sed -i 's|</body>|\t<script src="recoverybox-mesh.js"></script>\n</body>|g' /data/brouter/www/index.html
         fi
     fi
@@ -791,21 +824,23 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
-    ## Install Web Console
-    install_console
     ## Install Apache2 and configure it
     install_apache
-    ## Install library
-    install_library
+    if [[ $INSTALL_apache == true ]]; then
+        ## Install library
+        install_library
+        ## Install Web Console
+        install_console
+        ## Install Tileserver-gl
+        install_tileserver
+        install_map_style_liberty
+        ## Install Planetiler
+        install_planetiler
+        ## Install BRouter
+        install_brouter
+    fi
     ## Install OpenWebRX Plus
     install_openwebrx
-    ## Install Tileserver-gl
-    install_tileserver
-    install_map_style_liberty
-    ## Install Planetiler
-    install_planetiler
-    ## Install BRouter
-    install_brouter
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
     ## Install rbstatus
@@ -814,7 +849,9 @@ main() {
     install_services-manager
     ## Install Meshtastic tools
     install_meshtastic-web
-    install_meshtastic-python
+    if [[ $INSTALL_Brouter == true ]]; then
+        install_meshtastic-python
+    fi
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then

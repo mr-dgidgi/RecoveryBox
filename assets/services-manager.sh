@@ -95,7 +95,7 @@ select_service () {
                 break
                 ;;
             8) 
-                CURRENTSERVICE="tileserver.service"
+                CURRENTSERVICE="tileserver-gl.service"
                 break
                 ;;
             *) 
