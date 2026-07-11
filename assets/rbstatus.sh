@@ -1,5 +1,11 @@
 #!/bin/bash
 
+SRVMSG=' =+= '
+MSGGREEN='\033[0;32m'
+MSGYELLOW='\033[0;33m'
+MSGRED='\033[0;31m'
+MSGNC='\033[0m'
+
 ConfigFile="/etc/recoverybox/services.json"
 OutputJson="/data/www/rbstatus.json"
 Light=false
@@ -34,7 +40,7 @@ Get_ServiceStatus() {
     ServicesJson="["
     First=true
 
-    for Row in $(jq -c '.[]' "$ConfigFile"); do
+    while IFS= read -r Row; do
         Id=$(echo "$Row" | jq -r '.id')
         SvcName=$(echo "$Row" | jq -r '.name')
         SvcType=$(echo "$Row" | jq -r '.type')
@@ -42,6 +48,7 @@ Get_ServiceStatus() {
         CheckUrl=$(echo "$Row" | jq -r '.check_url // empty')
         CheckHost=$(echo "$Row" | jq -r '.check_host // empty')
         Activated=$(echo "$Row" | jq -r '.activated // false')
+        SvcUrl=$(echo "$Row" | jq -r '.url // empty')
 
         if $Light; then
             if [[ "$SvcType" == "ping" ]] || [[ "$SvcType" == "dns" ]]; then
@@ -68,9 +75,9 @@ Get_ServiceStatus() {
             esac
 
             [[ "$First" == "true" ]] && First=false || ServicesJson+=","
-            ServicesJson+="{\"id\":\"$Id\",\"name\":\"$SvcName\",\"status\":$SvcStatus}"
+            ServicesJson+="{\"id\":\"$Id\",\"name\":\"$SvcName\",\"status\":$SvcStatus,\"url\":\"$SvcUrl\"}"
         fi
-    done
+    done < <(jq -c '.[]' "$ConfigFile")
     ServicesJson+="]"
 
     GpsJson=$(Get_GPS)
@@ -100,16 +107,21 @@ Get_GPS() {
         case "$Mode" in
             2) Fix="2D Lock" ;;
             3) Fix="3D Lock" ;;
-            *) Fix="No Fix"; GpsStatus=1 ;;
+            *) Fix="No Fix" ;;
         esac
     fi
     echo "{\"status\":$GpsStatus,\"fix\":\"$Fix\",\"lat\":$Lat,\"lon\":$Lon,\"alt\":$Alt}"
 }
 
 Get_System() {
-    CpuUsage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
-    RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}')
-    SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}')
+    CpuUsage=$(LC_NUMERIC=C top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
+    RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}' | tr ',' '.')
+    SwapTotal=$(free | awk 'NR==3 {print $2}')
+    if [[ "$SwapTotal" -gt 0 ]]; then
+        SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}' | tr ',' '.')
+    else
+        SwapUsage="0.0"
+    fi
     Temp0=$(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))
     Temp1=$(($(cat /sys/class/thermal/thermal_zone1/temp) / 1000))
     Temp2=$(($(cat /sys/class/thermal/thermal_zone2/temp) / 1000))
@@ -119,20 +131,20 @@ Get_System() {
 # --- Fonctions d'affichage (lecture JSON) ---
 
 Print_ServiceStatus() {
-    for Row in $(jq -c '.services[]' "$OutputJson"); do
+    while IFS= read -r Row; do
         SvcName=$(echo "$Row" | jq -r '.name')
         SvcStatus=$(echo "$Row" | jq -r '.status')
 
         if [[ "$SvcStatus" -eq 0 ]]; then
-            Badge="\033[0;32m Running \033[0m"
+            Badge="${MSGGREEN} Running ${MSGNC}"
         elif [[ "$SvcStatus" -eq 1 ]]; then
-            Badge="\033[0;31m Critical \033[0m"
+            Badge="${MSGRED} Critical ${MSGNC}"
         else
-            Badge="\033[0;33m Disabled \033[0m"
+            Badge="${MSGYELLOW} Disabled ${MSGNC}"
         fi
 
-        echo -e "=+= $SvcName : \t\t\t\t $Badge"
-    done
+        printf "%s%-40s %b\n" "$SRVMSG" "$SvcName :" "$Badge"
+    done < <(jq -c '.services[]' "$OutputJson")
 }
 
 Print_GPS() {
@@ -143,35 +155,35 @@ Print_GPS() {
     Alt=$(jq -r '.gps.alt' "$OutputJson")
 
     if [[ "$GpsStatus" -eq 0 ]]; then
-        Badge="\033[0;32m Running \033[0m"
+        Badge="${MSGGREEN} Running ${MSGNC}"
     else
-        Badge="\033[0;31m No GPS device \033[0m"
+        Badge="${MSGRED} No GPS device ${MSGNC}"
     fi
-    echo -e "=+= GPS status: \t\t\t\t $Badge"
+    printf "%s%-40s %b\n" "$SRVMSG" "GPS status :" "$Badge"
 
     case "$Fix" in
         "2D Lock")
-            Badge="\033[0;33m 2D Lock \033[0m"
-            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon"
+            Badge="${MSGYELLOW} 2D Lock ${MSGNC}"
+            Pos="Lat: $Lat  Lon: $Lon"
             ;;
         "3D Lock")
-            Badge="\033[0;32m 3D Lock \033[0m"
-            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon\n\t\t\t\t\t\t Alt: ${Alt}m"
+            Badge="${MSGGREEN} 3D Lock ${MSGNC}"
+            Pos="Lat: $Lat  Lon: $Lon  Alt: ${Alt}m"
             ;;
         *)
-            Badge="\033[0;31m No Fix \033[0m"
+            Badge="${MSGRED} No Fix ${MSGNC}"
             Pos="Searching..."
             ;;
     esac
-    echo -e "=+= GPS fix: \t\t\t\t\t $Badge"
+    printf "%s%-40s %b\n" "$SRVMSG" "GPS fix :" "$Badge"
 
     if [[ "$Fix" == "2D Lock" ]] || [[ "$Fix" == "3D Lock" ]]; then
-        echo -e "=+= GPS Position: \t\t\t\t \033[0;34m$Pos\033[0m"
+        printf "%s%-40s ${MSGGREEN}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "$Pos"
     else
         if [[ "$GpsStatus" -eq 1 ]]; then
-            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31mNo GPS device\033[0m"
+            printf "%s%-40s ${MSGRED}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "No GPS device"
         else
-            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31m$Pos\033[0m"
+            printf "%s%-40s ${MSGRED}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "$Pos"
         fi
     fi
 }
@@ -184,43 +196,44 @@ Print_System() {
 
     CpuInt=${CpuUsage%.*}
     if [[ $CpuInt -gt 80 ]]; then
-        Color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $CpuInt -gt 60 ]]; then
-        Color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        Color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= CPU Usage : \t\t\t\t  ${Color}${CpuUsage}%\033[0m"
+    printf "%s%-40s %b\n" "$SRVMSG" "CPU Usage :" "${Color}${CpuUsage}%${MSGNC}"
 
     RamInt=${RamUsage%.*}
     if [[ $RamInt -gt 80 ]]; then
-        Color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $RamInt -gt 60 ]]; then
-        Color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        Color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= RAM Usage : \t\t\t\t  ${Color}${RamUsage}%\033[0m"
+    printf "%s%-40s %b\n" "$SRVMSG" "RAM Usage :" "${Color}${RamUsage}%${MSGNC}"
 
     SwapInt=${SwapUsage%.*}
     if [[ $SwapInt -gt 80 ]]; then
-        Color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $SwapInt -gt 60 ]]; then
-        Color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        Color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= Swap Usage : \t\t\t\t  ${Color}${SwapUsage}%\033[0m"
+    printf "%s%-40s %b\n" "$SRVMSG" "Swap Usage :" "${Color}${SwapUsage}%${MSGNC}"
 
+    printf "%s%-40s\n" "$SRVMSG" "Temperatures :"
     for T in "${Temps[@]}"; do
         if [[ $T -gt 80 ]]; then
-            Color="\033[0;31m"
+            Color="$MSGRED"
         elif [[ $T -gt 60 ]]; then
-            Color="\033[0;33m"
+            Color="$MSGYELLOW"
         else
-            Color="\033[0;32m"
+            Color="$MSGGREEN"
         fi
-        echo -e "\t\t\t\t\t\t  ${Color}${T}°C\033[0m"
+        printf "%-45s %b\n" "" "${Color}${T}°C${MSGNC}"
     done
 }
 

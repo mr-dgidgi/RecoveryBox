@@ -464,7 +464,7 @@ install_library() {
     if [[ -d /data/library/.git ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Updating existing library repository..." "$MSGNC"
         git -C /data/library remote set-url origin https://github.com/mr-dgidgi/rb-library.git > /dev/null 2>&1 || true
-        git -C /data/library fetch origin --tags --prune > /dev/null 2>&1
+        git -C /data/library fetch origin --tags --prune > /dev/null 2>&1œ
 
         if git -C /data/library rev-parse --verify --quiet "refs/tags/$VERSION_library" >/dev/null 2>&1; then
             git -C /data/library checkout -f "$VERSION_library" > /dev/null 2>&1
