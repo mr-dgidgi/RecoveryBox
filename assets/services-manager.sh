@@ -64,6 +64,7 @@ select_service () {
         echo -e "6. OpenWebRX"
         echo -e "7. Brouter"
         echo -e "8. Tileserver"
+        echo -e "9. Meshtastic web"
         read -rp "Choose a service : " ServiceChoosed
         case $ServiceChoosed in
             1) 
@@ -76,6 +77,7 @@ select_service () {
                 ;;
             3) 
                 CURRENTSERVICE="apache2.service"
+                echo -e "$MSGYELLOW" "$SRVMSG" "Note: Actions on Apache2 service may affect other services." "$MSGNC"
                 break
                 ;;
             4) 
@@ -95,7 +97,11 @@ select_service () {
                 break
                 ;;
             8) 
-                CURRENTSERVICE="tileserver.service"
+                CURRENTSERVICE="tileserver-gl.service"
+                break
+                ;;
+            9) 
+                CURRENTSERVICE="meshtastic-web.service"
                 break
                 ;;
             *) 
