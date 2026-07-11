@@ -105,11 +105,9 @@ systemctl is-active --quiet ap.service && StatAP=0 || StatAP=1
 systemctl is-enabled --quiet ap.service || StatAP=2
 systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
 systemctl is-enabled --quiet apache2.service || StatApache=2
-
 systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
 systemctl is-enabled --quiet apache2.service || StatApache=2
-StatPDF=$(if [[ "$(curl -q -I -H "Host: pdf.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
-StatNopanic=$(if [[ "$(curl -q -I -H "Host: nopanic.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1|cut -d$' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
+Statlibrary=$(if [[ "$(curl -q -I -H "Host: library.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
 systemctl is-active --quiet openwebrx.service && StatOWRX=0 || StatOWRX=1
 systemctl is-enabled --quiet openwebrx.service || StatOWRX=2
 StatPing=$(Get_InternetPing)
@@ -122,6 +120,8 @@ systemctl is-active --quiet tileserver-gl.service && StatTileserver=0 || StatTil
 systemctl is-enabled --quiet tileserver-gl.service || StatTileserver=2
 systemctl is-active --quiet shellinabox.service && StatSIAB=0 || StatSIAB=1
 systemctl is-enabled --quiet shellinabox.service || StatSIAB=2
+systemctl is-active --quiet meshtastic-web.service && StatMeshtastic=0 || StatMeshtastic=1
+systemctl is-enabled --quiet meshtastic-web.service || StatMeshtastic=2
 
 Print_Temp() {
     # On initialise les valeurs
@@ -198,13 +198,13 @@ main() {
     Print_Status "$StatChrony" "Time Sync"
     Print_Status "$StatAP" "AccessPoint"
     Print_Status "$StatApache" "Apache server"
-    Print_Status "$StatPDF" "Web English PDF"
-    Print_Status "$StatNopanic" "Web French PDF"
+    Print_Status "$Statlibrary" "PDF Library"
     Print_Status "$StatSIAB" "Web Console"
     Print_Status "$StatKiwix" "Kiwix Server"
     Print_Status "$StatOWRX" "OpenWebRX"
     Print_Status "$StatBrouter" "Brouter (carto)"
     Print_Status "$StatTileserver" "Tilesrv (carto)"
+    Print_Status "$StatMeshtastic" "Meshtastic web"
     echo -e "#########################################################"
     echo -e "## GPS"
 
@@ -227,6 +227,7 @@ light () {
     Print_Status "$StatOWRX" "OpenWebRX"
     Print_Status "$StatBrouter" "Brouter (carto)"
     Print_Status "$StatTileserver" "Tilesrv (carto)"
+    Print_Status "$StatMeshtastic" "Meshtastic web"
 }
 
 if [[ "$1" == "light" ]];then
