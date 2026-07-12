@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "baseBranches": ["Pre-Release"],
   "customManagers": [
     {
       "customType": "regex",
