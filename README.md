@@ -53,6 +53,13 @@ Pour une installation complète avec une cartographie de la France, **prévoir 4
 
 Après installation, redémarrez le système pour activer tous les services.
 
+---
+
+## Fonctionnement des branches
+
+- `main` : dernière version testée, peut contenir des changements mineurs qui ne sont pas encore intégré à une release officielle
+- `Pre-Release` : dernières implémentations ajoutées, installation complète non recettée
+- `Releases / Tag` : versions de production
 
 
 ---
@@ -110,3 +117,12 @@ This project is developed to rely on a **Debian 13** installation chain using a 
 For a complete installation with French map data, expect approximately **4 to 5 hours** with a good internet connection and an average machine.
 
 Once the installation is complete, **reboot the system** to activate all services.
+
+---
+
+## Branch Operations
+
+- `main`: latest tested version, may contain minor changes not yet included in an official release
+- `Pre-Release`: latest implementations added, full installation not yet validated
+- `Releases / Tag`: production versions
+
