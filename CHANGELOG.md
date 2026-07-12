@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.3.0] - 2026-07-11
+## [1.3.0] - 2026-07-12
 
 ### Added
 - `service-manager` added
@@ -16,11 +16,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 - `network-configurator` - Command `MenuSetVlan` renamed `MenuSetWlan`
 - `rbstatus`: The commande don't block if there is no gps
+- `rbstatus`: the script don't crash anymore if a temp sensor file is not available
+- Wan routing : the traffic switch automatically to wifi WAN if the ethernet port is disconected
+- `network-configurator` : bug with the renaming of all interface "wlanAP" during installation is fixed
+- DNS issue during installation due to the activation of systemd-resolve is fixed
 
 ### Changes
 - `rbstatus`: 3s Timeout added on DNS check for a quicker execution
 - `rbstatus`: **disabled** services are no more displayed as **critical**
 - `frpdf` and `enpdf` replaced by rb-library
+- `network-configurator` : server restart no more needed after interface name change
 
 
 ## [1.2.0] - 2026-06-09

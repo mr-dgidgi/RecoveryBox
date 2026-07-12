@@ -113,8 +113,8 @@ MACAddress=${MacAddress}
 [Link]
 Name=${NewName}
 EOF
+    systemctl restart systemd-udev-trigger
     echo -e "$MSGGREEN" "$SRVMSG" "Interface ${MacAddress} renamed to ${NewName}" "$MSGNC"
-    echo -e "$MSGYELLOW" "$SRVMSG" "The system MUST reboot to apply interface renaming" "$MSGNC"
 }
 
 # Add an interface to firewall WAN configuration

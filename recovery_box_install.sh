@@ -19,7 +19,7 @@ WAN="Wan"
 LAN="Lan"
 
 VERSION_library="1.0.1"
-VERSION_fonts="main"
+VERSION_fonts="master"
 VERSION_rtlsdr="v1.3.6"
 VERSION_brouterContainer="v1.7.9"
 VERSION_brouterWeb="0.18.1"
@@ -197,22 +197,6 @@ EOF
 
     if [ $? -ne 0 ]; then
         echo -e "$MSGRED" "$SRVMSG" "failed to add Docker repository.${MSGNC}"
-        exit 1
-    fi
-
-    curl -fsSL https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/Release.key -o /etc/apt/keyrings/gpxsee.asc
-    chmod a+r /etc/apt/keyrings/gpxsee.asc
-    tee /etc/apt/sources.list.d/gpxsee.sources > /dev/null <<EOF
-Types: deb
-URIs: https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/
-Suites: /
-Components: 
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/gpxsee.asc
-EOF
-
-    if [ $? -ne 0 ]; then
-        echo -e "$MSGRED" "$SRVMSG" "failed to add GPXSee repository.${MSGNC}"
         exit 1
     fi
 
@@ -413,8 +397,10 @@ install_access_point() {
     docker pull mrdgidgi/simple-hotspot:"${VERSION_simpleHotspot}"
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/ap_start.sh
     sed -i "s/VERSION_simpleHotspot/${VERSION_simpleHotspot}/g" /etc/ap_config/ap_start.sh
     chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
@@ -447,6 +433,24 @@ enable_ipv4_routing() {
     fi
 }
 
+#######################################################
+
+disable_linkdown_routing() {
+    echo -e "$MSGYELLOW""$SRVMSG" "Disabling linkdown routing..." "$MSGNC"
+if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing already disabled.${MSGNC}"
+    else
+        echo "net.ipv4.conf.all.ignore_routes_with_linkdown=1" >> /usr/lib/sysctl.d/50-default.conf
+        sysctl -p > /dev/null
+
+        if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+            echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing disabled successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "failed to disable linkdown routing.${MSGNC}"
+            exit 1
+        fi
+    fi
+}
 #######################################################
 
 setup_iptables() {
@@ -842,6 +846,8 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
+    ## Disable linkdown routing
+    disable_linkdown_routing
     ## Install Apache2 and configure it
     install_apache
     if [[ $INSTALL_apache == true ]]; then
