@@ -1,8 +1,18 @@
 #!/bin/bash
 
+SRVMSG=' =+= '
+MSGGREEN='\033[0;32m'
+MSGYELLOW='\033[0;33m'
+MSGRED='\033[0;31m'
+MSGNC='\033[0m'
+
+ConfigFile="/etc/recoverybox/services.json"
+OutputJson="/data/www/rbstatus.json"
+Light=false
+
+# --- Fonctions de collecte (écriture JSON) ---
 
 Get_InternetPing() {
-
     PingGoogle=$(ping -c 1 8.8.8.8 &> /dev/null; echo $?)
     PingCloudflare=$(ping -c 1 1.1.1.1 &> /dev/null; echo $?)
     PingYandex=$(ping -c 1 77.88.8.8 &> /dev/null; echo $?)
@@ -26,211 +36,233 @@ Get_InternetResolve() {
     fi
 }
 
-Print_Status() {
-    Name="$2"
-    if [[ "$1" -eq 0 ]]; then
-        Status="\033[0;32m Running \033[0m"
-    elif [[ "$1" -eq 1 ]]; then
-        Status="\033[0;31m Critical \033[0m"
-    else
-        Status="\033[0;33m Disabled \033[0m"
-    fi
+Get_ServiceStatus() {
+    ServicesJson="["
+    First=true
 
-    echo -e "=+= $Name : \t\t\t\t $Status"
+    while IFS= read -r Row; do
+        Id=$(echo "$Row" | jq -r '.id')
+        SvcName=$(echo "$Row" | jq -r '.name')
+        SvcType=$(echo "$Row" | jq -r '.type')
+        Unit=$(echo "$Row" | jq -r '.unit // empty')
+        CheckUrl=$(echo "$Row" | jq -r '.check_url // empty')
+        CheckHost=$(echo "$Row" | jq -r '.check_host // empty')
+        Activated=$(echo "$Row" | jq -r '.activated // false')
+        SvcUrl=$(echo "$Row" | jq -r '.url // empty')
+
+        if $Light; then
+            if [[ "$SvcType" == "ping" ]] || [[ "$SvcType" == "dns" ]]; then
+                continue
+            fi
+        fi
+
+        if [[ "$Activated" == "true" ]]; then
+            case "$SvcType" in
+                systemd)
+                    systemctl is-active --quiet "$Unit" && SvcStatus=0 || SvcStatus=1
+                    systemctl is-enabled --quiet "$Unit" || SvcStatus=2
+                    ;;
+                http)
+                    HttpCode=$(curl -q -I -H "Host: $CheckHost" "$CheckUrl" 2>/dev/null | head -n 1 | cut -d' ' -f2)
+                    [[ "$HttpCode" == "200" ]] && SvcStatus=0 || SvcStatus=1
+                    ;;
+                ping)
+                    SvcStatus=$(Get_InternetPing)
+                    ;;
+                dns)
+                    SvcStatus=$(Get_InternetResolve)
+                    ;;
+            esac
+
+            [[ "$First" == "true" ]] && First=false || ServicesJson+=","
+            ServicesJson+="{\"id\":\"$Id\",\"name\":\"$SvcName\",\"status\":$SvcStatus,\"url\":\"$SvcUrl\"}"
+        fi
+    done < <(jq -c '.[]' "$ConfigFile")
+    ServicesJson+="]"
+
+    GpsJson=$(Get_GPS)
+    SystemJson=$(Get_System)
+    jq -n \
+        --argjson services "$ServicesJson" \
+        --argjson gps "$GpsJson" \
+        --argjson system "$SystemJson" \
+        '{services: $services, gps: $gps, system: $system}' > "$OutputJson"
 }
 
-Print_GPSstatus() {
-    # Use a timeout to avoid blocking when no GPS is connected
-    gps_count=$(timeout 3s gpspipe -w -n 5 2>/dev/null | grep -c "TPV" 2>/dev/null)
-    rc=$?
-    gps_count=${gps_count:-0}
-
-    if [[ $rc -eq 124 ]]; then
-        Status="\033[0;31m No GPS device \033[0m"
-    elif [[ "$gps_count" -ge 1 ]]; then
-        Status="\033[0;32m Running \033[0m"
-    else
-        Status="\033[0;31m Reception error \033[0m"
-    fi
-
-    echo -e "=+= GPS status: \t\t\t\t $Status"
-}
-
-Print_GPSloc() {
-    # Collect one TPV line but avoid blocking if no GPS is connected
+Get_GPS() {
     GPSData=$(timeout 3s gpspipe -w -n 5 2>/dev/null | grep "TPV" | tail -n 1)
 
     if [[ -z "$GPSData" ]]; then
-        mode=0
-        Lat=""
-        Lon=""
-        Alt=""
+        GpsStatus=1
+        Fix="none"
+        Lat="null"
+        Lon="null"
+        Alt="null"
     else
-        mode=$(echo "$GPSData" | jq -r '.mode' 2>/dev/null || echo 0)
-        Lat=$(echo "$GPSData" | jq -r '.lat' 2>/dev/null || echo "")
-        Lon=$(echo "$GPSData" | jq -r '.lon' 2>/dev/null || echo "")
-        Alt=$(echo "$GPSData" | jq -r '.alt' 2>/dev/null || echo "")
+        GpsStatus=0
+        Mode=$(echo "$GPSData" | jq -r '.mode' 2>/dev/null || echo 0)
+        Lat=$(echo "$GPSData" | jq -r '.lat // null' 2>/dev/null)
+        Lon=$(echo "$GPSData" | jq -r '.lon // null' 2>/dev/null)
+        Alt=$(echo "$GPSData" | jq -r '.alt // null' 2>/dev/null)
+        case "$Mode" in
+            2) Fix="2D Lock" ;;
+            3) Fix="3D Lock" ;;
+            *) Fix="No Fix" ;;
+        esac
     fi
+    echo "{\"status\":$GpsStatus,\"fix\":\"$Fix\",\"lat\":$Lat,\"lon\":$Lon,\"alt\":$Alt}"
+}
 
-    case "$mode" in
-        2)
-            Status="\033[0;33m 2D Lock \033[0m"
-            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon"
+Get_System() {
+    CpuUsage=$(LC_NUMERIC=C top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
+    RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}' | tr ',' '.')
+    SwapTotal=$(free | awk 'NR==3 {print $2}')
+    if [[ "$SwapTotal" -gt 0 ]]; then
+        SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}' | tr ',' '.')
+    else
+        SwapUsage="0.0"
+    fi
+    Temp0=$(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))
+    Temp1=$(($(cat /sys/class/thermal/thermal_zone1/temp) / 1000))
+    Temp2=$(($(cat /sys/class/thermal/thermal_zone2/temp) / 1000))
+    echo "{\"cpu\":$CpuUsage,\"ram\":$RamUsage,\"swap\":$SwapUsage,\"temp\":[$Temp0,$Temp1,$Temp2]}"
+}
+
+# --- Fonctions d'affichage (lecture JSON) ---
+
+Print_ServiceStatus() {
+    while IFS= read -r Row; do
+        SvcName=$(echo "$Row" | jq -r '.name')
+        SvcStatus=$(echo "$Row" | jq -r '.status')
+
+        if [[ "$SvcStatus" -eq 0 ]]; then
+            Badge="${MSGGREEN} Running ${MSGNC}"
+        elif [[ "$SvcStatus" -eq 1 ]]; then
+            Badge="${MSGRED} Critical ${MSGNC}"
+        else
+            Badge="${MSGYELLOW} Disabled ${MSGNC}"
+        fi
+
+        printf "%s%-40s %b\n" "$SRVMSG" "$SvcName :" "$Badge"
+    done < <(jq -c '.services[]' "$OutputJson")
+}
+
+Print_GPS() {
+    GpsStatus=$(jq -r '.gps.status' "$OutputJson")
+    Fix=$(jq -r '.gps.fix' "$OutputJson")
+    Lat=$(jq -r '.gps.lat' "$OutputJson")
+    Lon=$(jq -r '.gps.lon' "$OutputJson")
+    Alt=$(jq -r '.gps.alt' "$OutputJson")
+
+    if [[ "$GpsStatus" -eq 0 ]]; then
+        Badge="${MSGGREEN} Running ${MSGNC}"
+    else
+        Badge="${MSGRED} No GPS device ${MSGNC}"
+    fi
+    printf "%s%-40s %b\n" "$SRVMSG" "GPS status :" "$Badge"
+
+    case "$Fix" in
+        "2D Lock")
+            Badge="${MSGYELLOW} 2D Lock ${MSGNC}"
+            Pos="Lat: $Lat  Lon: $Lon"
             ;;
-        3)
-            Status="\033[0;32m 3D Lock \033[0m"
-            Pos="Lat: $Lat\n\t\t\t\t\t\t Lon: $Lon\n\t\t\t\t\t\t Alt: ${Alt}m"
+        "3D Lock")
+            Badge="${MSGGREEN} 3D Lock ${MSGNC}"
+            Pos="Lat: $Lat  Lon: $Lon  Alt: ${Alt}m"
             ;;
         *)
-            Status="\033[0;31m No Fix \033[0m"
+            Badge="${MSGRED} No Fix ${MSGNC}"
             Pos="Searching..."
             ;;
     esac
-    echo -e "=+= GPS fix: \t\t\t\t\t $Status"
-    if [[ "$mode" -ge 2 ]]; then
-        echo -e "=+= GPS Position: \t\t\t\t \033[0;34m$Pos\033[0m"
+    printf "%s%-40s %b\n" "$SRVMSG" "GPS fix :" "$Badge"
+
+    if [[ "$Fix" == "2D Lock" ]] || [[ "$Fix" == "3D Lock" ]]; then
+        printf "%s%-40s ${MSGGREEN}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "$Pos"
     else
-        # Distinguish between no GPS device and lack of fix
-        if [[ -z "$GPSData" ]]; then
-            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31mNo GPS device\033[0m"
+        if [[ "$GpsStatus" -eq 1 ]]; then
+            printf "%s%-40s ${MSGRED}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "No GPS device"
         else
-            echo -e "=+= GPS Position: \t\t\t\t  \033[0;31m$Pos\033[0m"
+            printf "%s%-40s ${MSGRED}%s${MSGNC}\n" "$SRVMSG" "GPS Position :" "$Pos"
         fi
     fi
 }
 
-systemctl is-active --quiet kiwix.service && StatKiwix=0 || StatKiwix=1
-systemctl is-enabled --quiet kiwix.service || StatKiwix=2
-systemctl is-active --quiet ap.service && StatAP=0 || StatAP=1
-systemctl is-enabled --quiet ap.service || StatAP=2
-systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
-systemctl is-enabled --quiet apache2.service || StatApache=2
-systemctl is-active --quiet apache2.service && StatApache=0 || StatApache=1
-systemctl is-enabled --quiet apache2.service || StatApache=2
-Statlibrary=$(if [[ "$(curl -q -I -H "Host: library.recovery.box" http://127.0.0.1 2>/dev/null | head -n 1 | cut -d' ' -f2)" == "200" ]]; then echo "0"; else echo "1"; fi)
-systemctl is-active --quiet openwebrx.service && StatOWRX=0 || StatOWRX=1
-systemctl is-enabled --quiet openwebrx.service || StatOWRX=2
-StatPing=$(Get_InternetPing)
-StatResolve=$(Get_InternetResolve)
-systemctl is-active --quiet chrony.service && StatChrony=0 || StatChrony=1
-systemctl is-enabled --quiet chrony.service || StatChrony=2
-systemctl is-active --quiet brouter.service && StatBrouter=0 || StatBrouter=1
-systemctl is-enabled --quiet brouter.service || StatBrouter=2
-systemctl is-active --quiet tileserver-gl.service && StatTileserver=0 || StatTileserver=1
-systemctl is-enabled --quiet tileserver-gl.service || StatTileserver=2
-systemctl is-active --quiet shellinabox.service && StatSIAB=0 || StatSIAB=1
-systemctl is-enabled --quiet shellinabox.service || StatSIAB=2
-systemctl is-active --quiet meshtastic-web.service && StatMeshtastic=0 || StatMeshtastic=1
-systemctl is-enabled --quiet meshtastic-web.service || StatMeshtastic=2
+Print_System() {
+    CpuUsage=$(jq -r '.system.cpu' "$OutputJson")
+    RamUsage=$(jq -r '.system.ram' "$OutputJson")
+    SwapUsage=$(jq -r '.system.swap' "$OutputJson")
+    Temps=($(jq -r '.system.temp[]' "$OutputJson"))
 
-Print_Temp() {
-    # On initialise les valeurs
-    local Temp[0]=$(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))
-    local Temp[1]=$(($(cat /sys/class/thermal/thermal_zone1/temp) / 1000))
-    local Temp[2]=$(($(cat /sys/class/thermal/thermal_zone2/temp) / 1000))
-    
-    # On utilise l'index (0, 1, 2) pour boucler et modifier le tableau
-    for k in "${!Temp[@]}"; do
-        val=${Temp[$k]}
-        if [[ $val -gt 80 ]]; then
-            color="\033[0;31m"
-        elif [[ $val -gt 60 ]]; then
-            color="\033[0;33m"
-        else
-            color="\033[0;32m"
-        fi
-        Temp[k]="${color}${val}°C\033[0m"
-    done
-
-    echo -e "=+= System Temp : \t\t\t\t  ${Temp[0]}"
-    echo -e "\t\t\t\t\t\t  ${Temp[1]}"
-    echo -e "\t\t\t\t\t\t  ${Temp[2]}"
-}
-
-Print_CpuUsage() {
-    CpuUsage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4 + $6}')
     CpuInt=${CpuUsage%.*}
     if [[ $CpuInt -gt 80 ]]; then
-        color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $CpuInt -gt 60 ]]; then
-        color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= CPU Usage : \t\t\t\t  ${color}${CpuUsage}%\033[0m"
-}
+    printf "%s%-40s %b\n" "$SRVMSG" "CPU Usage :" "${Color}${CpuUsage}%${MSGNC}"
 
-Print_RamUsage() {
-    RamUsage=$(free | awk 'NR==2 {printf "%.1f", ($3/$2) * 100}')
-    local RamInt=${RamUsage%.*}
+    RamInt=${RamUsage%.*}
     if [[ $RamInt -gt 80 ]]; then
-        color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $RamInt -gt 60 ]]; then
-        color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= RAM Usage : \t\t\t\t  ${color}${RamUsage}%\033[0m"
-}
+    printf "%s%-40s %b\n" "$SRVMSG" "RAM Usage :" "${Color}${RamUsage}%${MSGNC}"
 
-Print_SwapUsage() {
-    SwapUsage=$(free | awk 'NR==3 {printf "%.1f", ($3/$2) * 100}')
     SwapInt=${SwapUsage%.*}
     if [[ $SwapInt -gt 80 ]]; then
-        color="\033[0;31m"
+        Color="$MSGRED"
     elif [[ $SwapInt -gt 60 ]]; then
-        color="\033[0;33m"
+        Color="$MSGYELLOW"
     else
-        color="\033[0;32m"
+        Color="$MSGGREEN"
     fi
-    echo -e "=+= Swap Usage : \t\t\t\t  ${color}${SwapUsage}%\033[0m"
+    printf "%s%-40s %b\n" "$SRVMSG" "Swap Usage :" "${Color}${SwapUsage}%${MSGNC}"
+
+    printf "%s%-40s\n" "$SRVMSG" "Temperatures :"
+    for T in "${Temps[@]}"; do
+        if [[ $T -gt 80 ]]; then
+            Color="$MSGRED"
+        elif [[ $T -gt 60 ]]; then
+            Color="$MSGYELLOW"
+        else
+            Color="$MSGGREEN"
+        fi
+        printf "%-45s %b\n" "" "${Color}${T}°C${MSGNC}"
+    done
 }
+
+# --- Points d'entrée ---
 
 main() {
     echo -e "#########################################################"
     echo -e "################## RecoveryBox Status ###################"
     echo -e "#########################################################"
     echo -e "\n\n"
+    Get_ServiceStatus
     echo -e "#########################################################"
     echo -e "## Services"
-    Print_Status "$StatPing" "Interet Access"
-    Print_Status "$StatResolve" "Web Resolver"
-    Print_Status "$StatChrony" "Time Sync"
-    Print_Status "$StatAP" "AccessPoint"
-    Print_Status "$StatApache" "Apache server"
-    Print_Status "$Statlibrary" "PDF Library"
-    Print_Status "$StatSIAB" "Web Console"
-    Print_Status "$StatKiwix" "Kiwix Server"
-    Print_Status "$StatOWRX" "OpenWebRX"
-    Print_Status "$StatBrouter" "Brouter (carto)"
-    Print_Status "$StatTileserver" "Tilesrv (carto)"
-    Print_Status "$StatMeshtastic" "Meshtastic web"
+    Print_ServiceStatus
     echo -e "#########################################################"
     echo -e "## GPS"
-
-    Print_GPSstatus
-    Print_GPSloc
+    Print_GPS
     echo -e "#########################################################"
     echo -e "## System"
-    Print_CpuUsage
-    Print_RamUsage
-    Print_SwapUsage
-    Print_Temp
+    Print_System
 }
 
-light () {
-    Print_Status "$StatChrony" "Time Sync"
-    Print_Status "$StatAP" "AccessPoint"
-    Print_Status "$StatApache" "Apache server"
-    Print_Status "$StatSIAB" "Web Console"
-    Print_Status "$StatKiwix" "Kiwix Server"
-    Print_Status "$StatOWRX" "OpenWebRX"
-    Print_Status "$StatBrouter" "Brouter (carto)"
-    Print_Status "$StatTileserver" "Tilesrv (carto)"
-    Print_Status "$StatMeshtastic" "Meshtastic web"
+light() {
+    Light=true
+    Get_ServiceStatus
+    Print_ServiceStatus
 }
 
-if [[ "$1" == "light" ]];then
+if [[ "$1" == "light" ]]; then
     light
 else
     main
