@@ -113,8 +113,8 @@ MACAddress=${MacAddress}
 [Link]
 Name=${NewName}
 EOF
+    systemctl restart systemd-udev-trigger
     echo -e "$MSGGREEN" "$SRVMSG" "Interface ${MacAddress} renamed to ${NewName}" "$MSGNC"
-    echo -e "$MSGYELLOW" "$SRVMSG" "The system MUST reboot to apply interface renaming" "$MSGNC"
 }
 
 # Add an interface to firewall WAN configuration
@@ -394,6 +394,8 @@ menu_set_wlan () {
 
 # Interactive menu for renaming physical interfaces
 menu_rename_interfaces() {
+    local Loop=
+    Loop=false
     while true; do
         get_physical_interfaces
         while true; do
@@ -415,7 +417,7 @@ menu_rename_interfaces() {
         done
 
         while true; do
-            if [[ -n $1 ]];then
+            if [[ -n $1 ]] && [[ $Loop == false ]]; then
                 NewName="$1"
             else
                 read -rp "Enter the new name for $IfaceToRename : " NewName
@@ -440,6 +442,7 @@ menu_rename_interfaces() {
         RenameChoice=$(yes_no_check "$RenameChoice")
         if [[ $RenameChoice -eq 1 ]]; then
             clear
+            Loop=true
             continue
         elif [[ $RenameChoice -eq 0 ]]; then
             break

@@ -122,10 +122,26 @@ Get_System() {
     else
         SwapUsage="0.0"
     fi
-    Temp0=$(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))
-    Temp1=$(($(cat /sys/class/thermal/thermal_zone1/temp) / 1000))
-    Temp2=$(($(cat /sys/class/thermal/thermal_zone2/temp) / 1000))
-    echo "{\"cpu\":$CpuUsage,\"ram\":$RamUsage,\"swap\":$SwapUsage,\"temp\":[$Temp0,$Temp1,$Temp2]}"
+
+    Temps=()
+    for TempFile in /sys/class/thermal/thermal_zone*/temp; do
+        if [[ -r "$TempFile" ]]; then
+            RawTemp=$(cat "$TempFile" 2>/dev/null)
+            if [[ "$RawTemp" =~ ^[0-9]+$ ]]; then
+                Temps+=("$((RawTemp / 1000))")
+            fi
+        fi
+    done
+
+    TempJson=""
+    if [[ ${#Temps[@]} -gt 0 ]]; then
+        TempJson=$(printf ',%s' "${Temps[@]}")
+        TempJson="[${TempJson:1}]"
+    else
+        TempJson="[]"
+    fi
+
+    echo "{\"cpu\":$CpuUsage,\"ram\":$RamUsage,\"swap\":$SwapUsage,\"temp\":$TempJson}"
 }
 
 # --- Fonctions d'affichage (lecture JSON) ---

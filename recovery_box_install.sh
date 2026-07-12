@@ -19,7 +19,7 @@ WAN="Wan"
 LAN="Lan"
 
 VERSION_library="1.0.1"
-VERSION_fonts="main"
+VERSION_fonts="master"
 VERSION_rtlsdr="v1.3.6"
 VERSION_brouterContainer="v1.7.9"
 VERSION_brouterWeb="0.18.1"
@@ -169,8 +169,7 @@ install_basic_tools() {
     jq \
     net-tools \
     unzip \
-    tippecanoe \
-    systemd-resolved > /dev/null
+    tippecanoe > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -198,22 +197,6 @@ EOF
 
     if [ $? -ne 0 ]; then
         echo -e "$MSGRED" "$SRVMSG" "failed to add Docker repository.${MSGNC}"
-        exit 1
-    fi
-
-    curl -fsSL https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/Release.key -o /etc/apt/keyrings/gpxsee.asc
-    chmod a+r /etc/apt/keyrings/gpxsee.asc
-    tee /etc/apt/sources.list.d/gpxsee.sources > /dev/null <<EOF
-Types: deb
-URIs: https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/
-Suites: /
-Components: 
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/gpxsee.asc
-EOF
-
-    if [ $? -ne 0 ]; then
-        echo -e "$MSGRED" "$SRVMSG" "failed to add GPXSee repository.${MSGNC}"
         exit 1
     fi
 
@@ -320,7 +303,7 @@ configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
     network-configurator MenuRenameInterface wlanAP
     ##wlanAP is automaticaly bridged to Lan interface when the container start
-    echo -e "$MSGYELLOW" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
     network-configurator LinkInterface
 
     while true; do
@@ -330,7 +313,7 @@ configure_interfaces() {
             network-configurator MenuSetInterface "$WAN"
             break
         elif [[ $ConfigureChoice -eq 0 ]]; then
-            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac\nRouteMetric=100" "Token=static:::1"
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' $'ClientIdentifier=mac\nRouteMetric=100' 'Token=static:::1'
             break
         elif [[ $ConfigureChoice -eq 99 ]]; then
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
@@ -357,8 +340,10 @@ configure_interfaces() {
     systemctl enable systemd-networkd
 
     # set systemd-resolver
+    apt-get install -y -qq  systemd-resolved > /dev/null
     systemctl enable systemd-resolved
     ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
     sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
@@ -412,8 +397,10 @@ install_access_point() {
     docker pull mrdgidgi/simple-hotspot:"${VERSION_simpleHotspot}"
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/ap_start.sh
     sed -i "s/VERSION_simpleHotspot/${VERSION_simpleHotspot}/g" /etc/ap_config/ap_start.sh
     chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
@@ -446,6 +433,24 @@ enable_ipv4_routing() {
     fi
 }
 
+#######################################################
+
+disable_linkdown_routing() {
+    echo -e "$MSGYELLOW""$SRVMSG" "Disabling linkdown routing..." "$MSGNC"
+if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing already disabled.${MSGNC}"
+    else
+        echo "net.ipv4.conf.all.ignore_routes_with_linkdown=1" >> /usr/lib/sysctl.d/50-default.conf
+        sysctl -p > /dev/null
+
+        if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+            echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing disabled successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "failed to disable linkdown routing.${MSGNC}"
+            exit 1
+        fi
+    fi
+}
 #######################################################
 
 setup_iptables() {
@@ -841,6 +846,8 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
+    ## Disable linkdown routing
+    disable_linkdown_routing
     ## Install Apache2 and configure it
     install_apache
     if [[ $INSTALL_apache == true ]]; then
