@@ -359,6 +359,7 @@ configure_interfaces() {
     apt-get install -y -qq  systemd-resolved > /dev/null
     systemctl enable systemd-resolved
     ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
     sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
     systemctl restart systemd-resolved
 
