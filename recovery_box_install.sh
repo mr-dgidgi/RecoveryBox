@@ -169,8 +169,7 @@ install_basic_tools() {
     jq \
     net-tools \
     unzip \
-    tippecanoe \
-    systemd-resolved > /dev/null
+    tippecanoe > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -357,9 +356,11 @@ configure_interfaces() {
     systemctl enable systemd-networkd
 
     # set systemd-resolver
+    apt-get install -y -qq  systemd-resolved > /dev/null
     systemctl enable systemd-resolved
     ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
+    systemctl restart systemd-resolved
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
