@@ -8,7 +8,7 @@
       "customType": "regex",
       "fileMatch": ["(^|/).*\\.sh$"],
       "matchStrings": [
-        "# renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s+VERSION_(?<packageName>[A-Za-z0-9_]+)=\"(?<currentValue>[^\"]+)\""
+        "# renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s+VERSION_[A-Za-z0-9_]+=\"(?<currentValue>[^\"]+)\""
       ]
     }
   ]
