@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="300">
   <title>RecoveryBox - Services</title>
   <style>
     body {
@@ -46,6 +47,25 @@
     a:hover {
       text-decoration: underline;
     }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .status-row:last-child {
+      border-bottom: none;
+    }
+    .badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .badge.running  { background: #dcfce7; color: #166534; }
+    .badge.warning  { background: #fef9c3; color: #854d0e; }
+    .badge.critical { background: #fee2e2; color: #991b1b; }
     footer {
       color: #6b7280;
       font-size: 0.95rem;
@@ -60,19 +80,80 @@
 
     <section>
       <h2>Services</h2>
-      <ul>
-        <li><a href="http://map.recovery.box/">Cartographie hors ligne / Offline mapping</a></li>
-        <li><a href="http://pdf.recovery.box/">PDF de survie anglais / Survival english PDFs </a></li>
-        <li><a href="http://nopanic.recovery.box/">Archives Nopanic / Nopanic archives</a></li>
-        <li><a href="http://recovery.box:8080/">Kiwix - Wikipédia hors ligne / offline Wikipedia</a></li>
-        <li><a href="http://recovery.box:8073/">OpenWebRX+ - Interface SDR / SDR web interface</a></li>
-        <li><a href="http://console.recovery.box/">Web console</a></li>
-      </ul>
+      <ul id="services-list"></ul>
+    </section>
+
+    <section>
+      <h2>Status</h2>
+      <div id="status-content"></div>
+    </section>
+
+    <section>
+      <h2>GPS</h2>
+      <div id="gps-content"></div>
+    </section>
+
+    <section>
+      <h2>Système</h2>
+      <div id="system-content"></div>
     </section>
 
     <footer>
       <p>Si un service ne répond pas, vérifiez qu'il est démarré et que vous êtes connecté au réseau RecoveryBox. / If a service does not respond, check it is started and that you are connected to the RecoveryBox network.</p>
     </footer>
   </main>
+  <script>
+  fetch('/rbstatus.json')
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById('services-list');
+      data.services
+        .filter(s => s.status === 0 && s.url)
+        .forEach(s => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = s.url;
+          a.textContent = s.name;
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+
+      const statusDiv = document.getElementById('status-content');
+      data.services.forEach(s => {
+        const badge = s.status === 0 ? 'running'
+                    : s.status === 1 ? 'critical'
+                    : 'disabled';
+        statusDiv.innerHTML += '<div class="status-row"><span>' + s.name + '</span><span class="badge ' + badge + '">' + badge + '</span></div>';
+      });
+
+      const gpsDiv = document.getElementById('gps-content');
+      const g = data.gps;
+      const gpsBadge = g.status === 0 ? 'running' : 'critical';
+      let gpsHtml = '<div class="status-row"><span>GPS</span><span class="badge ' + gpsBadge + '">' + g.fix + '</span></div>';
+      if (g.lat && g.lon) {
+        let posText = 'Lat: ' + g.lat + ', Lon: ' + g.lon;
+        if (g.alt) posText += ', Alt: ' + g.alt + 'm';
+        gpsHtml += '<div class="status-row"><span>Position</span><span>' + posText + '</span></div>';
+      }
+      gpsDiv.innerHTML = gpsHtml;
+
+      const sysDiv = document.getElementById('system-content');
+      const sys = data.system;
+      const sysItems = [
+        { label: 'CPU', value: sys.cpu + '%', threshold: sys.cpu },
+        { label: 'RAM', value: sys.ram + '%', threshold: sys.ram },
+        { label: 'Swap', value: sys.swap + '%', threshold: sys.swap }
+      ];
+      sys.temp.forEach(function(t, i) {
+        sysItems.push({ label: 'Temp ' + (i + 1), value: t + '°C', threshold: t });
+      });
+      sysDiv.innerHTML = sysItems.map(function(item) {
+        const badge = item.threshold > 80 ? 'critical'
+                    : item.threshold > 60 ? 'warning'
+                    : 'running';
+        return '<div class="status-row"><span>' + item.label + '</span><span class="badge ' + badge + '">' + item.value + '</span></div>';
+      }).join('');
+    });
+  </script>
 </body>
 </html>

@@ -18,6 +18,21 @@ LANGUAGE="fr"
 WAN="Wan"
 LAN="Lan"
 
+VERSION_library="1.0.1"
+VERSION_fonts="master"
+VERSION_rtlsdr="v1.3.6"
+VERSION_brouterContainer="v1.7.9"
+VERSION_brouterWeb="0.18.1"
+VERSION_meshtasticWeb="2.7.1"
+VERSION_kiwix="3.8.2"
+VERSION_simpleHotspot="1.0"
+VERSION_owrx="1.2.118"
+VERSION_tileserver="v5.6.0"
+VERSION_planetiler="0.10.2"
+
+INSTALL_Brouter=false
+INSTALL_apache=false
+
 #######################################################
 # Functions
 #######################################################
@@ -135,7 +150,26 @@ EOF
 install_basic_tools() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing basic tools..." "$MSGNC"
     apt-get update -qq
-    apt-get install -y -qq curl gpg ca-certificates git wget firmware-realtek firmware-iwlwifi intel-microcode rfkill iw tcpdump gpsd gpsd-clients chrony wpasupplicant htop jq net-tools unzip tippecanoe > /dev/null
+    apt-get install -y -qq curl \
+    gpg \
+    ca-certificates \
+    git \
+    wget \
+    firmware-realtek \
+    firmware-iwlwifi \
+    intel-microcode \
+    rfkill \
+    iw \
+    tcpdump \
+    gpsd \
+    gpsd-clients \
+    chrony \
+    wpasupplicant \
+    htop \
+    jq \
+    net-tools \
+    unzip \
+    tippecanoe > /dev/null
 
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "basic tools installed successfully.${MSGNC}"
@@ -166,22 +200,6 @@ EOF
         exit 1
     fi
 
-    curl -fsSL https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/Release.key -o /etc/apt/keyrings/gpxsee.asc
-    chmod a+r /etc/apt/keyrings/gpxsee.asc
-    tee /etc/apt/sources.list.d/gpxsee.sources > /dev/null <<EOF
-Types: deb
-URIs: https://download.opensuse.org/repositories/home:/tumic:/GPXSee/Debian_13/
-Suites: /
-Components: 
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/gpxsee.asc
-EOF
-
-    if [ $? -ne 0 ]; then
-        echo -e "$MSGRED" "$SRVMSG" "failed to add GPXSee repository.${MSGNC}"
-        exit 1
-    fi
-
     apt-get update -qq
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "repository added successfully.${MSGNC}"
@@ -197,7 +215,14 @@ install_docker() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Docker..." "$MSGNC"
     apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
     if [ $? -eq 0 ]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "Docker installed successfully.${MSGNC}"
+        systemctl enable docker > /dev/null 2>&1
+        systemctl start docker > /dev/null 2>&1
+        if systemctl is-active --quiet docker; then
+            echo -e "$MSGGREEN" "$SRVMSG" "Docker installed successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "Docker service failed to start.${MSGNC}"
+            exit 1
+        fi
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to install Docker.${MSGNC}"
         exit 1
@@ -207,8 +232,8 @@ install_docker() {
 
 install_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing kiwix..." "$MSGNC"
-    mkdir /data/kiwix
-    docker pull ghcr.io/kiwix/kiwix-serve:3.8.2
+    mkdir -p /data/kiwix
+    docker pull ghcr.io/kiwix/kiwix-serve:"${VERSION_kiwix}"
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Kiwix installed successfully.${MSGNC}"
     else
@@ -250,6 +275,7 @@ download_wikipedia() {
 service_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Creating kiwix service..." "$MSGNC"
     cp assets/systemd/kiwix.service /etc/systemd/system/kiwix.service
+    sed -i "s/VERSION_kiwix/${VERSION_kiwix}/g" /etc/systemd/system/kiwix.service
     systemctl enable kiwix
     systemctl start kiwix
     if [[ $(systemctl is-active kiwix) == "active" ]]; then
@@ -266,12 +292,18 @@ service_kiwix() {
 configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
+    ## Check if there is a working wlan interface available for the access point
+    if ! find /sys/class/net/*/wireless ; then
+        echo -e "$MSGRED" "$SRVMSG" "No wireless interface found. Please connect a wireless interface for the access point or check the drivers." "$MSGNC"
+        exit 1
+    fi
+
     network-configurator CreateBridge "$WAN"
     network-configurator CreateBridge "$LAN"
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
     network-configurator MenuRenameInterface wlanAP
     ##wlanAP is automaticaly bridged to Lan interface when the container start
-    echo -e "$MSGYELLOW" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
     network-configurator LinkInterface
 
     while true; do
@@ -281,7 +313,7 @@ configure_interfaces() {
             network-configurator MenuSetInterface "$WAN"
             break
         elif [[ $ConfigureChoice -eq 0 ]]; then
-            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac\nRouteMetric=100" "Token=static:::1"
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' $'ClientIdentifier=mac\nRouteMetric=100' 'Token=static:::1'
             break
         elif [[ $ConfigureChoice -eq 99 ]]; then
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
@@ -306,6 +338,13 @@ configure_interfaces() {
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
+
+    # set systemd-resolver
+    apt-get install -y -qq  systemd-resolved > /dev/null
+    systemctl enable systemd-resolved
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
+    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
@@ -339,7 +378,7 @@ install_console() {
     apt install -y -qq shellinabox > /dev/null
     cp assets/shellinabox /etc/default/shellinabox 
     cp assets/sites-availables/console.conf /etc/apache2/sites-available/console.conf
-    a2ensite console.conf
+    a2ensite console.conf > /dev/null
     systemctl reload apache2
     systemctl restart shellinabox
     if systemctl is-active --quiet shellinabox.service; then
@@ -355,12 +394,15 @@ install_console() {
 # Install the simple-hotspot container
 install_access_point() {
     echo -e "$MSGYELLOW""$SRVMSG" "WiFi Access Point - Installing simple-hotspot container..." "$MSGNC"
-    docker pull mrdgidgi/simple-hotspot
+    docker pull mrdgidgi/simple-hotspot:"${VERSION_simpleHotspot}"
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
-    chmod +x /etc/ap_config/ap_start.sh
+    sed -i "s/CHANGE_ME_LAN/${LAN}/g" /etc/ap_config/ap_start.sh
+    sed -i "s/VERSION_simpleHotspot/${VERSION_simpleHotspot}/g" /etc/ap_config/ap_start.sh
+    chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
     systemctl enable ap.service
@@ -393,11 +435,29 @@ enable_ipv4_routing() {
 
 #######################################################
 
+disable_linkdown_routing() {
+    echo -e "$MSGYELLOW""$SRVMSG" "Disabling linkdown routing..." "$MSGNC"
+if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing already disabled.${MSGNC}"
+    else
+        echo "net.ipv4.conf.all.ignore_routes_with_linkdown=1" >> /usr/lib/sysctl.d/50-default.conf
+        sysctl -p > /dev/null
+
+        if [[ $(sysctl -n net.ipv4.conf.all.ignore_routes_with_linkdown) -eq 1 ]]; then
+            echo -e "$MSGGREEN" "$SRVMSG" "linkdown routing disabled successfully.${MSGNC}"
+        else
+            echo -e "$MSGRED" "$SRVMSG" "failed to disable linkdown routing.${MSGNC}"
+            exit 1
+        fi
+    fi
+}
+#######################################################
+
 setup_iptables() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Setting up IPtables for NAT and routing..." "$MSGNC"
     mkdir -p /etc/iptables
     cp assets/iptables.sh /etc/iptables/iptables.sh
-    chmod +x /etc/iptables/iptables.sh
+    chmod 755 /etc/iptables/iptables.sh
     cp assets/systemd/iptables.service /etc/systemd/system/iptables.service
     systemctl daemon-reload
     systemctl enable iptables.service
@@ -412,28 +472,36 @@ setup_iptables() {
 
 #######################################################
 
-download_english_pdfs() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "installing English survival PDFs..." "$MSGNC"
-    mkdir -p /data/enpdf
-    git clone https://github.com/mr-dgidgi/RecoveryENPDF.git /data/enpdf
-    if [[ -d /data/enpdf ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "English survival PDFs installed successfully.${MSGNC}"
+install_library() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "installing PDF collection..." "$MSGNC"
+    mkdir -p /data/library
+
+    if [[ -d /data/library/.git ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Updating existing library repository..." "$MSGNC"
+        git -C /data/library remote set-url origin https://github.com/mr-dgidgi/rb-library.git > /dev/null 2>&1 || true
+        git -C /data/library fetch origin --tags --prune > /dev/null 2>&1œ
+
+        if git -C /data/library rev-parse --verify --quiet "refs/tags/$VERSION_library" >/dev/null 2>&1; then
+            git -C /data/library checkout -f "$VERSION_library" > /dev/null 2>&1
+            git -C /data/library reset --hard "$VERSION_library" > /dev/null 2>&1
+        else
+            echo -e "$MSGRED" "$SRVMSG" "Target version '$VERSION_library' was not found as a branch or tag in the repository." "$MSGNC"
+            exit 1
+        fi
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to install English survival PDFs.${MSGNC}"
-        exit 1
+        rm -rf /data/library
+        git clone --depth 1 --branch "$VERSION_library" https://github.com/mr-dgidgi/rb-library.git /data/library
     fi
-}
 
-#######################################################
-
-download_french_pdfs() {
-    echo -e "$MSGYELLOW" "$SRVMSG" "installing French survival PDFs..." "$MSGNC"
-    mkdir -p /data/frpdf
-    git clone https://github.com/mr-dgidgi/RecoveryFRPDF.git /data/frpdf
-    if [[ -d /data/frpdf ]]; then
-        echo -e "$MSGGREEN" "$SRVMSG" "French survival PDFs installed successfully.${MSGNC}"
+    mkdir -p /data/library/pdf/custom
+    cp assets/sites-availables/library.conf /etc/apache2/sites-available/library.conf
+    a2ensite library > /dev/null
+    systemctl reload apache2
+    echo -e "$MSGGREEN" "$SRVMSG" "library.recovery.box enabled" "$MSGNC"
+    if [[ -d /data/library ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "PDFs collection installed successfully.${MSGNC}"
     else
-        echo -e "$MSGRED" "$SRVMSG" "failed to install French survival PDFs.${MSGNC}"
+        echo -e "$MSGRED" "$SRVMSG" "failed to install PDFs collection.${MSGNC}"
         exit 1
     fi
 }
@@ -444,25 +512,15 @@ install_apache() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing and configuring Apache2..." "$MSGNC"
     apt-get install -y -qq apache2 > /dev/null
     a2enmod proxy proxy_http rewrite
-    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/sites-availables/enpdf.conf /etc/apache2/sites-available/enpdf.conf
-        a2ensite enpdf.conf
-        echo -e "$MSGGREEN" "$SRVMSG" "pdf.recovery.box enabled" "$MSGNC"
-    fi
-    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        cp assets/sites-availables/nopanic.conf /etc/apache2/sites-available/nopanic.conf
-        a2ensite nopanic
-        echo -e "$MSGGREEN" "$SRVMSG" "nopanic.recovery.box enabled" "$MSGNC"
-    fi
     mkdir -p /data/www
     cp assets/index.html /data/www/index.html
     cp assets/sites-availables/000-www.conf /etc/apache2/sites-available/000-www.conf
-    a2ensite 000-www
-    
-    a2dissite 000-default
+    a2ensite 000-www > /dev/null
+    a2dissite 000-default > /dev/null
     systemctl restart apache2
     if [[ $(systemctl is-active apache2) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Apache2 configured successfully.${MSGNC}"
+        INSTALL_apache=true
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to configure Apache2.${MSGNC}"
         exit 1
@@ -502,10 +560,11 @@ set_chrony() {
 install_openwebrx() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing OpenWebRX Plus..." "$MSGNC"
     mkdir -p /etc/owrx/var /etc/owrx/etc /etc/owrx/plugins/{receiver,map}
-    docker pull slechev/openwebrxplus-softmbe:latest
+    docker pull slechev/openwebrxplus-softmbe:"${VERSION_owrx}"
     cp assets/owrx/var/settings.json /etc/owrx/var/settings.json
     cp assets/owrx/custom-leaflet.js /etc/owrx/custom-leaflet.js
     cp assets/systemd/openwebrx.service /etc/systemd/system/openwebrx.service
+    sed -i "s/VERSION_owrx/${VERSION_owrx}/g" /etc/systemd/system/openwebrx.service
     systemctl daemon-reload
     systemctl enable openwebrx.service
     systemctl start openwebrx.service
@@ -521,9 +580,10 @@ install_openwebrx() {
 
 install_tileserver() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Tileserver-gl server..." "$MSGNC"
-    docker pull maptiler/tileserver-gl:latest
+    docker pull maptiler/tileserver-gl:"${VERSION_tileserver}"
     mkdir -p /data/tileserver/
     cp assets/systemd/tileserver-gl.service /etc/systemd/system/tileserver-gl.service
+    sed -i "s/VERSION_tileserver/${VERSION_tileserver}/g" /etc/systemd/system/tileserver-gl.service
     cp assets/tileserver/config.json /data/tileserver/config.json
     systemctl daemon-reload
     systemctl enable tileserver-gl.service
@@ -540,47 +600,64 @@ install_tileserver() {
 
 install_planetiler() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Planetiler server..." "$MSGNC"
-    docker pull ghcr.io/onthegomap/planetiler:latest
+    docker pull ghcr.io/onthegomap/planetiler:"${VERSION_planetiler}"
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
     cp assets/generate_map.sh /usr/local/bin/generate-map
-    chmod +x /usr/local/bin/generate-map
+    chmod 755 /usr/local/bin/generate-map
 }
 
 #######################################################
 
 install_map_style_liberty() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Map Style Liberty for TileServer GL..." "$MSGNC"
-    mkdir -p /data/tileserver/fonts /data/tileserver/styles /data/tileserver/styles/liberty
+    mkdir -p /data/tileserver/styles /data/tileserver/styles/liberty
 
     cp assets/tileserver/styles/liberty/style.json /data/tileserver/styles/liberty/style.json
     cp assets/tileserver/styles/liberty/sprite.png /data/tileserver/styles/liberty/sprite.png
     cp assets/tileserver/styles/liberty/sprite.json /data/tileserver/styles/liberty/sprite.json
     cp assets/tileserver/styles/liberty/sprite@2x.png /data/tileserver/styles/liberty/sprite@2x.png
     cp assets/tileserver/styles/liberty/sprite@2x.json /data/tileserver/styles/liberty/sprite@2x.json
-    git clone https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
+    rm -rf /data/tileserver/fonts
+    git clone --branch "$VERSION_fonts" --depth 1 https://github.com/korywka/fonts.pbf.git /data/tileserver/fonts/
 }
 
 #######################################################
 
 install_brouter() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing BRouter server..." "$MSGNC"
-    docker pull joeakeem/brouter:v1.7.9
+    docker pull joeakeem/brouter:"${VERSION_brouterContainer}"
     mkdir -p /data/brouter/ /data/brouter/segments4 /data/brouter/www
     cp assets/systemd/brouter.service /etc/systemd/system/brouter.service
+    sed -i "s/VERSION_brouterContainer/${VERSION_brouterContainer}/g" /etc/systemd/system/brouter.service
     echo -e "$MSGYELLOW" "$SRVMSG" "Downloading BRouter segments4 data. This step may take some time..." "$MSGNC"
-    wget -q --show-progress -P /data/brouter/www "https://github.com/nrenner/brouter-web/releases/download/0.18.1/brouter-web.0.18.1.zip"
-    unzip -q /data/brouter/www/brouter-web.0.18.1.zip -d /data/brouter/www/
-    rm /data/brouter/www/brouter-web.0.18.1.zip
+    wget -q --show-progress -P /data/brouter/www "https://github.com/nrenner/brouter-web/releases/download/${VERSION_brouterWeb}/brouter-web.${VERSION_brouterWeb}.zip"
+    unzip -q /data/brouter/www/brouter-web."${VERSION_brouterWeb}".zip -d /data/brouter/www/
+    rm /data/brouter/www/brouter-web."${VERSION_brouterWeb}".zip
     touch /data/brouter/www/keys.js
-    cp assets/brouter-config.js /data/brouter/www/config.js
+    cp assets/brouter/brouter-config.js /data/brouter/www/config.js
+    chmod 644 /data/brouter/www/config.js
+
+    # GPS integration for BRouter
+    cp assets/brouter/recoverybox-gps.js  /data/brouter/www/recoverybox-gps.js
+    cp assets/brouter/gps-to-json.sh  /data/brouter/gps-to-json.sh
+    cp assets/cron/gps-to-json /etc/cron.d/gps-to-json
+    chmod 644 /data/brouter/www/recoverybox-gps.js
+    chmod 755 /data/brouter/gps-to-json.sh
+    if [[ -f /data/brouter/www/index.html ]]; then
+        if ! grep -q '<script src="recoverybox-gps.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-gps.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
+    fi
+
     cp assets/sites-availables/carto.conf /etc/apache2/sites-available/carto.conf
-    a2ensite carto.conf
+    a2ensite carto.conf > /dev/null
     systemctl reload apache2
     systemctl daemon-reload
     systemctl enable brouter.service
     systemctl start brouter.service
     if [[ $(systemctl is-active brouter) == "active" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "BRouter server service started successfully.${MSGNC}"
+        INSTALL_Brouter=true
     else
         echo -e "$MSGRED" "$SRVMSG" "failed to start BRouter server service.${MSGNC}"
         exit 1
@@ -612,6 +689,8 @@ download_world_mbtiles() {
     fi
 }
 
+#######################################################
+
 install_rtlsdr_drivers() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Managing rtl-sdr drivers..." "$MSGNC"
     apt-get purge rtl-sdr -y -qq > /dev/null
@@ -624,8 +703,9 @@ install_rtlsdr_drivers() {
     rm -rvf /usr/local/bin/rtl_*
     apt-get install libusb-1.0-0-dev git cmake pkg-config build-essential -y -qq > /dev/null
     (
-        git clone https://github.com/rtlsdrblog/rtl-sdr-blog
-        cd rtl-sdr-blog/ || exit
+        rm -rf /tmp/rtl-sdr-blog
+        git clone --branch "$VERSION_rtlsdr" --depth 1 https://github.com/rtlsdrblog/rtl-sdr-blog /tmp/rtl-sdr-blog
+        cd /tmp/rtl-sdr-blog || exit
         mkdir build
         cd build || exit
         cmake ../ -DINSTALL_UDEV_RULES=ON
@@ -636,11 +716,15 @@ install_rtlsdr_drivers() {
     )
 }
 
+#######################################################
+
 install_rbstatus() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing rbstatus..." "$MSGNC"
     cp assets/rbstatus.sh /usr/local/bin/rbstatus
     cp assets/cron/rbstatus /etc/cron.d/rbstatus
-    chmod +x /usr/local/bin/rbstatus
+    cp assets/services.json /etc/recoverybox/services.json
+    chmod 755 /usr/local/bin/rbstatus
+    chmod 644 /etc/recoverybox/services.json
     if [[ -f /usr/local/bin/rbstatus ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "rbstatus installed successfully.${MSGNC}"
     else
@@ -649,10 +733,26 @@ install_rbstatus() {
     fi
 }
 
+#######################################################
+
+install_services-manager () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing service manager..." "$MSGNC"
+    cp assets/services-manager.sh /usr/local/bin/services-manager
+    chmod 755 /usr/local/bin/services-manager
+    if [[ -f /usr/local/bin/services-manager ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "services-manager installed successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to install services-manager.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
 install_network-configurator() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing network configurator..." "$MSGNC"
     cp assets/network-configurator.sh /usr/local/bin/network-configurator
-    chmod +x /usr/local/bin/network-configurator
+    chmod 755 /usr/local/bin/network-configurator
     if [[ -f /usr/local/bin/network-configurator ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "network configurator installed successfully.${MSGNC}"
     else
@@ -661,7 +761,61 @@ install_network-configurator() {
     fi
 }
 
+#######################################################
+
+install_meshtastic-web () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Web..." "$MSGNC"
+    docker pull mrdgidgi/meshtastic-web-client:"${VERSION_meshtasticWeb}"
+    cp assets/systemd/meshtastic-web.service /etc/systemd/system/meshtastic-web.service
+    sed -i "s/VERSION_meshtasticWeb/${VERSION_meshtasticWeb}/g" /etc/systemd/system/meshtastic-web.service
+    cp assets/sites-availables/meshtastic-web.conf /etc/apache2/sites-available/meshtastic-web.conf
+    a2ensite meshtastic-web.conf > /dev/null
+    systemctl daemon-reload
+    systemctl enable meshtastic-web.service
+    systemctl start meshtastic-web.service
+    if [[ $(systemctl is-active meshtastic-web) == "active" ]]; then
+        echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Web service started successfully.${MSGNC}"
+    else
+        echo -e "$MSGRED" "$SRVMSG" "failed to start Meshtastic Web service.${MSGNC}"
+        exit 1
+    fi
+}
+
+#######################################################
+
+install_meshtastic-python () {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Python..." "$MSGNC"
+    apt-get install -y -qq python3-venv python3-pip > /dev/null
+    rm -rf /data/meshtastic_env
+    python3 -m venv /data/meshtastic_env
+    /data/meshtastic_env/bin/pip install --upgrade pip > /dev/null
+    /data/meshtastic_env/bin/pip install meshtastic > /dev/null
+    cp assets/brouter/recoverybox-mesh.js /data/brouter/www/recoverybox-mesh.js
+    cp assets/meshtastic-daemon.py /data/brouter/meshtastic-daemon.py
+    cp assets/mesh-node.png /data/brouter/www/mesh-node.png
+    cp assets/cron/meshtastic-daemon /etc/cron.d/meshtastic-daemon
+    chmod 644 /data/brouter/www/recoverybox-mesh.js
+    chmod 755 /data/brouter/meshtastic-daemon.py
+    chmod 644 /data/brouter/www/mesh-node.png
+    if [[ -f /data/brouter/www/index.html ]]; then
+        if ! grep -Fq '<script src="recoverybox-mesh.js"></script>' /data/brouter/www/index.html; then
+            sed -i 's|</body>|\t<script src="recoverybox-mesh.js"></script>\n</body>|g' /data/brouter/www/index.html
+        fi
+    fi
+    echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic Python installed successfully.${MSGNC}"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set a static IP for the Meshtastic device in /etc/ap_config/dnsmasq.conf (dhcp-host=<mac>,<ip>)." "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "You need to set the Meshtastic device IP in the cron file /etc/cron.d/meshtastic-daemon." "$MSGNC"
+
+}
+
+#######################################################
+#######################################################
+#######################################################
 main() {
+    mkdir -p /etc/recoverybox
+    if [[ -f /etc/recoverybox/rb_version ]]; then
+        echo -e "-upgrading" >> /etc/recoverybox/rb_version
+    fi
     ## checks / settings
     check_prerequisites
     ## define Language (default french)
@@ -692,30 +846,36 @@ main() {
     install_access_point
     ## Enable IPv4 routing
     enable_ipv4_routing
-    ## Install Web Console
-    install_console
-    ## Install PDFs
-    if [[ "$LANGUAGE" == "en" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        download_english_pdfs
-    fi
-    if [[ "$LANGUAGE" == "fr" ]] || [[ "$LANGUAGE" == "all" ]]; then
-        download_french_pdfs
-    fi
+    ## Disable linkdown routing
+    disable_linkdown_routing
     ## Install Apache2 and configure it
     install_apache
+    if [[ $INSTALL_apache == true ]]; then
+        ## Install library
+        install_library
+        ## Install Web Console
+        install_console
+        ## Install Tileserver-gl
+        install_tileserver
+        install_map_style_liberty
+        ## Install Planetiler
+        install_planetiler
+        ## Install BRouter
+        install_brouter
+    fi
     ## Install OpenWebRX Plus
     install_openwebrx
-    ## Install Tileserver-gl
-    install_tileserver
-    install_map_style_liberty
-    ## Install Planetiler
-    install_planetiler
-    ## Install BRouter
-    install_brouter
     ## Install the last driver for the rtl-sdr 
     install_rtlsdr_drivers
     ## Install rbstatus
     install_rbstatus
+    ## Install service manager
+    install_services-manager
+    ## Install Meshtastic tools
+    install_meshtastic-web
+    if [[ $INSTALL_Brouter == true ]]; then
+        install_meshtastic-python
+    fi
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
     if [[ "$WikiDown" == "y" ]]; then
@@ -744,6 +904,7 @@ main() {
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Skipping custom map generation." "$MSGNC"
     fi
+    cp VERSION /etc/recoverybox/rb_version
     ## Final message
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
 
