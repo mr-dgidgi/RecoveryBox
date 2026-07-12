@@ -21,6 +21,14 @@ LAN="Lan"
 VERSION_library="1.0.1"
 VERSION_fonts="main"
 VERSION_rtlsdr="v1.3.6"
+VERSION_brouterContainer="v1.7.9"
+VERSION_brouterWeb="0.18.1"
+VERSION_meshtasticWeb="2.7.1"
+VERSION_kiwix="3.8.2"
+VERSION_simpleHotspot="1.0"
+VERSION_owrx="1.2.118"
+VERSION_tileserver="v5.6.0"
+VERSION_planetiler="0.10.2"
 
 INSTALL_Brouter=false
 INSTALL_apache=false
@@ -242,7 +250,7 @@ install_docker() {
 install_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing kiwix..." "$MSGNC"
     mkdir -p /data/kiwix
-    docker pull ghcr.io/kiwix/kiwix-serve:3.8.2
+    docker pull ghcr.io/kiwix/kiwix-serve:"${VERSION_kiwix}"
     if [ $? -eq 0 ]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Kiwix installed successfully.${MSGNC}"
     else
@@ -284,6 +292,7 @@ download_wikipedia() {
 service_kiwix() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Creating kiwix service..." "$MSGNC"
     cp assets/systemd/kiwix.service /etc/systemd/system/kiwix.service
+    sed -i "s/VERSION_kiwix/${VERSION_kiwix}/g" /etc/systemd/system/kiwix.service
     systemctl enable kiwix
     systemctl start kiwix
     if [[ $(systemctl is-active kiwix) == "active" ]]; then
@@ -400,11 +409,12 @@ install_console() {
 # Install the simple-hotspot container
 install_access_point() {
     echo -e "$MSGYELLOW""$SRVMSG" "WiFi Access Point - Installing simple-hotspot container..." "$MSGNC"
-    docker pull mrdgidgi/simple-hotspot
+    docker pull mrdgidgi/simple-hotspot:"${VERSION_simpleHotspot}"
     mkdir -p /etc/ap_config/
     cp assets/dnsmasq.conf /etc/ap_config/dnsmasq.conf
     cp assets/hostapd.conf /etc/ap_config/hostapd.conf
     cp assets/ap_start.sh /etc/ap_config/ap_start.sh
+    sed -i "s/VERSION_simpleHotspot/${VERSION_simpleHotspot}/g" /etc/ap_config/ap_start.sh
     chmod 755 /etc/ap_config/ap_start.sh
     cp assets/systemd/ap.service /etc/systemd/system/ap.service
     systemctl daemon-reload
@@ -545,10 +555,11 @@ set_chrony() {
 install_openwebrx() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing OpenWebRX Plus..." "$MSGNC"
     mkdir -p /etc/owrx/var /etc/owrx/etc /etc/owrx/plugins/{receiver,map}
-    docker pull slechev/openwebrxplus-softmbe:latest
+    docker pull slechev/openwebrxplus-softmbe:"${VERSION_owrx}"
     cp assets/owrx/var/settings.json /etc/owrx/var/settings.json
     cp assets/owrx/custom-leaflet.js /etc/owrx/custom-leaflet.js
     cp assets/systemd/openwebrx.service /etc/systemd/system/openwebrx.service
+    sed -i "s/VERSION_owrx/${VERSION_owrx}/g" /etc/systemd/system/openwebrx.service
     systemctl daemon-reload
     systemctl enable openwebrx.service
     systemctl start openwebrx.service
@@ -564,9 +575,10 @@ install_openwebrx() {
 
 install_tileserver() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Tileserver-gl server..." "$MSGNC"
-    docker pull maptiler/tileserver-gl:latest
+    docker pull maptiler/tileserver-gl:"${VERSION_tileserver}"
     mkdir -p /data/tileserver/
     cp assets/systemd/tileserver-gl.service /etc/systemd/system/tileserver-gl.service
+    sed -i "s/VERSION_tileserver/${VERSION_tileserver}/g" /etc/systemd/system/tileserver-gl.service
     cp assets/tileserver/config.json /data/tileserver/config.json
     systemctl daemon-reload
     systemctl enable tileserver-gl.service
@@ -583,7 +595,7 @@ install_tileserver() {
 
 install_planetiler() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Planetiler server..." "$MSGNC"
-    docker pull ghcr.io/onthegomap/planetiler:latest
+    docker pull ghcr.io/onthegomap/planetiler:"${VERSION_planetiler}"
     mkdir -p /data/planetiler/ /data/planetiler/tmp /data/planetiler/output
     cp assets/generate_map.sh /usr/local/bin/generate-map
     chmod 755 /usr/local/bin/generate-map
@@ -608,13 +620,14 @@ install_map_style_liberty() {
 
 install_brouter() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing BRouter server..." "$MSGNC"
-    docker pull joeakeem/brouter:v1.7.9
+    docker pull joeakeem/brouter:"${VERSION_brouterContainer}"
     mkdir -p /data/brouter/ /data/brouter/segments4 /data/brouter/www
     cp assets/systemd/brouter.service /etc/systemd/system/brouter.service
+    sed -i "s/VERSION_brouterContainer/${VERSION_brouterContainer}/g" /etc/systemd/system/brouter.service
     echo -e "$MSGYELLOW" "$SRVMSG" "Downloading BRouter segments4 data. This step may take some time..." "$MSGNC"
-    wget -q --show-progress -P /data/brouter/www "https://github.com/nrenner/brouter-web/releases/download/0.18.1/brouter-web.0.18.1.zip"
-    unzip -q /data/brouter/www/brouter-web.0.18.1.zip -d /data/brouter/www/
-    rm /data/brouter/www/brouter-web.0.18.1.zip
+    wget -q --show-progress -P /data/brouter/www "https://github.com/nrenner/brouter-web/releases/download/${VERSION_brouterWeb}/brouter-web.${VERSION_brouterWeb}.zip"
+    unzip -q /data/brouter/www/brouter-web."${VERSION_brouterWeb}".zip -d /data/brouter/www/
+    rm /data/brouter/www/brouter-web."${VERSION_brouterWeb}".zip
     touch /data/brouter/www/keys.js
     cp assets/brouter/brouter-config.js /data/brouter/www/config.js
     chmod 644 /data/brouter/www/config.js
@@ -747,8 +760,9 @@ install_network-configurator() {
 
 install_meshtastic-web () {
     echo -e "$MSGYELLOW" "$SRVMSG" "Installing Meshtastic Web..." "$MSGNC"
-    docker pull mrdgidgi/meshtastic-web-client:2.7.1
+    docker pull mrdgidgi/meshtastic-web-client:"${VERSION_meshtasticWeb}"
     cp assets/systemd/meshtastic-web.service /etc/systemd/system/meshtastic-web.service
+    sed -i "s/VERSION_meshtasticWeb/${VERSION_meshtasticWeb}/g" /etc/systemd/system/meshtastic-web.service
     cp assets/sites-availables/meshtastic-web.conf /etc/apache2/sites-available/meshtastic-web.conf
     a2ensite meshtastic-web.conf > /dev/null
     systemctl daemon-reload

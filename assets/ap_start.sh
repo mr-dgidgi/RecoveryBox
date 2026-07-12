@@ -15,4 +15,4 @@ docker run --rm \
     -e WLAN_MASK="24" \
     -v /etc/ap_config/:/etc/conf \
     --name hotspot \
-    mrdgidgi/simple-hotspot
+    mrdgidgi/simple-hotspot:VERSION_simpleHotspot

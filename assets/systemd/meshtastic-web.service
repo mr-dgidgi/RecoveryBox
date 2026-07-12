@@ -9,7 +9,7 @@ RestartSec=3
 ExecStartPre=docker rm -f meshtastic-web
 ExecStart=/usr/bin/docker run --rm --name meshtastic-web\
   -p 18000:80\
-  mrdgidgi/meshtastic-web-client:2.7.1
+  mrdgidgi/meshtastic-web-client:VERSION_meshtasticWeb
 
 ExecStop=/usr/bin/docker stop meshtastic-web
 
