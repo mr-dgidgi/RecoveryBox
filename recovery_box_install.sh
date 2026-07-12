@@ -18,16 +18,26 @@ LANGUAGE="fr"
 WAN="Wan"
 LAN="Lan"
 
+# renovate: datasource=github-releases depName=mr-dgidgi/rb-library
 VERSION_library="1.0.1"
 VERSION_fonts="master"
+# renovate: datasource=git-tags depName=https://github.com/rtlsdrblog/rtl-sdr-blog
 VERSION_rtlsdr="v1.3.6"
+# renovate: datasource=docker depName=joeakeem/brouter
 VERSION_brouterContainer="v1.7.9"
+# renovate: datasource=github-releases depName=nrenner/brouter-web
 VERSION_brouterWeb="0.18.1"
+# renovate: datasource=docker depName=mrdgidgi/meshtastic-web-client
 VERSION_meshtasticWeb="2.7.1"
+# renovate: datasource=docker depName=ghcr.io/kiwix/kiwix-serve
 VERSION_kiwix="3.8.2"
+# renovate: datasource=docker depName=mrdgidgi/simple-hotspot
 VERSION_simpleHotspot="1.0"
+# renovate: datasource=docker depName=slechev/openwebrxplus-softmbe
 VERSION_owrx="1.2.118"
+# renovate: datasource=docker depName=maptiler/tileserver-gl
 VERSION_tileserver="v5.6.0"
+# renovate: datasource=docker depName=ghcr.io/onthegomap/planetiler
 VERSION_planetiler="0.10.2"
 
 INSTALL_Brouter=false
