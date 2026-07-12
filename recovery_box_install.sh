@@ -319,7 +319,7 @@ configure_interfaces() {
     echo -e "$MSGYELLOW" "$SRVMSG" "The wifi interface for the access point will be renamed to wlanAP." "$MSGNC"
     network-configurator MenuRenameInterface wlanAP
     ##wlanAP is automaticaly bridged to Lan interface when the container start
-    echo -e "$MSGYELLOW" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "At least one interface should be linked to WAN interface to access internet" "$MSGNC"
     network-configurator LinkInterface
 
     while true; do
@@ -329,7 +329,7 @@ configure_interfaces() {
             network-configurator MenuSetInterface "$WAN"
             break
         elif [[ $ConfigureChoice -eq 0 ]]; then
-            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' "ClientIdentifier=mac\nRouteMetric=100" "Token=static:::1"
+            network-configurator SetInterface "$WAN" "yes" "no" "no" "1.1.1.1 9.9.9.9" $'IPv6PrivacyExtensions=yes\nKeepConfiguration=yes' $'ClientIdentifier=mac\nRouteMetric=100' 'Token=static:::1'
             break
         elif [[ $ConfigureChoice -eq 99 ]]; then
             echo -e "$MSGRED" "$SRVMSG" "Invalid input. Please enter yes or no." "$MSGNC"
@@ -361,7 +361,6 @@ configure_interfaces() {
     ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
     sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
-    systemctl restart systemd-resolved
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
