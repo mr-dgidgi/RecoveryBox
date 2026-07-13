@@ -1,0 +1,60 @@
+---
+- name: Pull tileserver-gl repository
+  ansible.builtin.docker_image:
+    name: "maptiler/tileserver-gl"
+    tag: "{{ version_tileserver }}"
+    source: pull
+
+- name: Create /data/tileserver/ directory
+  ansible.builtin.file:
+    path: /data/tileserver
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create tileserver service
+  ansible.builtin.template:
+    src: etc/systemd/system/tileserver.service.j2
+    dest: /etc/systemd/system/tileserver.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name : Custom config.json
+  ansible.builtin.file:
+    src: data/tileserver/config.json
+    dest: /data/tileserver/config.json
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable tileserver service
+  ansible.builtin.systemd:
+    name: tileserver
+    enabled: yes
+    daemon_reload: yes
+    state: started
+
+- name: Create style directory
+  ansible.builtin.file:
+    path: /data/tileserver/styles/liberty
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Import sprites
+  ansible.builtin.copy:
+    src: data/tileserver/style/liberty/
+    dest: /data/tileserver/styles/liberty/
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Import fonts
+  ansible.builtin.git:
+    repo: "https://github.com/korywka/fonts.pbf.git"
+    dest: /data/tileserver/fonts
+    version: "{{ version_fonts }}"
+    

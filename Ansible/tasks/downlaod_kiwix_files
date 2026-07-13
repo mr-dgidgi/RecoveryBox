@@ -1,0 +1,30 @@
+---
+- name: get Wikipedia files list
+  ansible.builtin.uri:
+    url: "https://download.kiwix.org/zim/wikipedia/"
+    return_content: yes
+  register: kiwix_page
+
+- name: Get last French Wikipedia zim file
+  ansible.builtin.set_fact:
+    french_zim: "{{ kiwix_page.content | regex_findall('wikipedia_fr_all_nopic_\\d{4}-\\d{2}\\.zim') | sort | last }}"
+  when: kiwix_files.french
+
+- name: Get last English Wikipedia zim file
+  ansible.builtin.set_fact:
+    english_zim: "{{ kiwix_page.content | regex_findall('wikipedia_en_all_nopic_\\d{4}-\\d{2}\\.zim') | sort | last }}"
+  when: kiwix_files.english
+
+- name: Download the ZIM file
+  ansible.builtin.get_url:
+    url: "https://download.kiwix.org/zim/wikipedia/{{ french_zim }}"
+    dest: "/data/kiwix/{{ french_zim }}"
+    mode: '0644'
+  when: kiwix_files.french
+
+- name: Download the English ZIM file
+  ansible.builtin.get_url:
+    url: "https://download.kiwix.org/zim/wikipedia/{{ english_zim }}"
+    dest: "/data/kiwix/{{ english_zim }}"
+    mode: '0644'
+  when: kiwix_files.english

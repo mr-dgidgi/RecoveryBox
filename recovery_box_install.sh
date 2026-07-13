@@ -833,58 +833,60 @@ main() {
     ## set keyboard layout
     set_keyboard
     ## Install basic tools
-    install_basic_tools
+    # install_basic_tools
     ## Install network configurator
-    install_network-configurator
+    # install_network-configurator
     ## Setup IPtables
-    setup_iptables
+    #setup_iptables
     ## define interface names
     configure_interfaces
+
+    ###############
     ## set gpsd
-    set_gpsd
+    #set_gpsd
     ## set chrony
-    set_chrony
+    #set_chrony
     ## Add needed repositories
-    set_repositories
+    # set_repositories
     ## Install Docker
-    install_docker
+    #install_docker
     ## Install Kiwix
-    install_kiwix
-    service_kiwix
+    #install_kiwix
+    #service_kiwix
     ## Install Access Point
-    disable_wpa_supplicant
-    install_access_point
+    #disable_wpa_supplicant
+    #install_access_point
     ## Enable IPv4 routing
-    enable_ipv4_routing
+    #enable_ipv4_routing
     ## Disable linkdown routing
-    disable_linkdown_routing
+    #disable_linkdown_routing
     ## Install Apache2 and configure it
-    install_apache
+    #install_apache
     if [[ $INSTALL_apache == true ]]; then
         ## Install library
-        install_library
+        #install_library
         ## Install Web Console
-        install_console
+        #install_console
         ## Install Tileserver-gl
-        install_tileserver
-        install_map_style_liberty
+        #install_tileserver
+        #install_map_style_liberty
         ## Install Planetiler
-        install_planetiler
+        #install_planetiler
         ## Install BRouter
-        install_brouter
+        #install_brouter
     fi
     ## Install OpenWebRX Plus
-    install_openwebrx
+    #install_openwebrx
     ## Install the last driver for the rtl-sdr 
-    install_rtlsdr_drivers
+    #install_rtlsdr_drivers
     ## Install rbstatus
-    install_rbstatus
+    #install_rbstatus
     ## Install service manager
-    install_services-manager
+    #install_services-manager
     ## Install Meshtastic tools
-    install_meshtastic-web
+    #install_meshtastic-web
     if [[ $INSTALL_Brouter == true ]]; then
-        install_meshtastic-python
+        #install_meshtastic-python
     fi
     ## Download Wikipedia 
         read -r -p "$SRVMSG Download Wikipedia ? [y/n] : " WikiDown
@@ -923,3 +925,7 @@ main() {
 #######################################################
 
 main
+
+
+#######################################################
+ansible-galaxy collection install community.docker

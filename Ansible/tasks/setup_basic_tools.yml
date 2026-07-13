@@ -1,0 +1,27 @@
+---
+- name: Set GPSD options
+  ansible.builtin.lineinfile:
+    path: /etc/default/gpsd
+    regexp: '^GPSD_OPTIONS=""'
+    line: 'GPSD_OPTIONS="-n"'
+    state: present
+
+- name : restart GPSD service
+  ansible.builtin.systemd_service:
+    name: gpsd
+    enabled: true
+    state: restarted
+
+- name: Set GPS for Chrony
+  ansible.builtin.copy:
+    src: etc/chrony/000-gps.conf
+    dest: /etc/chrony/000-gps.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name : restart Chrony service
+  ansible.builtin.systemd_service:
+    name: chrony
+    enabled: true
+    state: restarted

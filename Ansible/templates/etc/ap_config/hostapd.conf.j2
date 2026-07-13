@@ -1,0 +1,11 @@
+interface={{ interface_wlanAP }}
+bridge={{ interface_lan }}
+ssid={{ hotspot_conf.ssid }}
+hw_mode=g
+channel=11
+auth_algs=1
+wpa=2
+wpa_passphrase={{ hotspot_conf.password }}
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP CCMP
+rsn_pairwise=CCMP

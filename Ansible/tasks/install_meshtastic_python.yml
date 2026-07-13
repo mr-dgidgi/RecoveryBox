@@ -1,0 +1,54 @@
+---
+
+- name: Install packages for Meshtastic Python
+  ansible.builtin.apt:
+    name:
+      - python3-pip
+      - python3-venv
+    state: present
+    update_cache: yes
+
+- name: Create Meshtastic Python virtual environment
+  ansible.builtin.pip:
+    name: meshtastic
+    virtualenv: /data/meshtastic_env
+    virtualenv_command: python3 -m venv
+    extra_args: --upgrade
+
+- name: Copy recoverybox-mesh.js to BRouter web directory
+  ansible.builtin.copy:
+    src: data/brouter/recoverybox-mesh.js
+    dest: /data/brouter/www/recoverybox-mesh.js
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create Meshtastic python script
+  ansible.bultin.copy:
+    src: data/brouter/meshtastic-daemon.py
+    dest: /data/brouter/meshtastic-daemon.py
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy mesh-node icon
+  ansible.builtin.copy:
+    src: data/brouter/www/mesh-node.png
+    dest: /data/brouter/www/mesh-node.png
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create meshtastic cron
+  ansible.builtin.template:
+    src: etc/cron.d/meshtastic-daemon.j2
+    dest: /etc/cron.d/meshtastic-daemon
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Custom index.html to include recoverybox-mesh.js
+  ansible.builtin.lineinfile:
+    path: /data/brouter/www/index.html
+    insertbefore: '</body>'
+    line: '\t<script src="recoverybox-mesh.js"></script>'

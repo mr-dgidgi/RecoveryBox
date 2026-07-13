@@ -1,0 +1,37 @@
+---
+- name: install Shellinabox
+  ansible.builtin.apt:
+    name: shellinabox
+    state: present
+
+- name: Copy shellinabox configuration file
+  ansible.builtin.copy:
+    src: etc/default/shellinabox
+    dest: /etc/default/shellinabox
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create console apache2 site
+  ansible.builtin.copy:
+    src: etc/apache2/sites-available/console.conf
+    dest: /etc/apache2/sites-available/console.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable console site
+  ansible.builtin.apache2_site:
+    name: console.conf
+    state: enabled
+
+- name: Reload apache2 service
+  ansible.builtin.systemd_service:
+    name: apache2
+    state: reloaded
+
+- name: Enable shellinabox service
+  ansible.builtin.systemd_service:
+    name: shellinabox
+    enabled: yes
+    state: restarted

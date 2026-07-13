@@ -1,0 +1,83 @@
+---
+- name: Pull brouter container
+  ansible.builtin.docker_image:
+    name: "joeakeem/brouter"
+    tag: "{{ version_brouter }}"
+    source: pull
+
+- name: Create /data/brouter/ directories
+  ansible.builtin.file:
+    path: "/data/brouter/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - segments4
+    - www
+
+- name: Create brouter service
+  ansible.builtin.template:
+    src: etc/systemd/system/brouter.service.j2
+    dest: /etc/systemd/system/brouter.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Download brouter-web
+  become: true
+  ansible.builtin.unarchive:
+    src: "https://github.com/nrenner/brouter-web/releases/download/{{ version_brouterWeb }}/brouter-web.{{ version_brouterWeb }}.zip"
+    dest: /data/brouter/www
+    remote_src: true
+    mode: '0755'
+
+- name: Custom brouter-config.js
+  ansible.builtin.copy:
+    src: data/brouter/www/config.js
+    dest: /data/brouter/www/config.js
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Add GPS javascript to brouter-web
+  ansible.builtin.copy:
+    src: data/brouter/www/recoverybox-gps.js
+    dest: /data/brouter/www/recoverybox-gps.js
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Add GPS bash script for brouter-web
+  ansible.builtin.copy:
+    src: data/brouter/gps-to-json.sh
+    dest: /data/brouter/gps-to-json.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Custom index.html to include GPS javascript
+  ansible.builtin.lineinfile:
+    path: /data/brouter/www/index.html
+    insertbefore: '</body>'
+    line: '\t<script src="recoverybox-gps.js"></script>'
+
+- name: Create brouter apache2 site
+  ansible.builtin.copy:
+    src: etc/apache2/sites-available/carto.conf
+    dest: /etc/apache2/sites-available/carto.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload apache2 service
+  ansible.builtin.systemd_service:
+    name: apache2
+    state: reloaded
+
+- name: Enable brouter service
+  ansible.builtin.systemd:
+    name: brouter
+    enabled: yes
+    daemon_reload: yes
+    state: started
