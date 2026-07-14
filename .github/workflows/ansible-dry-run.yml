@@ -17,6 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Enable Debian non-free repositories
+        run: |
+          if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+            sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' /etc/apt/sources.list.d/debian.sources
+          elif [ -f /etc/apt/sources.list ]; then
+            sed -i 's/ main$/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list
+          fi
+
       - name: Install system dependencies
         run: |
           apt-get update
