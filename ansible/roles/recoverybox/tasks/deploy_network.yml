@@ -31,14 +31,14 @@
     state: started
 
 - name: Enable ipv4 routing
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: '1'
     state: present
     reload: true
 
 - name: Disable linkdown routing
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.conf.all.ignore_routes_with_linkdown
     value: '1'
     state: present

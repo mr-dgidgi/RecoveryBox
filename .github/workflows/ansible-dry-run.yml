@@ -1,10 +1,10 @@
 name: ansible-dry-run
 
 on:
-  push:
-    branches: ["main", "Ansible-migration"]
   pull_request:
-    branches: ["main", "Ansible-migration"]
+    branches:
+      - main
+      - Pre-Release
 
 jobs:
   dry-run:
