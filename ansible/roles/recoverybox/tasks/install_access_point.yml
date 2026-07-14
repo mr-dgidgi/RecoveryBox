@@ -4,6 +4,7 @@
     name: wpa_supplicant@wlanAP
     enabled: false
     state: stopped
+  when: not ansible_check_mode
 
 - name: Download simple-hotspot container
   community.docker.docker_image:
@@ -55,3 +56,4 @@
     enabled: true
     daemon_reload: true
     state: stopped
+  when: not ansible_check_mode

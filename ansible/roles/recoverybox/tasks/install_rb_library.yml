@@ -39,3 +39,4 @@
   ansible.builtin.systemd_service:
     name: apache2
     state: reloaded
+  when: not ansible_check_mode

@@ -73,6 +73,7 @@
   ansible.builtin.systemd_service:
     name: apache2
     state: reloaded
+  when: not ansible_check_mode
 
 - name: Enable brouter service
   ansible.builtin.systemd_service:
@@ -80,3 +81,4 @@
     enabled: true
     daemon_reload: true
     state: started
+  when: not ansible_check_mode

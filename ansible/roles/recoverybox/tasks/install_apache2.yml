@@ -54,3 +54,4 @@
     name: apache2
     enabled: true
     state: restarted
+  when: not ansible_check_mode

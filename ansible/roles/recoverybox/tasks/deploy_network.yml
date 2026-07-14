@@ -29,6 +29,7 @@
     enabled: true
     daemon_reload: true
     state: started
+  when: not ansible_check_mode
 
 - name: Enable ipv4 routing
   ansible.posix.sysctl:

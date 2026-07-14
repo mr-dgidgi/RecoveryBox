@@ -11,6 +11,7 @@
     name: gpsd
     enabled: true
     state: restarted
+  when: not ansible_check_mode
 
 - name: Set GPS for Chrony
   ansible.builtin.copy:
@@ -25,3 +26,4 @@
     name: chrony
     enabled: true
     state: restarted
+  when: not ansible_check_mode
