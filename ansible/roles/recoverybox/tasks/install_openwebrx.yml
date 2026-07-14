@@ -1,0 +1,50 @@
+---
+- name: Create openwebrx directories
+  ansible.builtin.file:
+    path: /data/owrx/{{ item }}
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - var
+    - etc
+    - plugins/receiver
+    - plugins/map
+
+- name: Pull openwebrx docker image
+  community.docker.docker_image:
+    name: slechev/openwebrxplus-softmbe
+    tag: "{{ recoverybox_version_owrx }}"
+    source: pull
+
+- name: Install openwebrx custom settings.json
+  ansible.builtin.copy:
+    src: etc/owrx/var/settings.json
+    dest: /etc/owrx/var/settings.json
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install openwebrx custom custom-leaflet.js
+  ansible.builtin.copy:
+    src: etc/owrx/custom-leaflet.js
+    dest: /etc/owrx/custom-leaflet.js
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create openwebrx service
+  ansible.builtin.template:
+    src: etc/systemd/system/openwebrx.service.j2
+    dest: /etc/systemd/system/openwebrx.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable openwebrx service
+  ansible.builtin.systemd_service:
+    name: openwebrx
+    daemon_reload: true
+    enabled: true
+    state: started

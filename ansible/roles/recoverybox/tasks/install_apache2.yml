@@ -1,0 +1,56 @@
+---
+
+- name: Install Apache2
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+
+- name: Enable proxy modules
+  ansible.builtin.command:
+    cmd: "a2enmod {{ item }}"
+  changed_when: false
+  loop:
+    - proxy
+    - proxy_http
+    - proxy_wstunnel
+    - rewrite
+
+- name: Create /data/www directory
+  ansible.builtin.file:
+    path: /data/www
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create index.html
+  ansible.builtin.copy:
+    src: data/www/index.html
+    dest: /data/www/index.html
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create recovery.box site
+  ansible.builtin.copy:
+    src: etc/apache2/sites-available/000-www.conf
+    dest: /etc/apache2/sites-available/000-www.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable recovery.box site
+  ansible.builtin.command:
+    cmd: a2ensite 000-www.conf
+  changed_when: false
+
+- name: Disable default site
+  ansible.builtin.command:
+    cmd: a2dissite 000-default.conf
+  changed_when: false
+
+- name: Enable apache2 service
+  ansible.builtin.systemd_service:
+    name: apache2
+    enabled: true
+    state: restarted

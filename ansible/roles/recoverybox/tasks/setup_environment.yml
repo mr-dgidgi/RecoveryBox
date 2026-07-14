@@ -1,0 +1,31 @@
+---
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - gpg
+      - ca-certificates
+      - git
+      - wget
+      - firmware-realtek
+      - firmware-iwlwifi
+      - intel-microcode
+      - rfkill
+      - iw
+      - tcpdump
+      - gpsd
+      - gpsd-clients
+      - chrony
+      - wpasupplicant
+      - htop
+      - jq
+      - net-tools
+      - unzip
+      - tippecanoe
+    state: present
+
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'

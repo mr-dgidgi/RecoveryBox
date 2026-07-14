@@ -1,0 +1,7 @@
+---
+- name: Deploy RecoveryBox
+  hosts: localhost
+  become: true
+
+  roles:
+    - recoverybox

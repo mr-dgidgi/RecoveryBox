@@ -1,0 +1,13 @@
+interface={{ recoverybox_interface_lan }}
+dhcp-range={{ recoverybox_hotspot_conf.dhcp_range_start }},{{ recoverybox_hotspot_conf.dhcp_range_end }},24h
+dhcp-option=option:router,{{ recoverybox_hotspot_conf.ip }}
+
+### DNS ###
+domain=recovery.box
+# DNS Locaux (Enregistrements A)
+address=/recovery.box/{{ recoverybox_hotspot_conf.ip }}
+
+dhcp-option=option:dns-server,{{ recoverybox_hotspot_conf.ip }}
+
+# meshtastic node reservation
+dhcp-host={{ recoverybox_meshtastic_node.mac }},{{ recoverybox_meshtastic_node.ip }}

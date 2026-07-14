@@ -1,0 +1,17 @@
+[Unit]
+Description=Meshtastic Web Client Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+RestartSec=3
+ExecStartPre=docker rm -f meshtastic-web
+ExecStart=/usr/bin/docker run --rm --name meshtastic-web\
+  -p 18000:80\
+  mrdgidgi/meshtastic-web-client:{{ recoverybox_version_meshtastic_web }}
+
+ExecStop=/usr/bin/docker stop meshtastic-web
+
+[Install]
+WantedBy=multi-user.target
