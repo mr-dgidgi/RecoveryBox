@@ -1,1 +1,0 @@
-* * * * * root /data/brouter/meshtastic-daemon.py {{ meshtastic_node.ip }}

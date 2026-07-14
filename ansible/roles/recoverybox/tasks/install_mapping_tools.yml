@@ -1,0 +1,25 @@
+---
+- name: Pull Planetiler container
+  community.docker.docker_image:
+    name: "ghcr.io/onthegomap/planetiler"
+    tag: "{{ recoverybox_version_planetiler }}"
+    source: pull
+
+- name: Create /data/planetiler directories
+  ansible.builtin.file:
+    path: "/data/planetiler/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - tmp
+    - output
+
+- name: Install generate-map
+  ansible.builtin.copy:
+    src: usr/local/bin/generate-map.sh
+    dest: /usr/local/bin/generate-map
+    owner: root
+    group: root
+    mode: '0755'

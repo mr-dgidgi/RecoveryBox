@@ -1,0 +1,15 @@
+# .github/workflows/ansible-lint.yml
+name: ansible-lint
+on:
+  push:
+    branches: ["main", "Pre-Release"]
+  pull_request:
+    branches: ["main", "Pre-Release"]
+jobs:
+  build:
+    name: Ansible Lint # Naming the build is important to use it as a status check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@26.6.0 # or vX.X.X version
