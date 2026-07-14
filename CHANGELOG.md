@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-07-14
+
+### Added
+- CI workflow `ansible-dry-run` and `ansible-lint`
+- Ansible-playbook is now used for the installation
+
+### Fixed
+
+
+### Changed
+- `recovery_box_install.sh` renamed `RecoveryBox_install.sh` for name consistency
+- Total rework on the installer behaviour. Most of the actions are now handled by Ansible and the file is eseayer to maintain
+
 ## [1.3.0] - 2026-07-12
 
 ### Added
