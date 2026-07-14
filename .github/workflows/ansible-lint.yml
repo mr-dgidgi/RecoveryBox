@@ -19,5 +19,5 @@ jobs:
         uses: ansible/ansible-lint@v26.6.0
         with:
           setup_python: true
-          requirements_file: ansible/requirements.yml
+          requirements_file: requirements.yml
           working_directory: ansible
