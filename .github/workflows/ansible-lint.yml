@@ -25,7 +25,6 @@ jobs:
 
       - name: Install Ansible and ansible-lint
         run: |
-          python3 -m pip install --break-system-packages --upgrade pip
           python3 -m pip install --break-system-packages ansible-core ansible-lint
 
       - name: Install Ansible collections

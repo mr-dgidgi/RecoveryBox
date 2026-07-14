@@ -24,7 +24,6 @@ jobs:
 
       - name: Install Ansible and Python deps
         run: |
-          python3 -m pip install --break-system-packages --upgrade pip
           python3 -m pip install --break-system-packages ansible-core docker
 
       - name: Install Ansible collections
