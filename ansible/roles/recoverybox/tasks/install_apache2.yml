@@ -6,9 +6,9 @@
     state: present
 
 - name: Enable proxy modules
-  ansible.builtin.apache2_module:
-    name: "{{ item }}"
-    state: present
+  ansible.builtin.command:
+    cmd: "a2enmod {{ item }}"
+  changed_when: false
   loop:
     - proxy
     - proxy_http
