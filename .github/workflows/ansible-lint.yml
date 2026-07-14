@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install -r ansible/requirements.yml
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v26.6.0
         with:
