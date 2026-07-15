@@ -23,6 +23,7 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+    update_cache: true
 
 - name: Enable Docker service
   ansible.builtin.systemd_service:
