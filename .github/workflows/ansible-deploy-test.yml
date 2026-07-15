@@ -44,7 +44,7 @@ jobs:
         run: |
           ansible-galaxy collection install -r ansible/requirements.yml
 
-      - name: Run playbook in check mode (dry-run tag)
+      - name: Run playbook
         run: |
           ansible-playbook ansible/Install.yml \
             --inventory "localhost," \

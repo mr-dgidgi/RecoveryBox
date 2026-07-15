@@ -73,3 +73,4 @@
   when:
     - recoverybox_download_mbtiles
     - not recoverybox_mbtiles_file.stat.exists
+    - "'dry_run' not in ansible_run_tags"

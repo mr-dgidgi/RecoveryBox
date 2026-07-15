@@ -1,7 +1,7 @@
 ---
 - name: Create openwebrx directories
   ansible.builtin.file:
-    path: /data/owrx/{{ item }}
+    path: /etc/owrx/{{ item }}
     state: directory
     owner: root
     group: root
