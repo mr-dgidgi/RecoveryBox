@@ -1,5 +1,21 @@
 # RecoveryBox
 
+![Étoiles](https://img.shields.io/github/stars/mr-dgidgi/RecoveryBox)
+
+![Licence](https://img.shields.io/github/license/mr-dgidgi/RecoveryBox)
+
+![GitHub repo size](https://img.shields.io/github/repo-size/mr-dgidgi/RecoveryBox)
+
+![GitHub language count](https://img.shields.io/github/languages/count/mr-dgidgi/RecoveryBox)
+
+![GitHub Tag](https://img.shields.io/github/v/tag/mr-dgidgi/RecoveryBox)
+
+![Dernier commit](https://img.shields.io/github/last-commit/mr-dgidgi/RecoveryBox)
+
+| Pre-Release | main |
+|-------------|------|
+|![GitHub branch check runs](https://img.shields.io/github/check-runs/mr-dgidgi/RecoveryBox/Pre-Release)|![GitHub branch check runs](https://img.shields.io/github/check-runs/mr-dgidgi/RecoveryBox/main)|
+
 English below
 
 ## Description

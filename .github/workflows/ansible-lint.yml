@@ -5,9 +5,6 @@ on:
     branches-ignore:
       - main
       - Pre-Release
-  pull_request:
-    branches:
-      - main
 jobs:
   build:
     name: Ansible Lint # Naming the build is important to use it as a status check
