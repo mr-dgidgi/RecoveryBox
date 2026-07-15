@@ -24,6 +24,12 @@ jobs:
           elif [ -f /etc/apt/sources.list ]; then
             sed -i 's/ main$/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list
           fi
+          
+      - name: create /etc/recoverybox directory
+        run: |
+          mkdir -p /etc/recoverybox
+          chown root:root /etc/recoverybox
+          chmod 0755 /etc/recoverybox
 
       - name: Install system dependencies
         run: |
