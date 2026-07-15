@@ -25,4 +25,4 @@
     enabled: true
     daemon_reload: true
     state: started
-  when: not ansible_check_mode
+  when: "'dry_run' not in ansible_run_tags"

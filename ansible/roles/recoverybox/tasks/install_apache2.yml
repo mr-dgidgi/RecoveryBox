@@ -54,4 +54,4 @@
     name: apache2
     enabled: true
     state: restarted
-  when: not ansible_check_mode
+  when: "'dry_run' not in ansible_run_tags"

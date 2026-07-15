@@ -1,4 +1,4 @@
-name: ansible-dry-run
+name: ansible-deploy-test
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
       - Pre-Release
 
 jobs:
-  dry-run:
-    name: Run Ansible Dry-Run
+  ansible-deploy-test:
+    name: Run Ansible Deploy test
     runs-on: ubuntu-latest
     container:
       image: debian:13
@@ -44,5 +44,4 @@ jobs:
             --inventory "localhost," \
             --connection local \
             --tags "dry_run" \
-            --check \
             --diff
