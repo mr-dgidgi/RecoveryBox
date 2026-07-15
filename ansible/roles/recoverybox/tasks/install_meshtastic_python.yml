@@ -17,7 +17,7 @@
 
 - name: Copy recoverybox-mesh.js to BRouter web directory
   ansible.builtin.copy:
-    src: data/brouter/recoverybox-mesh.js
+    src: data/brouter/www/recoverybox-mesh.js
     dest: /data/brouter/www/recoverybox-mesh.js
     owner: root
     group: root

@@ -24,7 +24,7 @@ jobs:
           elif [ -f /etc/apt/sources.list ]; then
             sed -i 's/ main$/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list
           fi
-          
+
       - name: create /etc/recoverybox directory
         run: |
           mkdir -p /etc/recoverybox
