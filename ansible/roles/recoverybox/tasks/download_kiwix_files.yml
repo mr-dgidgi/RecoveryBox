@@ -1,0 +1,16 @@
+---
+- name: Get files list
+  ansible.builtin.uri:
+    url: "https://lb.download.kiwix.org/zim/{{ item.category }}/"
+    return_content: true
+  register: recoverybox_kiwix_page
+
+- name: Get last version of zim file
+  ansible.builtin.set_fact:
+    recoverybox_zim_file: "{{ recoverybox_kiwix_page.content | regex_findall(item.category + '_' + item.language + '_' + item.arg + '_\\d{4}-\\d{2}\\.zim') | sort | last }}" # noqa: yaml[line-length]
+
+- name: Download the ZIM file
+  ansible.builtin.get_url:
+    url: "https://lb.download.kiwix.org/zim/{{ item.category }}/{{ recoverybox_zim_file }}"
+    dest: "/data/kiwix/{{ recoverybox_zim_file }}"
+    mode: '0644'

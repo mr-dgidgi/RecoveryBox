@@ -1,0 +1,59 @@
+---
+- name: Disable wpa_supplicant@wlanAP
+  ansible.builtin.systemd_service:
+    name: wpa_supplicant@wlanAP
+    enabled: false
+    state: stopped
+  when: "'dry_run' not in ansible_run_tags"
+
+- name: Download simple-hotspot container
+  community.docker.docker_image:
+    name: mrdgidgi/simple-hotspot
+    tag: "{{ recoverybox_version_simple_hotspot }}"
+    source: pull
+
+- name: Create ap_config directory
+  ansible.builtin.file:
+    path: /etc/ap_config
+    state: directory
+    mode: '0755'
+
+- name: Create dnsmasq.conf
+  ansible.builtin.template:
+    src: etc/ap_config/dnsmasq.conf.j2
+    dest: /etc/ap_config/dnsmasq.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create hostapd.conf
+  ansible.builtin.template:
+    src: etc/ap_config/hostapd.conf.j2
+    dest: /etc/ap_config/hostapd.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create ap_start.sh
+  ansible.builtin.template:
+    src: etc/ap_config/ap_start.sh.j2
+    dest: /etc/ap_config/ap_start.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create systemd service for access point
+  ansible.builtin.copy:
+    src: etc/systemd/system/ap.service
+    dest: /etc/systemd/system/ap.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable ap service
+  ansible.builtin.systemd_service:
+    name: ap
+    enabled: true
+    daemon_reload: true
+    state: stopped
+  when: "'dry_run' not in ansible_run_tags"

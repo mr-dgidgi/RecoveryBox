@@ -1,0 +1,31 @@
+# .github/workflows/ansible-lint.yml
+name: ansible-lint
+on:
+  push:
+    branches-ignore:
+      - main
+      - Pre-Release
+  workflow_call:
+jobs:
+  build:
+    name: Ansible Lint # Naming the build is important to use it as a status check
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:13
+    steps:
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3 python3-pip git ca-certificates
+
+      - uses: actions/checkout@v6
+
+      - name: Install Ansible and ansible-lint
+        run: |
+          python3 -m pip install --break-system-packages ansible-core ansible-lint
+
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install -r ansible/requirements.yml
+
+      - name: Run ansible-lint
+        run: ansible-lint

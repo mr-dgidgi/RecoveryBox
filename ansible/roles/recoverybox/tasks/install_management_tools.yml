@@ -1,0 +1,40 @@
+---
+- name: Install rbstatus
+  ansible.builtin.copy:
+    src: usr/local/bin/rbstatus.sh
+    dest: /usr/local/bin/rbstatus
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install rbstatus cron
+  ansible.builtin.copy:
+    src: etc/cron.d/rbstatus
+    dest: /etc/cron.d/rbstatus
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install services.json
+  ansible.builtin.template:
+    src: etc/recoverybox/services.json.j2
+    dest: /etc/recoverybox/services.json
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install services-manager
+  ansible.builtin.copy:
+    src: usr/local/bin/services-manager.sh
+    dest: /usr/local/bin/services-manager
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install network-configurator
+  ansible.builtin.copy:
+    src: usr/local/bin/network-configurator.sh
+    dest: /usr/local/bin/network-configurator
+    owner: root
+    group: root
+    mode: '0755'

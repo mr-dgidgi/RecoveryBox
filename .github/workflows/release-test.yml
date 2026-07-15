@@ -1,0 +1,11 @@
+name: ansible-lint
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  Ansible-Lint:
+    uses: ./.github/workflows/ansible-lint.yml
+
+  ansible-deploy-test:
+    uses: ./.github/workflows/ansible-deploy-test.yml
