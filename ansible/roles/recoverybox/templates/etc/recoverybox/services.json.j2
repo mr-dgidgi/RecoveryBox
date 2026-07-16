@@ -22,7 +22,7 @@
     "unit": "kiwix.service",
     "url": "http://recovery.box:8080/",
     "version": {{ recoverybox_version_kiwix | to_json }},
-    "activated": {{ recoverybox_kiwix_enabled | to_json }}
+    "activated": {{ recoverybox_enable_kiwix | to_json }}
   },
   {
     "id": "ap",
@@ -31,7 +31,7 @@
     "unit": "ap.service",
     "url": null,
     "version": {{ recoverybox_version_simple_hotspot | to_json }},
-    "activated": {{ recoverybox_hotspot_enabled | to_json }}
+    "activated": {{ recoverybox_enable_hotspot | to_json }}
   },
   {
     "id": "apache",
@@ -40,7 +40,7 @@
     "unit": "apache2.service",
     "url": null,
     "version": null,
-    "activated": {{ recoverybox_apache_enabled | to_json }}
+    "activated": {{ recoverybox_enable_apache | to_json }}
   },
   {
     "id": "library",
@@ -50,7 +50,7 @@
     "check_host": "library.recovery.box",
     "url": "http://library.recovery.box/",
     "version": {{ recoverybox_version_library | to_json }},
-    "activated": {{ recoverybox_library_enabled | to_json }}
+    "activated": {{ recoverybox_enable_library | to_json }}
   },
   {
     "id": "openwebrx",
@@ -59,7 +59,7 @@
     "unit": "openwebrx.service",
     "url": "http://recovery.box:8073/",
     "version": {{ recoverybox_version_owrx | to_json }},
-    "activated": {{ recoverybox_owrx_enabled | to_json }}
+    "activated": {{ recoverybox_enable_owrx | to_json }}
   },
   {
     "id": "chrony",
@@ -77,7 +77,7 @@
     "unit": "brouter.service",
     "url": "http://map.recovery.box/",
     "version": {{ recoverybox_version_brouter_web | to_json }},
-    "activated": {{ recoverybox_brouter_enabled | to_json }}
+    "activated": {{ recoverybox_enable_brouter | to_json }}
   },
   {
     "id": "tileserver",
@@ -86,7 +86,7 @@
     "unit": "tileserver-gl.service",
     "url": null,
     "version": {{ recoverybox_version_tileserver | to_json }},
-    "activated": {{ recoverybox_tileserver_enabled | to_json }}
+    "activated": {{ recoverybox_enable_tileserver | to_json }}
   },
   {
     "id": "shellinabox",
@@ -95,7 +95,7 @@
     "unit": "shellinabox.service",
     "url": "http://console.recovery.box/",
     "version": null,
-    "activated": {{ recoverybox_console_enabled | to_json }}
+    "activated": {{ recoverybox_enable_console | to_json }}
   },
   {
     "id": "meshtastic",
@@ -104,6 +104,6 @@
     "unit": "meshtastic-web.service",
     "url": "http://meshtastic.recovery.box/",
     "version": {{ recoverybox_version_meshtastic_web | to_json }},
-    "activated": {{ recoverybox_meshtastic_enabled | to_json }}
+    "activated": {{ recoverybox_enable_meshtastic | to_json }}
   }
 ]

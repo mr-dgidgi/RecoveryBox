@@ -3,7 +3,7 @@
 ###############################################################
 # Recoverybox Project
 # https://github.com/mr-dgidgi/RecoveryBox
-# autor Ghislain Leblanc aka mrdgidgi
+# autor Ghislain Leblanc aka mr-dgidgi
 # contact@dgidgi.ovh
 #
 #
@@ -14,11 +14,19 @@ MSGGREEN='\033[0;32m'
 MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
-LANGUAGE="fr"
-WAN="Wan"
-LAN="Lan"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
+LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
+
+CUSTOMCONF=false
+
+CUSTOMMESHTASTIC=false
+KIWIXENWIKIPEDIA="false"
+KIWIXFRWIKIPEDIA="false"
+KIWIXENWIKIPEDIAARG="all_no_pic"
+KIWIXFRWIKIPEDIAARG="all_no_pic"
+CUSTOMINSTALL=false
 
 #######################################################
 # Functions
@@ -197,9 +205,190 @@ configure_interfaces() {
 }
 
 #######################################################
+
+set_meshtastic_ip() {
+    read -rp "" "Enter the meshtastic node IP address (default : 192.168.4.1) : " MeshtasticIP
+    MeshtasticIP=${MeshtasticIP:-192.168.200.101}
+    read -rp "" "Enter the meshtastic node MAC address (default : 00:00:00:00:00:00) : " MeshtasticMAC
+    MeshtasticMAC=${MeshtasticMAC:-00:00:00:00:00:00}
+    echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
+    CUSTOMMESHTASTIC=true
+}
+
+#######################################################
+
+set_kiwix_files(){
+    read -rp "" "Download English Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixEnWikipedia
+    QuestionDownloadKiwixEnWikipedia=$(yes_no_check "$QuestionDownloadKiwixEnWikipedia")
+    if [[ $QuestionDownloadKiwixEnWikipedia -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : disabled." "$MSGNC"
+        KIWIXENWIKIPEDIA="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
+        KIWIXENWIKIPEDIA="true"
+        read -rp "" "Which size of English Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixEnWikipediaSize
+        if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
+            KIWIXENWIKIPEDIAARG="all_mini"
+        elif [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_maxi" ]];then
+            KIWIXENWIKIPEDIAARG="all_maxi"
+        else
+            KIWIXENWIKIPEDIAARG="all_no_pic"
+        fi
+    fi
+
+    read -rp "" "Download French Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixFrWikipedia
+    QuestionDownloadKiwixFrWikipedia=$(yes_no_check "$QuestionDownloadKiwixFrWikipedia")
+    if [[ $QuestionDownloadKiwixFrWikipedia -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : disabled." "$MSGNC"
+        KIWIXFRWIKIPEDIA="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
+        KIWIXFRWIKIPEDIA="true"
+        read -rp "" "Which size of French Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixFrWikipediaSize
+        if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
+            KIWIXFRWIKIPEDIAARG="all_mini"
+        elif [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_maxi" ]];then
+            KIWIXFRWIKIPEDIAARG="all_maxi"
+        else
+            KIWIXFRWIKIPEDIAARG="all_no_pic"
+        fi
+    fi
+
+}
+
+#######################################################
+
+menu_services() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration menu" "$MSGNC"
+
+    read -rp "" "Enable Apache web server? yes/no (default : yes) : " QuestionEnableApache
+    QuestionEnableApache=$(yes_no_check "$QuestionEnableApache")
+    if [[ $QuestionEnableApache -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Apache : disabled." "$MSGNC"
+        EnableApache="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Apache : enabled." "$MSGNC"
+        EnableApache="true"
+    fi
+
+    if [[ "$EnableApache" == "true" ]]; then
+        read -rp "" "Enable RecoveryBox Library? yes/no (default : yes) : " QuestionEnableLibrary
+        QuestionEnableLibrary=$(yes_no_check "$QuestionEnableLibrary")
+        if [[ $QuestionEnableLibrary -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
+            EnableLibrary="false"
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
+            EnableLibrary="true"
+        fi
+
+        read -rp "" "Enable brouter? yes/no (default : yes) : " QuestionEnableBrouter
+        QuestionEnableBrouter=$(yes_no_check "$QuestionEnableBrouter")
+        if [[ $QuestionEnableBrouter -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
+            EnableBrouter="false"
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
+            EnableBrouter="true"
+        fi
+
+        read -rp "" "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
+        QuestionEnableTileserver=$(yes_no_check "$QuestionEnableTileserver")
+        if [[ $QuestionEnableTileserver -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
+            EnableTileserver="false"
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
+            EnableTileserver="true"
+        fi
+
+        read -rp "" "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
+        QuestionEnableMeshtastic=$(yes_no_check "$QuestionEnableMeshtastic")
+        if [[ $QuestionEnableMeshtastic -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
+            EnableMeshtastic="false"
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
+            EnableMeshtastic="true"
+        fi
+
+        read -rp "" "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
+        QuestionEnableConsole=$(yes_no_check "$QuestionEnableConsole")
+        if [[ $QuestionEnableConsole -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
+            EnableConsole="false"
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
+            EnableConsole="true"
+            read -rp "" "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
+            QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
+            if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
+                set_meshtastic_ip
+            fi
+        fi
+    fi
+    read -rp "" "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
+    QuestionEnableOWRX=$(yes_no_check "$QuestionEnableOWRX")
+    if [[ $QuestionEnableOWRX -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : disabled." "$MSGNC"
+        EnableOWRX="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
+        EnableOWRX="true"
+    fi
+    read -rp "" "Enable Kiwix server? yes/no (default : yes) : " QuestionEnableKiwix
+    QuestionEnableKiwix=$(yes_no_check "$QuestionEnableKiwix")
+    if [[ $QuestionEnableKiwix -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : disabled." "$MSGNC"
+        EnableKiwix="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : enabled." "$MSGNC"
+        EnableKiwix="true"
+        set_kiwix_files
+    fi
+    EnableHotspot="true" #automaticaly installed
+    
+    set_ansible_custom_vars
+}
+
+set_ansible_custom_vars() {
+    cat <<EOL > "$SCRIPT_DIR/RUN/custom_vars.yml"
+recoverybox_enable_apache: $EnableApache
+recoverybox_enable_library: $EnableLibrary
+recoverybox_enable_brouter: $EnableBrouter
+recoverybox_enable_tileserver: $EnableTileserver
+recoverybox_enable_meshtastic: $EnableMeshtastic
+recoverybox_enable_console: $EnableConsole
+recoverybox_enable_owrx: $EnableOWRX
+recoverybox_enable_kiwix: $EnableKiwix
+recoverybox_enable_hotspot: $EnableHotspot
+recoverybox_kiwix_files:
+  - category: wikipedia
+    language: french
+    enable: "$KIWIXFRWIKIPEDIA"
+    arg: "$KIWIXFRWIKIPEDIAARG"
+  - category: wikipedia
+    language: english
+    enable: "$KIWIXENWIKIPEDIA"
+    arg: "$KIWIXENWIKIPEDIAARG"
+EOL
+
+if [[ $CUSTOMMESHTASTIC == true ]]; then
+    cat <<EOL >> "$SCRIPT_DIR/RUN/custom_vars.yml"
+recoverybox_meshtastic_node:
+  mac: ${MeshtasticMAC}
+  ip: ${MeshtasticIP}
+EOL
+fi
+
+}
+
+
+#######################################################
 #######################################################
 #######################################################
 main() {
+    mkdir -p "$SCRIPT_DIR/RUN"
     mkdir -p /etc/recoverybox
     if [[ -f /etc/recoverybox/rb_version ]]; then
         echo -e "-upgrading" >> /etc/recoverybox/rb_version
@@ -210,11 +399,35 @@ main() {
     set_keyboard
     ## Install Ansible prerequisites
     install_ansible
-    # Set Ansible variables
+    
+    if [[ $CUSTOMCONF == false ]]; then
+        echo -e "#########################################################"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration" "$MSGNC"
+        read -rp "Do you want the default installation ? yes/no (default : yes) : " ConfigureChoice
+        ConfigureChoice=$(yes_no_check "$ConfigureChoice")
+        if [[ $ConfigureChoice -eq 1 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "Custom installation selected." "$MSGNC"
+            menu_services
+            CUSTOMINSTALL=true
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Default installation selected." "$MSGNC"
+            CUSTOMINSTALL=false
+        fi
+    fi
 
-    if ! ansible-playbook -i localhost, "$SCRIPT_DIR/ansible/Install.yml" --connection=local; then
-        echo -e "$MSGRED" "$SRVMSG" "Ansible playbook execution failed.${MSGNC}"
-        exit 1
+    echo -e "#########################################################"
+    echo -e "$MSGYELLOW" "$SRVMSG" "Starting Installation..." "$MSGNC"
+
+    if [[ $CUSTOMINSTALL == true ]] || [[ $CUSTOMCONF == true ]]; then
+        if ! ansible-playbook -i localhost, "$SCRIPT_DIR/ansible/Install.yml" --connection=local --extra-vars "@$SCRIPT_DIR/RUN/custom_vars.yml"; then
+            echo -e "$MSGRED" "$SRVMSG" "Ansible playbook execution failed.${MSGNC}"
+            exit 1
+        fi
+    else
+        if ! ansible-playbook -i localhost, "$SCRIPT_DIR/ansible/Install.yml" --connection=local; then
+            echo -e "$MSGRED" "$SRVMSG" "Ansible playbook execution failed.${MSGNC}"
+            exit 1
+        fi
     fi
 
     ## Download more map
@@ -244,5 +457,8 @@ main() {
 
 #######################################################
 
-main
+if  [[ -n $1 ]] && [[ $1 == "custom" ]]; then
+CUSTOMCONF=true
+fi
 
+main
