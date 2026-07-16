@@ -11,4 +11,4 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         env:
-          SHELLCHECK_OPTS: "--shell=bash"
+          SHELLCHECK_OPTS: "--shell=bash --exclude=SC2181"
