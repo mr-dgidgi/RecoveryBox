@@ -1,10 +1,6 @@
 # .github/workflows/ansible-lint.yml
 name: ansible-lint
 on:
-  push:
-    branches-ignore:
-      - main
-      - Pre-Release
   workflow_call:
 jobs:
   build:

@@ -1,0 +1,13 @@
+name: Shellcheck
+on:
+  push:
+    branches-ignore:
+      - main
+      - Pre-Release
+
+jobs:
+  Shellcheck:
+    uses: ./.github/workflows/shellcheck.yml
+
+  Ansible-Lint:
+    uses: ./.github/workflows/ansible-lint.yml
