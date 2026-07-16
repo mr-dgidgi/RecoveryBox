@@ -27,6 +27,7 @@ KIWIXFRWIKIPEDIA="false"
 KIWIXENWIKIPEDIAARG="all_no_pic"
 KIWIXFRWIKIPEDIAARG="all_no_pic"
 CUSTOMINSTALL=false
+DOWNLOADMBTILES="true"
 
 #######################################################
 # Functions
@@ -215,6 +216,18 @@ set_meshtastic_ip() {
     CUSTOMMESHTASTIC=true
 }
 
+set_worldmap_download() {
+    read -rp "" "Download World map? yes/no (default : yes) : " QuestionDownloadTileserver
+    QuestionDownloadTileserver=$(yes_no_check "$QuestionDownloadTileserver")
+    if [[ $QuestionDownloadTileserver -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "World map download : disabled." "$MSGNC"
+        DOWNLOADMBTILES="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "World map download : enabled." "$MSGNC"
+        DOWNLOADMBTILES="true"
+    fi
+}
+
 #######################################################
 
 set_kiwix_files(){
@@ -300,6 +313,7 @@ menu_services() {
         else
             echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
             EnableTileserver="true"
+            set_worldmap_download
         fi
 
         read -rp "" "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
@@ -362,6 +376,7 @@ recoverybox_enable_console: $EnableConsole
 recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
 recoverybox_enable_hotspot: $EnableHotspot
+recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia
     language: french
@@ -457,7 +472,7 @@ main() {
 
 #######################################################
 
-if  [[ -n $1 ]] && [[ $1 == "custom" ]]; then
+if [[ $1 == "custom" ]]; then
 CUSTOMCONF=true
 fi
 
