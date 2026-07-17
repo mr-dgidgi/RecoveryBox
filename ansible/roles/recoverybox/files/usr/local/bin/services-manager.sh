@@ -50,6 +50,10 @@ show_service_status () {
     continue_enter
 }
 
+#get_services_list () {
+#    ActivatedServices=$(cat /etc/recoverybox/services.json | jq -r '.[] | select(.activated == true and .type == "systemd") | "\(.id) - \(.name) (\(.type))"')
+#}
+
 select_service () {
     while true; do
         echo -e "#########################################################"

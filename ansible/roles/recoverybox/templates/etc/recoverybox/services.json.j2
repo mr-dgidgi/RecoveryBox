@@ -21,7 +21,7 @@
     "type": "systemd",
     "unit": "kiwix.service",
     "url": "http://recovery.box:8080/",
-    "version": {{ recoverybox_version_kiwix | to_json }},
+    "version": "{{ recoverybox_version_kiwix }}",
     "activated": {{ recoverybox_enable_kiwix | to_json }}
   },
   {
@@ -30,7 +30,7 @@
     "type": "systemd",
     "unit": "ap.service",
     "url": null,
-    "version": {{ recoverybox_version_simple_hotspot | to_json }},
+    "version": "{{ recoverybox_version_simple_hotspot }}",
     "activated": {{ recoverybox_enable_hotspot | to_json }}
   },
   {
@@ -49,7 +49,7 @@
     "check_url": "http://127.0.0.1",
     "check_host": "library.recovery.box",
     "url": "http://library.recovery.box/",
-    "version": {{ recoverybox_version_library | to_json }},
+    "version": "{{ recoverybox_version_library }}",
     "activated": {{ recoverybox_enable_library | to_json }}
   },
   {
@@ -58,7 +58,7 @@
     "type": "systemd",
     "unit": "openwebrx.service",
     "url": "http://recovery.box:8073/",
-    "version": {{ recoverybox_version_owrx | to_json }},
+    "version": "{{ recoverybox_version_owrx }}",
     "activated": {{ recoverybox_enable_owrx | to_json }}
   },
   {
@@ -76,7 +76,7 @@
     "type": "systemd",
     "unit": "brouter.service",
     "url": "http://map.recovery.box/",
-    "version": {{ recoverybox_version_brouter_web | to_json }},
+    "version": "{{ recoverybox_version_brouter_web }}",
     "activated": {{ recoverybox_enable_brouter | to_json }}
   },
   {
@@ -85,7 +85,7 @@
     "type": "systemd",
     "unit": "tileserver-gl.service",
     "url": null,
-    "version": {{ recoverybox_version_tileserver | to_json }},
+    "version": "{{ recoverybox_version_tileserver }}",
     "activated": {{ recoverybox_enable_tileserver | to_json }}
   },
   {
@@ -103,7 +103,7 @@
     "type": "systemd",
     "unit": "meshtastic-web.service",
     "url": "http://meshtastic.recovery.box/",
-    "version": {{ recoverybox_version_meshtastic_web | to_json }},
+    "version": "{{ recoverybox_version_meshtastic_web }}",
     "activated": {{ recoverybox_enable_meshtastic | to_json }}
   }
 ]
