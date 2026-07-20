@@ -41,6 +41,13 @@ recoverybox_interface_lan: "Lan"
 recoverybox_hotspot_conf:
   ssid: "recoverybox"
   password: "recoverybox"
+  mode: "g" # 2.4GHz : g or b (legacy), 5GHz/6GHz : a, acs if supported by the card
+  channel: "11" # 2.4GHz : 1/7/11, 5GHz : 36-165, 6GHz : 1-233, 0 or acs if supported by the card
+  auth_algs: "1"
+  wpa: "2"
+  wpa_key_mgmt: "WPA-PSK"
+  wpa_pairwise: "TKIP CCMP"
+  rsn_pairwise: "CCMP"
   network: "192.168.200.0"
   mask: "24"
   ip: "192.168.200.1"

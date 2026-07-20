@@ -15,6 +15,7 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RECOVERBOXYDIR="/etc/recoverybox"
 
 WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
 LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
@@ -303,6 +304,15 @@ menu_services() {
         else
             echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
             EnableBrouter="true"
+            read -rp "" "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
+            QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
+            if [[ $QuestionDownloadBrouter -eq 0 ]]; then
+                echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
+                DownloadBrouterdata="false"
+            else
+                echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
+                DownloadBrouterdata="true"
+            fi
         fi
 
         read -rp "" "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
@@ -366,10 +376,11 @@ menu_services() {
 }
 
 set_ansible_custom_vars() {
-    cat <<EOL > "$SCRIPT_DIR/RUN/custom_vars.yml"
+    cat <<EOL > "$RECOVERBOXYDIR/custom_config.yml"
 recoverybox_enable_apache: $EnableApache
 recoverybox_enable_library: $EnableLibrary
 recoverybox_enable_brouter: $EnableBrouter
+recoverybox_download_brouter: $DownloadBrouterdata
 recoverybox_enable_tileserver: $EnableTileserver
 recoverybox_enable_meshtastic: $EnableMeshtastic
 recoverybox_enable_console: $EnableConsole
@@ -389,7 +400,7 @@ recoverybox_kiwix_files:
 EOL
 
 if [[ $CUSTOMMESHTASTIC == true ]]; then
-    cat <<EOL >> "$SCRIPT_DIR/RUN/custom_vars.yml"
+    cat <<EOL >> "$RECOVERBOXYDIR/custom_config.yml"
 recoverybox_meshtastic_node:
   mac: ${MeshtasticMAC}
   ip: ${MeshtasticIP}
@@ -398,24 +409,7 @@ fi
 
 }
 
-
-#######################################################
-#######################################################
-#######################################################
-main() {
-    mkdir -p "$SCRIPT_DIR/RUN"
-    mkdir -p /etc/recoverybox
-    if [[ -f /etc/recoverybox/rb_version ]]; then
-        echo -e "-upgrading" >> /etc/recoverybox/rb_version
-    fi
-    ## checks / settings
-    check_prerequisites
-    ## set keyboard layout
-    set_keyboard
-    ## Install Ansible prerequisites
-    install_ansible
-    
-    if [[ $CUSTOMCONF == false ]]; then
+menu_configuration() {
         echo -e "#########################################################"
         echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration" "$MSGNC"
         read -rp "Do you want the default installation ? yes/no (default : yes) : " ConfigureChoice
@@ -428,13 +422,47 @@ main() {
             echo -e "$MSGYELLOW" "$SRVMSG" "Default installation selected." "$MSGNC"
             CUSTOMINSTALL=false
         fi
+}
+
+#######################################################
+#######################################################
+#######################################################
+main() {
+    mkdir -p "$SCRIPT_DIR/RUN"
+    mkdir -p $RECOVERBOXYDIR
+    if [[ -f $RECOVERBOXYDIR/rb_version ]]; then
+        echo -e "-upgrading" >> $RECOVERBOXYDIR/rb_version
+    fi
+    ## checks / settings
+    check_prerequisites
+    ## set keyboard layout
+    set_keyboard
+    ## Install Ansible prerequisites
+    install_ansible
+
+    if [[ -f $RECOVERBOXYDIR/custom_config.yml ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
+        read -rp "Do you want to use the existing custom configuration file? yes/no (default : yes) : " UseExistingConfig
+        UseExistingConfig=$(yes_no_check "$UseExistingConfig")
+        if [[ $UseExistingConfig -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
+            CUSTOMCONF=true
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Deleting custom configuration file." "$MSGNC"
+            rm -f $RECOVERBOXYDIR/custom_config.yml
+            CUSTOMCONF=false
+        fi
+    fi
+    
+    if [[ $CUSTOMCONF == false ]]; then
+        menu_configuration
     fi
 
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Starting Installation..." "$MSGNC"
 
     if [[ $CUSTOMINSTALL == true ]] || [[ $CUSTOMCONF == true ]]; then
-        if ! ansible-playbook -i localhost, "$SCRIPT_DIR/ansible/Install.yml" --connection=local --extra-vars "@$SCRIPT_DIR/RUN/custom_vars.yml"; then
+        if ! ansible-playbook -i localhost, "$SCRIPT_DIR/ansible/Install.yml" --connection=local --extra-vars "@$RECOVERBOXYDIR/custom_config.yml"; then
             echo -e "$MSGRED" "$SRVMSG" "Ansible playbook execution failed.${MSGNC}"
             exit 1
         fi
@@ -463,7 +491,7 @@ main() {
         configure_interfaces
     fi
 
-    cp "$SCRIPT_DIR/VERSION" /etc/recoverybox/rb_version
+    cp "$SCRIPT_DIR/VERSION" "$RECOVERBOXYDIR/rb_version"
 
     ## Final message
     echo -e "$MSGGREEN" "$SRVMSG" "Installation complete! Please REBOOT THE SYSTEM to apply all changes." "$MSGNC"
@@ -473,7 +501,11 @@ main() {
 #######################################################
 
 if [[ $1 == "custom" ]]; then
-CUSTOMCONF=true
+    CUSTOMCONF=true
 fi
 
-main
+if [[ $1 == "config" ]]; then
+    menu_configuration
+else
+    main
+fi
