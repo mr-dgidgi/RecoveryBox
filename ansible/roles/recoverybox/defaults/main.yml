@@ -21,30 +21,46 @@ recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource: docker depName: ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
 
+# Enable services on demand
+recoverybox_enable_apache: true
+recoverybox_enable_library: true
+recoverybox_enable_owrx: true
+recoverybox_enable_brouter: true
+recoverybox_enable_tileserver: true
+recoverybox_enable_console: true
+recoverybox_enable_kiwix: true
+recoverybox_enable_meshtastic: true
+recoverybox_enable_hotspot: true
+
 # Network interfaces
 recoverybox_interface_wlanap: "wlanAP"
 recoverybox_interface_wan: "Wan"
 recoverybox_interface_lan: "Lan"
 
 # Hotspot configuration
-recoverybox_hotspot_enabled: true
 recoverybox_hotspot_conf:
   ssid: "recoverybox"
   password: "recoverybox"
+  mode: "g" # 2.4GHz : g or b (legacy), 5GHz/6GHz : a, acs if supported by the card
+  channel: "11" # 2.4GHz : 1/7/11, 5GHz : 36-165, 6GHz : 1-233, 0 or acs if supported by the card
+  auth_algs: "1"
+  wpa: "2"
+  wpa_key_mgmt: "WPA-PSK"
+  wpa_pairwise: "TKIP CCMP"
+  rsn_pairwise: "CCMP"
   network: "192.168.200.0"
   mask: "24"
   ip: "192.168.200.1"
   dhcp_range_start: "192.168.200.100"
   dhcp_range_end: "192.168.200.200"
 
-recoverybox_meshtastic_enabled: true
+
 # fill this if you have a meshtastic node to connect to
 recoverybox_meshtastic_node:
   mac: "00:00:00:00:00:00"
   ip: "192.168.200.101"
 
 # kiwix files to download, see https://lb.download.kiwix.org/zim/
-recoverybox_kiwix_enabled: true
 recoverybox_kiwix_files:
   - category: wikipedia
     language: french
@@ -54,18 +70,13 @@ recoverybox_kiwix_files:
     language: english
     enable: true
     arg: "all_no_pic" # all_mini,all_no_pic,all_maxi
-  - category: maps
-    language: english
-    enable: true
-    arg: "croatia"
+#  - category: maps
+#    language: english
+#    enable: true
+#    arg: "croatia"
 
-recoverybox_apache_enabled: true
-recoverybox_library_enabled: true
-recoverybox_owrx_enabled: true
-recoverybox_brouter_enabled: true
+
 # Allow to download segment4 files for brouter
 recoverybox_download_brouter: true
-recoverybox_tileserver_enabled: true
 # Allow to download world.mbtiles for tileserver-gl
 recoverybox_download_mbtiles: true
-recoverybox_console_enabled: true

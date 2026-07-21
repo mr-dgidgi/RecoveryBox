@@ -208,7 +208,7 @@ Print_System() {
     CpuUsage=$(jq -r '.system.cpu' "$OutputJson")
     RamUsage=$(jq -r '.system.ram' "$OutputJson")
     SwapUsage=$(jq -r '.system.swap' "$OutputJson")
-    Temps=($(jq -r '.system.temp[]' "$OutputJson"))
+    mapfile -t Temps < <(jq -r '.system.temp[]' "$OutputJson")
 
     CpuInt=${CpuUsage%.*}
     if [[ $CpuInt -gt 80 ]]; then

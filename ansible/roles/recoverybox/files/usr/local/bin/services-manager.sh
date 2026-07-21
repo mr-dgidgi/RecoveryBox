@@ -7,20 +7,7 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 CURRENTSERVICE=""
-
-# Convert user input to yes/no values (1=yes, 0=no, 99=invalid)
-yes_no_check () {
-	if [ "$1" = "Y" ] || [ "$1" = "y" ] || [ "$1" = "Yes" ] || [ "$1" = "yes" ] || [ "$1" = "Oui" ] || [ "$1" = "OUI" ] || [ "$1" = "oui" ] || [ "$1" = "O" ]; then
-		echo 1
-
-	elif [ "$1" = "N" ] || [ "$1" = "n" ] || [ "$1" = "No" ] || [ "$1" = "no" ] || [ "$1" = "Non" ] || [ "$1" = "NON" ] || [ "$1" = "non" ] || [ "$1" = "N" ]; then
-		echo 0
-
-	else
-		echo 99
-
-	fi
-}
+SERVICEFILE="/etc/recoverybox/services.json"
 
 # Verify script is running as root
 check_root() {
@@ -50,123 +37,144 @@ show_service_status () {
     continue_enter
 }
 
+get_services_list () {
+    local service_entries
+
+    if ! service_entries=$(jq -r '.[] | select(.activated == true and .type == "systemd") | "\(.unit);\(.name)"' "$SERVICEFILE"); then
+        echo -e "$MSGRED" "$SRVMSG" "Unable to read valid service entries from $SERVICEFILE." "$MSGNC"
+        return 1
+    fi
+
+    if [ -z "$service_entries" ]; then
+        echo -e "$MSGRED" "$SRVMSG" "No activated systemd service found in $SERVICEFILE." "$MSGNC"
+        return 1
+    fi
+
+    mapfile -t ActivatedServices < <(printf '%s\n' "$service_entries")
+}
+
 select_service () {
+
     while true; do
         echo -e "#########################################################"
         echo -e "################### Select a Service ####################"
         echo -e "#########################################################"
         echo -e "\n\n"
-        echo -e "1. Chrony (Time Sync)"
-        echo -e "2. AccessPoint"
-        echo -e "3. Apache server"
-        echo -e "4. Web Console"
-        echo -e "5. Kiwix Server"
-        echo -e "6. OpenWebRX"
-        echo -e "7. Brouter"
-        echo -e "8. Tileserver"
-        echo -e "9. Meshtastic web"
+        local ServiceID=1
+        local service
+        local name
+
+        for service in "${ActivatedServices[@]}"; do
+            IFS=';' read -r _ name <<< "$service"
+            echo -e "$ServiceID) $name"
+            ServiceID=$((ServiceID + 1))
+        done
         read -rp "Choose a service : " ServiceChoosed
-        case $ServiceChoosed in
-            1) 
-                CURRENTSERVICE="chrony.service"
-                break
-                ;;
-            2) 
-                CURRENTSERVICE="ap.service" 
-                break
-                ;;
-            3) 
-                CURRENTSERVICE="apache2.service"
-                echo -e "$MSGYELLOW" "$SRVMSG" "Note: Actions on Apache2 service may affect other services." "$MSGNC"
-                break
-                ;;
-            4) 
-                CURRENTSERVICE="shellinabox.service"
-                break
-                ;;
-            5) 
-                CURRENTSERVICE="kiwix.service"
-                break
-                ;;
-            6) 
-                CURRENTSERVICE="openwebrx.service"
-                break
-                ;;
-            7) 
-                CURRENTSERVICE="brouter.service"
-                break
-                ;;
-            8) 
-                CURRENTSERVICE="tileserver-gl.service"
-                break
-                ;;
-            9) 
-                CURRENTSERVICE="meshtastic-web.service"
-                break
-                ;;
-            *) 
-                echo -e "$MSGRED" "$SRVMSG" "Invalid option. Please choose a valid service number." "$MSGNC"
-                ;;
-        esac
+
+        # Validate the user input
+        if ! [[ "$ServiceChoosed" =~ ^[1-9][0-9]*$ ]] || [ "$ServiceChoosed" -gt "${#ActivatedServices[@]}" ]; then
+            echo -e "$MSGRED" "$SRVMSG" "Invalid option. Please choose a valid service number." "$MSGNC"
+            continue
+        fi
+        IFS=';' read -r CURRENTSERVICE _ <<< "${ActivatedServices[$((ServiceChoosed - 1))]}"
+
+        if [[ $CURRENTSERVICE == "apache2.service" ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "Note: Actions on Apache2 service may affect other services." "$MSGNC"
+        fi
+        break
     done
 }
 
-start_service () {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Starting $CURRENTSERVICE..." "$MSGNC"
-    systemctl start "$CURRENTSERVICE"
+run_service_action () {
+    local action="$1"
+    local check_mode="$2"
+    local start_message="$3"
+    local success_message="$4"
+    local failure_message="$5"
+
+    echo -e "$MSGYELLOW" "$SRVMSG" "$start_message" "$MSGNC"
+    systemctl "$action" "$CURRENTSERVICE"
     sleep 5
-    if systemctl is-active --quiet "$CURRENTSERVICE"; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$CURRENTSERVICE started successfully." "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "Failed to start $CURRENTSERVICE. Please check the service logs for more details." "$MSGNC"
-        systemctl status "$CURRENTSERVICE"
-    fi
+
+    case "$check_mode" in
+        active)
+            if systemctl is-active --quiet "$CURRENTSERVICE"; then
+                echo -e "$MSGGREEN" "$SRVMSG" "$success_message" "$MSGNC"
+            else
+                echo -e "$MSGRED" "$SRVMSG" "$failure_message" "$MSGNC"
+                systemctl status "$CURRENTSERVICE"
+            fi
+            ;;
+        inactive)
+            if ! systemctl is-active --quiet "$CURRENTSERVICE"; then
+                echo -e "$MSGGREEN" "$SRVMSG" "$success_message" "$MSGNC"
+            else
+                echo -e "$MSGRED" "$SRVMSG" "$failure_message" "$MSGNC"
+                systemctl status "$CURRENTSERVICE"
+            fi
+            ;;
+        enabled)
+            if systemctl is-enabled --quiet "$CURRENTSERVICE"; then
+                echo -e "$MSGGREEN" "$SRVMSG" "$success_message" "$MSGNC"
+            else
+                echo -e "$MSGRED" "$SRVMSG" "$failure_message" "$MSGNC"
+                systemctl status "$CURRENTSERVICE"
+            fi
+            ;;
+        disabled)
+            if ! systemctl is-enabled --quiet "$CURRENTSERVICE"; then
+                echo -e "$MSGGREEN" "$SRVMSG" "$success_message" "$MSGNC"
+            else
+                echo -e "$MSGRED" "$SRVMSG" "$failure_message" "$MSGNC"
+                systemctl status "$CURRENTSERVICE"
+            fi
+            ;;
+    esac
+}
+
+start_service () {
+    run_service_action \
+        start \
+        active \
+        "Starting $CURRENTSERVICE..." \
+        "$CURRENTSERVICE started successfully." \
+        "Failed to start $CURRENTSERVICE. Please check the service logs for more details."
 }
 
 stop_service () {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Stopping $CURRENTSERVICE..." "$MSGNC"
-    systemctl stop "$CURRENTSERVICE"
-    sleep 5
-    if ! systemctl is-active --quiet "$CURRENTSERVICE"; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$CURRENTSERVICE stopped successfully." "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "Failed to stop $CURRENTSERVICE. Please check the service logs for more details." "$MSGNC"
-        systemctl status "$CURRENTSERVICE"
-    fi
+    run_service_action \
+        stop \
+        inactive \
+        "Stopping $CURRENTSERVICE..." \
+        "$CURRENTSERVICE stopped successfully." \
+        "Failed to stop $CURRENTSERVICE. Please check the service logs for more details."
 }
 
 restart_service () {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Restarting $CURRENTSERVICE..." "$MSGNC"
-    systemctl restart "$CURRENTSERVICE"
-    sleep 5
-    if systemctl is-active --quiet "$CURRENTSERVICE"; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$CURRENTSERVICE restarted successfully." "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "Failed to restart $CURRENTSERVICE. Please check the service logs for more details." "$MSGNC"
-        systemctl status "$CURRENTSERVICE"
-    fi
+    run_service_action \
+        restart \
+        active \
+        "Restarting $CURRENTSERVICE..." \
+        "$CURRENTSERVICE restarted successfully." \
+        "Failed to restart $CURRENTSERVICE. Please check the service logs for more details."
 }
 
 enable_service () {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Enabling $CURRENTSERVICE to start on boot..." "$MSGNC"
-    systemctl enable "$CURRENTSERVICE"
-    if systemctl is-enabled --quiet "$CURRENTSERVICE"; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$CURRENTSERVICE enabled successfully." "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "Failed to enable $CURRENTSERVICE. Please check the service logs for more details." "$MSGNC"
-        systemctl status "$CURRENTSERVICE"
-    fi
+    run_service_action \
+        enable \
+        enabled \
+        "Enabling $CURRENTSERVICE to start on boot..." \
+        "$CURRENTSERVICE enabled successfully." \
+        "Failed to enable $CURRENTSERVICE. Please check the service logs for more details."
 }
 
 disable_service () {
-    echo -e "$MSGYELLOW" "$SRVMSG" "Disabling $CURRENTSERVICE from starting on boot..." "$MSGNC"
-    systemctl disable "$CURRENTSERVICE"
-    if ! systemctl is-enabled --quiet "$CURRENTSERVICE"; then
-        echo -e "$MSGGREEN" "$SRVMSG" "$CURRENTSERVICE disabled successfully." "$MSGNC"
-    else
-        echo -e "$MSGRED" "$SRVMSG" "Failed to disable $CURRENTSERVICE. Please check the service logs for more details." "$MSGNC"
-        systemctl status "$CURRENTSERVICE"
-    fi
+    run_service_action \
+        disable \
+        disabled \
+        "Disabling $CURRENTSERVICE from starting on boot..." \
+        "$CURRENTSERVICE disabled successfully." \
+        "Failed to disable $CURRENTSERVICE. Please check the service logs for more details."
 }
 
 # Main interactive menu
@@ -189,29 +197,34 @@ main() {
                 show_service_status
                 ;;
             2)
-                select_service
-                start_service
-                continue_enter
+                if select_service; then
+                    start_service
+                    continue_enter
+                fi
                 ;;
             3)
-                select_service
-                stop_service
-                continue_enter
+                if select_service; then
+                    stop_service
+                    continue_enter
+                fi
                 ;;
             4)
-                select_service
-                restart_service
-                continue_enter
+                if select_service; then
+                    restart_service
+                    continue_enter
+                fi
                 ;;
             5)
-                select_service
-                enable_service
-                continue_enter
+                if select_service; then
+                    enable_service
+                    continue_enter
+                fi
                 ;;
             6)
-                select_service
-                disable_service
-                continue_enter
+                if select_service; then
+                    disable_service
+                    continue_enter
+                fi
                 ;;
             
             7)
@@ -219,11 +232,19 @@ main() {
                 exit 0
                 ;;
             *)
-                echo -e "$MSGRED" "$SRVMSG" "Invalid option. Please choose 1, 2, 3, 4, 5 or 6." "$MSGNC"
+                echo -e "$MSGRED" "$SRVMSG" "Invalid option. Please choose a number" "$MSGNC"
                 ;;
         esac
     done
 }
 
 check_root
+
+if [ ! -f "$SERVICEFILE" ]; then
+    echo -e "$MSGRED" "$SRVMSG" "Service file $SERVICEFILE not found." "$MSGNC"
+    exit 1
+fi
+if ! get_services_list; then
+    exit 1
+fi
 main

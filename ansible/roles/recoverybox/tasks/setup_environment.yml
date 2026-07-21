@@ -29,3 +29,9 @@
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
+
+- name: Create recoverybox folder
+  ansible.builtin.file:
+    path: /etc/recoverybox
+    state: directory
+    mode: '0755'
