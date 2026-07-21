@@ -53,7 +53,7 @@
   tags:
     - install_apache2
     - dry_run
-  when: recoverybox_apache_enabled
+  when: recoverybox_enable_apache
 
 - name: Install rb-library
   ansible.builtin.import_tasks: install_rb_library.yml
@@ -61,8 +61,8 @@
     - install_library
     - dry_run
   when:
-    - recoverybox_library_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_library
+    - recoverybox_enable_apache
 
 - name: Install Web Console
   ansible.builtin.import_tasks: install_console.yml
@@ -70,8 +70,8 @@
     - install_console
     - dry_run
   when:
-    - recoverybox_console_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_console
+    - recoverybox_enable_apache
 
 - name: Install Tileserver-gl
   ansible.builtin.import_tasks: install_tileserver.yml
@@ -79,8 +79,8 @@
     - install_tileserver
     - dry_run
   when:
-    - recoverybox_tileserver_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_tileserver
+    - recoverybox_enable_apache
 
 - name: Install mapping tools
   ansible.builtin.import_tasks: install_mapping_tools.yml
@@ -94,16 +94,16 @@
     - install_brouter
     - dry_run
   when:
-    - recoverybox_brouter_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_brouter
+    - recoverybox_enable_apache
 
 - name: Download Brouter
   ansible.builtin.import_tasks: download_brouter_files.yml
   tags:
     - download_brouter_files
   when:
-    - recoverybox_brouter_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_brouter
+    - recoverybox_enable_apache
     - recoverybox_download_brouter
 
 - name: Install OpenwebRXplus
@@ -111,13 +111,13 @@
   tags:
     - install_openwebrx
     - dry_run
-  when: recoverybox_owrx_enabled
+  when: recoverybox_enable_owrx
 
 - name: Install rtl-sdr drivers
   ansible.builtin.import_tasks: install_rtlsdr_drivers.yml
   tags:
     - install_rtlsdr_drivers
-  when: recoverybox_owrx_enabled
+  when: recoverybox_enable_owrx
 
 - name: Install Meshtastic Web Client
   ansible.builtin.import_tasks: install_meshtastic_web.yml
@@ -126,8 +126,8 @@
     - meshtastic_tools
     - dry_run
   when:
-    - recoverybox_meshtastic_enabled
-    - recoverybox_apache_enabled
+    - recoverybox_enable_meshtastic
+    - recoverybox_enable_apache
 
 - name: Install Meshtastic Python
   ansible.builtin.import_tasks: install_meshtastic_python.yml
@@ -135,4 +135,4 @@
     - install_meshtastic_python
     - meshtastic_tools
     - dry_run
-  when: recoverybox_meshtastic_enabled
+  when: recoverybox_enable_meshtastic
