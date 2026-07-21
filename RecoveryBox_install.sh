@@ -3,7 +3,7 @@
 ###############################################################
 # Recoverybox Project
 # https://github.com/mr-dgidgi/RecoveryBox
-# autor Ghislain Leblanc aka mr-dgidgi
+# author Ghislain Leblanc aka mr-dgidgi
 # contact@dgidgi.ovh
 #
 #
