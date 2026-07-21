@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.4.0] - 2026-07-14
+## [1.4.0] - 2026-07-21
 
 ### Added
-- CI workflow `ansible-dry-run` and `ansible-lint`
+- CI workflow `shellcheck`, `ansible-lint` and `ansible-deply-test` created and managed by `push-test.yml` and `release-test.yml`
 - Ansible-playbook is now used for the installation
 
 ### Fixed
@@ -15,7 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 - `recovery_box_install.sh` renamed `RecoveryBox_install.sh` for name consistency
-- Total rework on the installer behaviour. Most of the actions are now handled by Ansible and the file is eseayer to maintain
+- Total rework on the installer behaviour. Most of the actions are now handled by Ansible and the file is easyer to maintain
+  - `RecoveryBox_install.sh` can generate a custom_config.yml file
+  - `RecoveryBox_install.sh` can read a custom_config.yml file manually generated.
+  - you can choose which service you want
+  - you can rerun `RecoveryBox_install.sh` to activate or deactivate services
+  - you can rerun `RecoveryBox_install.sh` to update the services
+  - The network configuration is now att the end of the installation script and is run only if the system isn't running on systemd-networkd only.
+- `services-manager` reworked to list dynamicaly the services activated
+- More variables added in `recoverybox_hotspot_conf` to customize the hotspot
+- `services.json` contain the version of each service
 
 ## [1.3.0] - 2026-07-12
 
