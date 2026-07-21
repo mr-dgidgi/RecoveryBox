@@ -1,4 +1,4 @@
-name: ansible-lint
+name: release-test
 on:
   pull_request:
     branches:

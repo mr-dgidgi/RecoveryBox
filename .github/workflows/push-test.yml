@@ -1,4 +1,4 @@
-name: Shellcheck
+name: push-test
 on:
   push:
     branches-ignore:
