@@ -17,8 +17,8 @@ MSGNC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RECOVERBOXYDIR="/etc/recoverybox"
 
-WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
-LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/defaults/main.yml" | awk -F "= " '{print $2}' )
+WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
+LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
 
 CUSTOMCONF=false
 
@@ -209,16 +209,16 @@ configure_interfaces() {
 #######################################################
 
 set_meshtastic_ip() {
-    read -rp "" "Enter the meshtastic node IP address (default : 192.168.4.1) : " MeshtasticIP
+    read -rp "Enter the meshtastic node IP address (default : 192.168.200.101) : " MeshtasticIP
     MeshtasticIP=${MeshtasticIP:-192.168.200.101}
-    read -rp "" "Enter the meshtastic node MAC address (default : 00:00:00:00:00:00) : " MeshtasticMAC
+    read -rp "Enter the meshtastic node MAC address (default : 00:00:00:00:00:00) : " MeshtasticMAC
     MeshtasticMAC=${MeshtasticMAC:-00:00:00:00:00:00}
     echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
     CUSTOMMESHTASTIC=true
 }
 
 set_worldmap_download() {
-    read -rp "" "Download World map? yes/no (default : yes) : " QuestionDownloadTileserver
+    read -rp "Download World map? yes/no (default : yes) : " QuestionDownloadTileserver
     QuestionDownloadTileserver=$(yes_no_check "$QuestionDownloadTileserver")
     if [[ $QuestionDownloadTileserver -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "World map download : disabled." "$MSGNC"
@@ -232,7 +232,7 @@ set_worldmap_download() {
 #######################################################
 
 set_kiwix_files(){
-    read -rp "" "Download English Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixEnWikipedia
+    read -rp "Download English Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixEnWikipedia
     QuestionDownloadKiwixEnWikipedia=$(yes_no_check "$QuestionDownloadKiwixEnWikipedia")
     if [[ $QuestionDownloadKiwixEnWikipedia -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : disabled." "$MSGNC"
@@ -240,7 +240,7 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
-        read -rp "" "Which size of English Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixEnWikipediaSize
+        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
             KIWIXENWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_maxi" ]];then
@@ -250,7 +250,7 @@ set_kiwix_files(){
         fi
     fi
 
-    read -rp "" "Download French Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixFrWikipedia
+    read -rp "Download French Wikipedia? yes/no (default : yes) : " QuestionDownloadKiwixFrWikipedia
     QuestionDownloadKiwixFrWikipedia=$(yes_no_check "$QuestionDownloadKiwixFrWikipedia")
     if [[ $QuestionDownloadKiwixFrWikipedia -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : disabled." "$MSGNC"
@@ -258,7 +258,7 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
-        read -rp "" "Which size of French Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixFrWikipediaSize
+        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
             KIWIXFRWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_maxi" ]];then
@@ -275,18 +275,23 @@ set_kiwix_files(){
 menu_services() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration menu" "$MSGNC"
 
-    read -rp "" "Enable Apache web server? yes/no (default : yes) : " QuestionEnableApache
+    read -rp "Enable Apache web server? yes/no (default : yes) : " QuestionEnableApache
     QuestionEnableApache=$(yes_no_check "$QuestionEnableApache")
     if [[ $QuestionEnableApache -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Apache : disabled." "$MSGNC"
         EnableApache="false"
+        EnableLibrary="false"
+        EnableBrouter="false"
+        EnableTileserver="false"
+        EnableMeshtastic="false"
+        EnableConsole="false"
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "Apache : enabled." "$MSGNC"
         EnableApache="true"
     fi
 
     if [[ "$EnableApache" == "true" ]]; then
-        read -rp "" "Enable RecoveryBox Library? yes/no (default : yes) : " QuestionEnableLibrary
+        read -rp "Enable RecoveryBox Library? yes/no (default : yes) : " QuestionEnableLibrary
         QuestionEnableLibrary=$(yes_no_check "$QuestionEnableLibrary")
         if [[ $QuestionEnableLibrary -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
@@ -296,7 +301,7 @@ menu_services() {
             EnableLibrary="true"
         fi
 
-        read -rp "" "Enable brouter? yes/no (default : yes) : " QuestionEnableBrouter
+        read -rp "Enable brouter? yes/no (default : yes) : " QuestionEnableBrouter
         QuestionEnableBrouter=$(yes_no_check "$QuestionEnableBrouter")
         if [[ $QuestionEnableBrouter -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
@@ -304,7 +309,7 @@ menu_services() {
         else
             echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
             EnableBrouter="true"
-            read -rp "" "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
+            read -rp "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
             QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
             if [[ $QuestionDownloadBrouter -eq 0 ]]; then
                 echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
@@ -315,7 +320,7 @@ menu_services() {
             fi
         fi
 
-        read -rp "" "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
+        read -rp "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
         QuestionEnableTileserver=$(yes_no_check "$QuestionEnableTileserver")
         if [[ $QuestionEnableTileserver -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
@@ -326,7 +331,7 @@ menu_services() {
             set_worldmap_download
         fi
 
-        read -rp "" "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
+        read -rp "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
         QuestionEnableMeshtastic=$(yes_no_check "$QuestionEnableMeshtastic")
         if [[ $QuestionEnableMeshtastic -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
@@ -336,7 +341,7 @@ menu_services() {
             EnableMeshtastic="true"
         fi
 
-        read -rp "" "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
+        read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
         QuestionEnableConsole=$(yes_no_check "$QuestionEnableConsole")
         if [[ $QuestionEnableConsole -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
@@ -344,14 +349,14 @@ menu_services() {
         else
             echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
             EnableConsole="true"
-            read -rp "" "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
+            read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
             QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
             if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
                 set_meshtastic_ip
             fi
         fi
     fi
-    read -rp "" "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
+    read -rp "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
     QuestionEnableOWRX=$(yes_no_check "$QuestionEnableOWRX")
     if [[ $QuestionEnableOWRX -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : disabled." "$MSGNC"
@@ -360,7 +365,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
         EnableOWRX="true"
     fi
-    read -rp "" "Enable Kiwix server? yes/no (default : yes) : " QuestionEnableKiwix
+    read -rp "Enable Kiwix server? yes/no (default : yes) : " QuestionEnableKiwix
     QuestionEnableKiwix=$(yes_no_check "$QuestionEnableKiwix")
     if [[ $QuestionEnableKiwix -eq 0 ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : disabled." "$MSGNC"
@@ -391,11 +396,11 @@ recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia
     language: french
-    enable: "$KIWIXFRWIKIPEDIA"
+    enable: ${KIWIXFRWIKIPEDIA}
     arg: "$KIWIXFRWIKIPEDIAARG"
   - category: wikipedia
     language: english
-    enable: "$KIWIXENWIKIPEDIA"
+    enable: ${KIWIXENWIKIPEDIA}
     arg: "$KIWIXENWIKIPEDIAARG"
 EOL
 
@@ -414,7 +419,7 @@ menu_configuration() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration" "$MSGNC"
         read -rp "Do you want the default installation ? yes/no (default : yes) : " ConfigureChoice
         ConfigureChoice=$(yes_no_check "$ConfigureChoice")
-        if [[ $ConfigureChoice -eq 1 ]]; then
+        if [[ $ConfigureChoice -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Custom installation selected." "$MSGNC"
             menu_services
             CUSTOMINSTALL=true
@@ -428,7 +433,6 @@ menu_configuration() {
 #######################################################
 #######################################################
 main() {
-    mkdir -p "$SCRIPT_DIR/RUN"
     mkdir -p $RECOVERBOXYDIR
     if [[ -f $RECOVERBOXYDIR/rb_version ]]; then
         echo -e "-upgrading" >> $RECOVERBOXYDIR/rb_version
@@ -444,7 +448,7 @@ main() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
         read -rp "Do you want to use the existing custom configuration file? yes/no (default : yes) : " UseExistingConfig
         UseExistingConfig=$(yes_no_check "$UseExistingConfig")
-        if [[ $UseExistingConfig -eq 0 ]]; then
+        if [[ $UseExistingConfig -eq 1 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
             CUSTOMCONF=true
         else
@@ -501,10 +505,18 @@ main() {
 #######################################################
 
 if [[ $1 == "custom" ]]; then
-    CUSTOMCONF=true
+    if [[ -f $RECOVERBOXYDIR/custom_config.yml ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
+        CUSTOMCONF=true
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "No custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
+        exit 1
+    fi
+    
 fi
 
 if [[ $1 == "config" ]]; then
+    mkdir -p $RECOVERBOXYDIR
     menu_configuration
 else
     main
