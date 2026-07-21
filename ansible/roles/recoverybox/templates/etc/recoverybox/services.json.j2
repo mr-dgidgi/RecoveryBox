@@ -105,5 +105,14 @@
     "url": "http://meshtastic.recovery.box/",
     "version": "{{ recoverybox_version_meshtastic_web }}",
     "activated": {{ recoverybox_enable_meshtastic | to_json }}
+  },
+  {
+    "id": "mkdocs",
+    "name": "MkDocs Material",
+    "type": "systemd",
+    "unit": "mkdocs.service",
+    "url": "http://wiki.recovery.box/",
+    "version": "{{ recoverybox_version_mkdocs }}",
+    "activated": {{ recoverybox_enable_mkdocs | to_json }}
   }
 ]

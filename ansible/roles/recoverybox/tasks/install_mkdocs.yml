@@ -1,0 +1,41 @@
+---
+- name: Create MkDocs directory
+  ansible.builtin.file:
+    path: /data/wiki
+    state: directory
+    mode: '0755'
+
+- name: Download MkDocs container
+  community.docker.docker_image:
+    name: squidfunk/mkdocs-material
+    tag: "{{ recoverybox_version_mkdocs_material }}"
+    source: pull
+
+- name: Create MkDocs service
+  ansible.builtin.template:
+    src: etc/systemd/system/mkdocs.service.j2
+    dest: /etc/systemd/system/mkdocs.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable MkDocs service
+  ansible.builtin.systemd_service:
+    name: mkdocs
+    enabled: true
+    daemon_reload: true
+    state: started
+  when: "'dry_run' not in ansible_run_tags"
+
+- name: Create MkDocs apache2 site
+  ansible.builtin.copy:
+    src: etc/apache2/sites-available/mkdocs.conf
+    dest: /etc/apache2/sites-available/mkdocs.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable MkDocs site
+  ansible.builtin.command:
+    cmd: a2ensite mkdocs.conf
+  changed_when: false

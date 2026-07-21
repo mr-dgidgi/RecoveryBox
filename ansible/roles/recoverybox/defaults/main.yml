@@ -20,6 +20,9 @@ recoverybox_version_owrx: "1.2.118"
 recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource: docker depName: ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
+# renovate: datasource: docker depName: squidfunk/mkdocs-material
+recoverybox_version_mkdocs_material: "9.7.7"
+
 
 # Enable services on demand
 recoverybox_enable_apache: true
@@ -31,6 +34,7 @@ recoverybox_enable_console: true
 recoverybox_enable_kiwix: true
 recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true
+recoverybox_enable_mkdocs: true
 
 # Network interfaces
 recoverybox_interface_wlanap: "wlanAP"
