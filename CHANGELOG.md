@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 - CI workflow `shellcheck`, `ansible-lint` and `ansible-deply-test` created and managed by `push-test.yml` and `release-test.yml`
 - Ansible-playbook is now used for the installation
+- Wiki service added to the RecoveryBox at `http://wiki.recovery.box`
 
 ### Fixed
 
