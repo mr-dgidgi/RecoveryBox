@@ -1,0 +1,16 @@
+site_name: RecoveryBox Wiki
+site_url: http://wiki.recovery.box
+theme:
+  name: material
+  features:
+    - navigation.tabs
+  palette:
+    scheme: slate
+extra:
+  alternate:
+    - name: English
+      link: /english/
+      lang: en
+    - name: Français
+      link: /french/
+      lang: fr

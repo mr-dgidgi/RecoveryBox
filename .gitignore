@@ -3,3 +3,6 @@
 .vscode
 __pycache__/
 RUN/
+.ansible
+.opencode/
+agent.md
