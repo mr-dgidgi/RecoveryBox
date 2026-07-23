@@ -6,3 +6,4 @@ RUN/
 .ansible
 .opencode/
 agent.md
+ansible/roles/recoverybox/files/data/wiki/site/

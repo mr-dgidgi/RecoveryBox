@@ -63,5 +63,5 @@ La RecoveryBox intègre plusieurs outils développé dans le but de faciliter l'
     * [rbstatus](./admin/rbstatus.md)
     * [network-configurator](./admin/network-configurator.md)
     * [generate-map](./admin/generate-map.md)
-    * [ Daemon Meshtastic](./admin/meshtastic-daemon.md)
+    * [Daemon Meshtastic](./admin/meshtastic-daemon.md)
     * [Debug](./admin/debug.md)
