@@ -30,7 +30,7 @@ Deux méthodes d'installation sont possibles :
 
 ### Installation recommandée
 
-La méthode recommandée consiste à utiliser l'ISO Debian personnalisé généré à l'aide du projet **[debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB)** (plus de détail dans [l'installation rapide](../quick-installation.md)).
+La méthode recommandée consiste à utiliser l'ISO Debian personnalisé généré à l'aide du projet **[debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB)** (plus de détail dans [l'installation rapide](../quickstart.md)).
 
 Cette méthode permet :
 

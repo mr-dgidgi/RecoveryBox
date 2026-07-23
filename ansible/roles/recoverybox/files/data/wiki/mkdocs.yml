@@ -21,42 +21,46 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - Site officiel : "https://recoverybox.fr/"
+  - Site officiel: "https://recoverybox.fr/"
   - Documentation (FR):
       - Accueil: fr/index.md
       - Démarrage rapide: fr/quickstart.md
       - Services:
           - Hotspot: fr/services/hotspot.md
-          - Cartographie: fr/services/cartography.md
+          - Cartographie: fr/services/carto.md
           - Kiwix: fr/services/kiwix.md
           - Librairie: fr/services/library.md
           - Meshtastic: fr/services/meshtastic.md
-          - OpenWebRX + : fr/services/owrx.md
+          - OpenWebRX +: fr/services/owrx.md
           - Console: fr/services/console.md
           - Wiki: fr/services/mkdocs.md
-      - admin :
+      - admin:
           - Installation: fr/admin/install.md
           - Rbstatus: fr/admin/rbstatus.md
           - Generate-map: fr/admin/generate-map.md
           - Network-Configurator: fr/admin/network-configurator.md
           - Réseau: fr/admin/network.md
+          - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
+          - Outils système: fr/admin/system-tools.md
           - Debug: fr/admin/debug.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
       - Services:
           - Hotspot: en/services/hotspot.md
-          - Cartography: en/services/cartography.md
+          - Cartography: en/services/carto.md
           - Kiwix: en/services/kiwix.md
           - Library: en/services/library.md
           - Meshtastic: en/services/meshtastic.md
-          - OpenWebRX + : en/services/owrx.md
+          - OpenWebRX +: en/services/owrx.md
           - Console: en/services/console.md
           - Wiki: en/services/mkdocs.md
-      - admin :
+      - admin:
           - Installation: en/admin/install.md
           - Rbstatus: en/admin/rbstatus.md
           - Generate-map: en/admin/generate-map.md
           - Network-Configurator: en/admin/network-configurator.md
           - Network: en/admin/network.md
+          - Meshtastic-Daemon: en/admin/meshtastic-daemon.md
+          - System Tools: en/admin/system-tools.md
           - Debug: en/admin/debug.md

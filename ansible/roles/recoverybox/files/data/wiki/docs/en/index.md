@@ -44,6 +44,7 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
 - **rbstatus**: Script displaying the status of services, GPS, and hardware
 - **network-configurator**: Tool for configuring network and WiFi interfaces
 - **generate-map**: Tool for downloading and aggregating world maps for the cartography service
+- **Meshtastic Daemon**: Service for collecting Meshtastic node information and displaying them on the BRouter map
 
 ## Table of Contents
 * [Quick Start](quickstart.md)
@@ -62,4 +63,5 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
     * [rbstatus](./admin/rbstatus.md)
     * [network-configurator](./admin/network-configurator.md)
     * [generate-map](./admin/generate-map.md)
+    * [Meshtastic Daemon](./admin/meshtastic-daemon.md)
     * [Debug](./admin/debug.md)

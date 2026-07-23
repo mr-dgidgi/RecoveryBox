@@ -44,7 +44,7 @@ The `generate-map` tool allows downloading and integrating new cartographic zone
 The script automatically generates tiles and then merges the new data with existing data. This operation can take varying amounts of time depending on map size and machine power.
 
 !!! info "Dedicated documentation"
-    For more details on using `generate-map` (full procedure, zoom levels, debugging), consult the dedicated page: [**generate-map**](../../admin/generate-map.md)
+    For more details on using `generate-map` (full procedure, zoom levels, debugging), consult the dedicated page: [**generate-map**](../admin/generate-map.md)
 
 #### Adding your own `.mbtiles` file
 

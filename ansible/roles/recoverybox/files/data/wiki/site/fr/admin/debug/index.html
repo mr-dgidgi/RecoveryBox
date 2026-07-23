@@ -1,0 +1,4169 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Guide de dépannage rapide pour les services et composants de la RecoveryBox.">
+      
+      
+      
+        <link rel="canonical" href="http://wiki.recovery.box/fr/admin/debug/">
+      
+      
+        <link rel="prev" href="../system-tools/">
+      
+      
+        <link rel="next" href="../../../en/">
+      
+      
+        
+          <link rel="alternate" href="/en/" hreflang="en">
+        
+          <link rel="alternate" href="/fr/" hreflang="fr">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Debug - RecoveryBox Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#debug" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="RecoveryBox Wiki" class="md-header__button md-logo" aria-label="RecoveryBox Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            RecoveryBox Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Debug
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://recoverybox.fr/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Site officiel
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Documentation (FR)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../en/" class="md-tabs__link">
+          
+  
+  
+  Documentation (EN)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="RecoveryBox Wiki" class="md-nav__button md-logo" aria-label="RecoveryBox Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    RecoveryBox Wiki
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://recoverybox.fr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Site officiel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (FR)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation (FR)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Démarrage rapide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Services
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/hotspot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hotspot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/carto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cartographie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/kiwix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kiwix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Librairie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/meshtastic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/owrx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenWebRX +
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/mkdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wiki
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    admin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    admin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rbstatus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rbstatus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generate-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generate-map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network-configurator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network-Configurator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Réseau
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meshtastic-daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic-Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Outils système
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hotspot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hotspot
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hotspot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-linterface-wi-fi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de l'interface Wi-Fi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-dhcp-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du DHCP / DNS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cartographie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cartographie
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cartographie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-la-carte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de la carte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localisation-gps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Localisation GPS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Localisation GPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-gps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du GPS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifier-que-la-cron-dediee-fonctionne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérifier que la cron dédiée fonctionne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#poi-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POI Meshtastic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POI Meshtastic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-daemon-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du daemon Meshtastic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-nud-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du nœud Meshtastic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiwix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kiwix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kiwix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-fichiers-zim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des fichiers ZIM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-apache_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Console
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Console">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-logs-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des logs Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#librairie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Librairie
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Librairie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-contenu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du contenu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openwebrx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenWebRX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenWebRX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-materiel-sdr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du matériel SDR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-lacces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de l'accès
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wiki" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wiki
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Wiki">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-conteneur_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Réseau
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Réseau">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etat-general-du-reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        État général du réseau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-systemd-networkd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de systemd-networkd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des interfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-pare-feu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du pare-feu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-routage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du routage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-generale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification générale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs-dun-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs d'un conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redemarrer-un-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redémarrer un conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nettoyage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nettoyage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apache2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apache2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apache2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-virtualhosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des VirtualHosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gps-synchronisation-temporelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPS &amp; Synchronisation temporelle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GPS &amp; Synchronisation temporelle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-gpsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de GPSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-chrony" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de Chrony
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utiles-de-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes utiles de debug
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Services
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/hotspot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hotspot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/carto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cartography
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/kiwix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kiwix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/meshtastic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/owrx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenWebRX +
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/services/mkdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wiki
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    admin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    admin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/rbstatus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rbstatus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/generate-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generate-map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/network-configurator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network-Configurator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/meshtastic-daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic-Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/system-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../en/admin/debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hotspot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hotspot
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hotspot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-linterface-wi-fi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de l'interface Wi-Fi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-dhcp-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du DHCP / DNS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cartographie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cartographie
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cartographie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-la-carte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de la carte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localisation-gps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Localisation GPS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Localisation GPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-gps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du GPS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifier-que-la-cron-dediee-fonctionne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérifier que la cron dédiée fonctionne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#poi-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POI Meshtastic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POI Meshtastic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-daemon-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du daemon Meshtastic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-nud-meshtastic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du nœud Meshtastic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiwix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kiwix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kiwix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-fichiers-zim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des fichiers ZIM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-apache_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Console
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Console">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-logs-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des logs Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#librairie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Librairie
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Librairie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service-apache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service Apache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-contenu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du contenu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openwebrx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenWebRX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenWebRX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-materiel-sdr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du matériel SDR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-lacces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de l'accès
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wiki" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wiki
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Wiki">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-conteneur_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Réseau
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Réseau">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etat-general-du-reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        État général du réseau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-systemd-networkd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de systemd-networkd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des interfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-pare-feu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du pare-feu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-routage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du routage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-generale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification générale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs-dun-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs d'un conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redemarrer-un-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redémarrer un conteneur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nettoyage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nettoyage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apache2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apache2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apache2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-du-service_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification du service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-des-virtualhosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification des VirtualHosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gps-synchronisation-temporelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPS &amp; Synchronisation temporelle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GPS &amp; Synchronisation temporelle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-gpsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de GPSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-de-chrony" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vérification de Chrony
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-de-problemes-courants_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résolution de problèmes courants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utiles-de-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes utiles de debug
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="debug">Debug</h1>
+<p>Ce guide propose des conseils de dépannage pour résoudre les problèmes les plus courants rencontrés sur les services de la RecoveryBox. L'objectif est de permettre un <strong>debug basic</strong> sans nécessiter de compétences avancées.</p>
+<p>!!! info "Outil de supervision global"
+    Avant de diagnostiquer un service individuel, exécutez la commande <code>rbstatus</code> pour obtenir un aperçu de l'état de l'ensemble des services, du GPS et du système. Consultez la fiche dédiée : <a href="../rbstatus/"><strong>rbstatus</strong></a>.</p>
+<hr />
+<h2 id="hotspot">Hotspot</h2>
+<p>Le hotspot Wi-Fi est le point d'entrée principal de la RecoveryBox. Si les utilisateurs ne peuvent pas se connecter au réseau <code>recoverybox</code>, aucun service web ne sera accessible.</p>
+<h3 id="verification-du-service">Vérification du service</h3>
+<pre><code class="language-bash"># État du service point d'accès
+systemctl status ap.service
+
+# Logs du hotspot en temps réel
+journalctl -u ap.service -f
+
+# Vérifier que le conteneur tourne
+docker ps | grep hotspot
+</code></pre>
+<h3 id="verification-de-linterface-wi-fi">Vérification de l'interface Wi-Fi</h3>
+<pre><code class="language-bash"># Vérifier que l'interface wlanAP existe
+ip link show wlanAP
+</code></pre>
+<h3 id="verification-du-dhcp-dns">Vérification du DHCP / DNS</h3>
+<pre><code class="language-bash">
+# Consulter les baux DHCP distribués
+docker exec -ti hotspot cat /var/lib/misc/dnsmasq.leases
+</code></pre>
+<h3 id="resolution-de-problemes-courants">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le réseau <code>recoverybox</code> n'apparaît pas</td>
+<td>Interface Wi-Fi non renommée en <code>wlanAP</code></td>
+<td>Vérifier avec <code>ip link</code> et relancer <code>network-configurator</code></td>
+</tr>
+<tr>
+<td>Connexion au réseau mais pas d'accès à http://recovery.box</td>
+<td>Service Apache2 indisponible</td>
+<td>Vérifier avec <code>systemctl status apache2.service</code></td>
+</tr>
+<tr>
+<td>Connexion au réseau mais pas d'accès à internet</td>
+<td>câble Ethernet non branché, interface WAN (ou wlan) non configurée</td>
+<td>Vérifier l'état des interfaces et des routes avec <code>ip link</code> et <code>ip route</code></td>
+</tr>
+<tr>
+<td>Pas d'adresse IP attribuée</td>
+<td>Plus d'IP disponibles dans le pool DHCP</td>
+<td>Consulter les baux DHCP <code>docker exec -ti hotspot cat /var/lib/misc/dnsmasq.leases</code> et vérifier la plage disponible <code>cat /etc/ap_config/dnsmasq.conf</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    Le hotspot est basé sur le projet <strong><a href="https://github.com/mr-dgidgi/Simple-Hotspot">Simple-Hotspot</a></strong>. Consultez la fiche service pour plus de détails : <a href="../../services/hotspot/"><strong>Hotspot</strong></a>.</p>
+<hr />
+<h2 id="cartographie">Cartographie</h2>
+<p>Le service cartographie repose sur <strong>Brouter</strong> (moteur de routage) et <strong>TileServer-GL</strong> (serveur de tuiles).</p>
+<h3 id="verification-des-services">Vérification des services</h3>
+<pre><code class="language-bash"># État du service BRouter
+systemctl status brouter.service
+
+# Logs Brouter
+journalctl -u brouter.service
+
+# État du service TileServer-GL
+systemctl status tileserver-gl.service
+
+# Logs TileServer-GL
+journalctl -u tileserver-gl.service
+</code></pre>
+<h3 id="verification-de-la-carte">Vérification de la carte</h3>
+<pre><code class="language-bash"># Vérifier que le fichier map.mbtiles existe
+ls -lh /data/tileserver/map.mbtiles
+
+# Vérifier que brouter répond
+curl -I http://localhost:17777/
+
+#   Vérifier que tileserver-gl répond
+curl -I http://localhost:8090/
+</code></pre>
+<h3 id="verification-apache">Vérification Apache</h3>
+<pre><code class="language-bash"># Vérifier qu'Apache2 est actif
+systemctl status apache2.service
+
+# Logs d'accès carto
+cat /var/log/apache2/carto_access.log
+
+# Logs d'erreur carto
+cat /var/log/apache2/carto_error.log
+</code></pre>
+<h3 id="resolution-de-problemes-courants_1">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La carte s'affiche en blanc</td>
+<td>Fichier <code>map.mbtiles</code> manquant ou corrompu</td>
+<td>Générer une carte avec <code>generate-map</code></td>
+</tr>
+<tr>
+<td>Erreur "tile not found"</td>
+<td>Tuiles non générées pour la zone demandée</td>
+<td>Vérifier le niveau de zoom et la zone couverte</td>
+</tr>
+<tr>
+<td>BRouter ne répond pas</td>
+<td>Service non démarré</td>
+<td><code>systemctl start brouter.service</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://github.com/abrensch/brouter">BRouter</a></strong> — Moteur de calcul d'itinéraire
+    - <strong><a href="https://tileserver.readthedocs.io/en/latest/">TileServer-GL</a></strong> — Serveur de tuiles cartographiques
+    - Fiche service : <a href="../../services/carto/"><strong>Cartographie</strong></a>
+    - Outil de génération : <a href="../generate-map/"><strong>generate-map</strong></a></p>
+<hr />
+<h2 id="localisation-gps">Localisation GPS</h2>
+<p>La localisation de la RecoveryBox est affichée sur la carte BRouter. Son positionnement dépend du service GPS (gpsd).</p>
+<h3 id="verification-du-gps">Vérification du GPS</h3>
+<pre><code class="language-bash"># État du service GPS
+systemctl status gpsd.service
+
+# Vérifier les données GPS en temps réel
+gpspipe -w -n 10
+</code></pre>
+<h3 id="verifier-que-la-cron-dediee-fonctionne">Vérifier que la cron dédiée fonctionne</h3>
+<pre><code class="language-bash"># Vérifier que le service cron ne rencontre pas d'erreur
+journalctl -u cron.service
+
+# Vérifier que le script de le fichier json est bien généré
+ls -la /data/brouter/www/recoverybox.json
+
+# Tester le script de génération du fichier JSON
+bash -x /data/brouter/gps-to-json.sh
+</code></pre>
+<h3 id="resolution-de-problemes-courants_2">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position GPS non affichée sur la carte</td>
+<td>Aucun fix GPS</td>
+<td>Vérifier que le GPS reçoit des données avec <code>gpspipe</code></td>
+</tr>
+<tr>
+<td>Pas de satellites détectés</td>
+<td>Antenne GPS mal connectée ou obstruct</td>
+<td>Placer l'antenne GPS à l'extérieur ou près d'une fenêtre</td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation"
+    Consultez la fiche : <a href="../system-tools/"><strong>Outils système</strong></a> pour plus de détails sur gpsd et chrony.</p>
+<hr />
+<h2 id="poi-meshtastic">POI Meshtastic</h2>
+<p>Les points d'intérêt Meshtastic représentent les nœuds du réseau maillé LoRa sur la carte.</p>
+<h3 id="verification-du-daemon-meshtastic">Vérification du daemon Meshtastic</h3>
+<pre><code class="language-bash"># Vérifier que le service cron ne rencontre pas d'erreur
+journalctl -u cron.service
+
+# Vérifier que le fichier json est bien généré
+ls -la /data/brouter/www/meshtastic_nodes.json
+
+# Tester le script de génération du fichier JSON
+python3 /data/brouter/meshtastic-daemon.py
+</code></pre>
+<h3 id="verification-du-nud-meshtastic">Vérification du nœud Meshtastic</h3>
+<pre><code class="language-bash"># Vérifier que l'IP dans le fichier de cron est bien celui du noeud Meshtastic
+cat /etc/cron.d/meshtastic-daemon
+cat /etc/ap_config/dnsmasq.conf | grep dhcp-host
+
+# Vérifier que le noeud est bien visible par la RecoveryBox
+ping -c 3 &lt;IP_du_noeud_Meshtastic&gt;
+</code></pre>
+<h3 id="resolution-de-problemes-courants_3">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aucun nœud affiché sur la carte</td>
+<td>Daemon non démarré ou nœud non connecté</td>
+<td>Vérifier l'état du daemon et la connectivité du nœud</td>
+</tr>
+<tr>
+<td>Le nœud Meshtastic n'est pas détecté</td>
+<td>Réservation DHCP manquante</td>
+<td>Vérifier la configuration MAC/IP dans <code>custom_config.yml</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://meshtastic.org">Meshtastic</a></strong> — Documentation officielle du projet</p>
+<hr />
+<h2 id="kiwix">Kiwix</h2>
+<p>Kiwix fournit l'accès hors-ligne à Wikipédia et autres ressources ZIM.</p>
+<h3 id="verification-du-service_1">Vérification du service</h3>
+<pre><code class="language-bash"># État du service Kiwix
+systemctl status kiwix.service
+
+# Logs en temps réel
+journalctl -u kiwix.service -f
+</code></pre>
+<h3 id="verification-du-conteneur">Vérification du conteneur</h3>
+<pre><code class="language-bash"># Vérifier que le conteneur tourne
+docker ps | grep kiwix
+
+# Tester l'accès HTTP
+curl -I http://localhost:8080/
+</code></pre>
+<h3 id="verification-des-fichiers-zim">Vérification des fichiers ZIM</h3>
+<pre><code class="language-bash"># Lister les fichiers ZIM disponibles
+ls -lh /data/kiwix/
+</code></pre>
+<h3 id="verification-apache_1">Vérification Apache</h3>
+<pre><code class="language-bash"># Vérifier qu'Apache2 est actif
+systemctl status apache2.service
+
+# Logs d'accès carto
+cat /var/log/apache2/carto_access.log
+
+# Logs d'erreur carto
+cat /var/log/apache2/carto_error.log
+</code></pre>
+<h3 id="resolution-de-problemes-courants_4">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Page blanche ou erreur 502</td>
+<td>Conteneur Docker arrêté</td>
+<td><code>systemctl restart kiwix.service</code></td>
+</tr>
+<tr>
+<td>Aucun contenu disponible</td>
+<td>Fichiers ZIM absents du répertoire <code>/data/kiwix/</code></td>
+<td>Télécharger les fichiers depuis <a href="https://browse.library.kiwix.org/">browse.library.kiwix.org</a></td>
+</tr>
+<tr>
+<td>Nouveau fichier ZIM non détecté</td>
+<td>Kiwix ne recharge pas automatiquement</td>
+<td>Redémarrer le service après ajout d'un fichier</td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://wiki.kiwix.org">Kiwix</a></strong> — Documentation officielle
+    - <strong><a href="https://github.com/kiwix/kiwix-serve">Kiwix-serve</a></strong> — Dépôt GitHub
+    - <strong><a href="https://browse.library.kiwix.org/">Bibliothèque de fichiers ZIM</a></strong> — Téléchargement de contenus
+    - Fiche service : <a href="../../services/kiwix/"><strong>Kiwix</strong></a></p>
+<hr />
+<h2 id="console">Console</h2>
+<p>La console web d'administration utilise ShellInABox pour fournir un accès shell via le navigateur.</p>
+<h3 id="verification-du-service_2">Vérification du service</h3>
+<pre><code class="language-bash"># État du service ShellInABox
+systemctl status shellinabox.service
+
+# Tester l'accès HTTP
+curl -I -H &quot;Host: console.recovery.box&quot; http://127.0.0.1:4200/
+</code></pre>
+<h3 id="verification-des-logs-apache">Vérification des logs Apache</h3>
+<pre><code class="language-bash"># Logs d'accès
+cat /var/log/apache2/console_access.log
+
+# Logs d'erreur
+cat /var/log/apache2/console_error.log
+</code></pre>
+<h3 id="resolution-de-problemes-courants_5">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La console ne se charge pas</td>
+<td>Service shellinabox arrêté</td>
+<td><code>systemctl start shellinabox.service</code></td>
+</tr>
+<tr>
+<td>Erreur "Connection refused"</td>
+<td>VirtualHost Apache2 mal configuré</td>
+<td>Vérifier <code>/etc/apache2/sites-available/console.conf</code></td>
+</tr>
+<tr>
+<td>Identifiants refusés</td>
+<td>Mot de passe par défaut modifié</td>
+<td>Réinitialiser avec <code>passwd recuser</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://github.com/shellinabox/shellinabox">ShellInABox</a></strong> — Dépôt GitHub
+    - Fiche service : <a href="../../services/console/"><strong>Console</strong></a></p>
+<hr />
+<h2 id="librairie">Librairie</h2>
+<p>La librairie est un serveur web statique hébergeant des documents PDF de survie.</p>
+<h3 id="verification-du-service-apache">Vérification du service Apache</h3>
+<pre><code class="language-bash"># Vérifier que le VirtualHost est activé
+apache2ctl -S | grep library
+
+# Tester l'accès HTTP
+curl -I -H &quot;Host: library.recovery.box&quot; http://127.0.0.1/
+</code></pre>
+<h3 id="verification-des-logs">Vérification des logs</h3>
+<pre><code class="language-bash"># Logs d'accès
+cat /var/log/apache2/library.access.log
+
+# Logs d'erreur
+cat /var/log/apache2/library.error.log
+</code></pre>
+<h3 id="verification-du-contenu">Vérification du contenu</h3>
+<pre><code class="language-bash"># Vérifier la présence des PDF
+ls -la /data/library/PDF/
+cat /data/library/library.json | jq '.pdfs[]'
+
+# Vérifier les PDF personnalisés
+ls -la /data/library/PDF/custom/
+cat /data/library/custom-library.json | jq '.pdfs[]'
+</code></pre>
+<h3 id="resolution-de-problemes-courants_6">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Erreur 404 sur library.recovery.box</td>
+<td>VirtualHost non activé</td>
+<td><code>a2ensite library.conf &amp;&amp; systemctl reload apache2</code></td>
+</tr>
+<tr>
+<td>Nouveau PDF non visible</td>
+<td>Script de mise à jour non exécuté</td>
+<td>Lancer <code>python3 /data/library/library-update.py</code> puis redémarrer Apache</td>
+</tr>
+<tr>
+<td>Page vide</td>
+<td>Répertoire DocumentRoot incorrect</td>
+<td>Vérifier le chemin dans <code>/etc/apache2/sites-available/library.conf</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation"
+    - Dépôt de la bibliothèque : <a href="https://github.com/mr-dgidgi/rb-library"><strong>mr-dgidgi/rb-library</strong></a>
+    - Fiche service : <a href="../../services/library/"><strong>Librairie</strong></a></p>
+<hr />
+<h2 id="openwebrx">OpenWebRX</h2>
+<p>OpenWebRX Plus est le récepteur radio SDR accessible via le navigateur.</p>
+<h3 id="verification-du-service_3">Vérification du service</h3>
+<pre><code class="language-bash"># État du service OpenWebRX
+systemctl status openwebrx.service
+
+# Logs en temps réel
+journalctl -u openwebrx.service -f
+</code></pre>
+<h3 id="verification-du-materiel-sdr">Vérification du matériel SDR</h3>
+<pre><code class="language-bash"># Vérifier que la clé RTL-SDR est détectée
+lsusb | grep RTL
+# ou
+dmesg | grep rtl
+</code></pre>
+<h3 id="verification-de-lacces">Vérification de l'accès</h3>
+<pre><code class="language-bash"># Tester l'accès HTTP (port 8073)
+curl -I http://localhost:8073/
+</code></pre>
+<h3 id="resolution-de-problemes-courants_7">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interface inaccessible</td>
+<td>Service openwebrx arrêté</td>
+<td><code>systemctl start openwebrx.service</code></td>
+</tr>
+<tr>
+<td>Erreur "no SDR device"</td>
+<td>Clé RTL-SDR non branchée ou pilote manquant</td>
+<td>Vérifier <code>lsusb</code> et installer les pilotes RTL-SDR</td>
+</tr>
+<tr>
+<td>Audio pas de son</td>
+<td>Navigateur bloque l'autoplay audio</td>
+<td>Autoriser l'autoplay audio pour <code>recovery.box:8073</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://www.openwebrx.de">OpenWebRX</a></strong> — Documentation du projet d'origine
+    - <strong><a href="https://github.com/luarvique/openwebrx-plus">OpenWebRX Plus</a></strong> — Fork amélioré utilisé par la RecoveryBox
+    - Fiche service : <a href="../../services/owrx/"><strong>OpenWebRX Plus</strong></a></p>
+<hr />
+<h2 id="wiki">Wiki</h2>
+<p>Le wiki est le site de documentation technique de la RecoveryBox, basé sur MkDocs Material.</p>
+<h3 id="verification-du-service_4">Vérification du service</h3>
+<pre><code class="language-bash"># État du service MkDocs
+systemctl status mkdocs.service
+
+# Logs en temps réel
+journalctl -u mkdocs.service -f
+</code></pre>
+<h3 id="verification-du-conteneur_1">Vérification du conteneur</h3>
+<pre><code class="language-bash"># Vérifier que le conteneur tourne
+docker ps | grep mkdocs
+
+# Tester l'accès HTTP
+curl -I http://localhost:18001/
+</code></pre>
+<h3 id="resolution-de-problemes-courants_8">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wiki inaccessible</td>
+<td>Conteneur MkDocs arrêté</td>
+<td><code>systemctl restart mkdocs.service</code></td>
+</tr>
+<tr>
+<td>Erreur 502 Bad Gateway</td>
+<td>Conteneur en cours de démarrage</td>
+<td>Attendre quelques secondes puis recharger</td>
+</tr>
+<tr>
+<td>Page non trouvée après ajout</td>
+<td>Fichier non dans la navigation <code>nav</code></td>
+<td>Vérifier le fichier <code>/data/wiki/mkdocs.yml</code></td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation officielle"
+    - <strong><a href="https://www.mkdocs.org">MkDocs</a></strong> — Documentation officielle
+    - <strong><a href="https://squidfunk.github.io/mkdocs-material/">MkDocs Material</a></strong> — Thème utilisé
+    - Fiche service : <a href="../../services/mkdocs/"><strong>MkDocs</strong></a></p>
+<hr />
+<h2 id="reseau">Réseau</h2>
+<p>La configuration réseau de la RecoveryBox est basée sur <strong>systemd-networkd</strong> et des <strong>bridges réseau</strong>.</p>
+<h3 id="etat-general-du-reseau">État général du réseau</h3>
+<pre><code class="language-bash"># Afficher toutes les interfaces et bridges
+network-configurator status
+
+# Afficher la configuration réseau générée
+network-configurator GetVInterfacesConfig
+</code></pre>
+<h3 id="verification-de-systemd-networkd">Vérification de systemd-networkd</h3>
+<pre><code class="language-bash"># État du service réseau
+systemctl status systemd-networkd
+
+# Logs réseau
+journalctl -u systemd-networkd
+</code></pre>
+<h3 id="verification-des-interfaces">Vérification des interfaces</h3>
+<pre><code class="language-bash"># Lister les interfaces réseau
+ip link show
+
+# Lister les interfaces Wi-Fi
+iw dev
+
+# Vérifier les adresses IP attribuées
+ip addr show
+</code></pre>
+<h3 id="verification-du-pare-feu">Vérification du pare-feu</h3>
+<pre><code class="language-bash"># État du service iptables
+systemctl status iptables
+
+# Consulter les règles actives
+iptables -nvL
+iptables -t nat -nvL
+</code></pre>
+<h3 id="verification-du-routage">Vérification du routage</h3>
+<pre><code class="language-bash"># Table de routage
+ip route show
+
+# Tester la connectivité Internet
+ping -c 3 8.8.8.8
+
+# Tester la résolution DNS
+nslookup google.com
+</code></pre>
+<h3 id="resolution-de-problemes-courants_9">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aucune interface visible</td>
+<td>systemd-networkd non démarré</td>
+<td><code>systemctl restart systemd-networkd</code></td>
+</tr>
+<tr>
+<td>Pas de connexion Internet</td>
+<td>Interface WAN non configurée</td>
+<td>Utiliser <code>network-configurator</code> pour configurer l'interface</td>
+</tr>
+<tr>
+<td>Les clients Wi-Fi n'ont pas d'IP</td>
+<td>dnsmasq ne fonctionne pas</td>
+<td><code>systemctl restart ap.service</code></td>
+</tr>
+<tr>
+<td>Ping vers l'extérieur échoue</td>
+<td>Règles iptables bloquantes</td>
+<td>Vérifier <code>/etc/iptables/iptables.sh</code> et redémarrer le service</td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation"
+    - Fiche outil : <a href="../network-configurator/"><strong>network-configurator</strong></a>
+    - Fiche réseau : <a href="../network/"><strong>Configuration Réseau</strong></a>
+    - <strong><a href="https://wiki.debian.org/SystemdNetworkd">systemd-networkd — Wiki Debian</a></strong></p>
+<hr />
+<h2 id="docker">Docker</h2>
+<p>De nombreux services de la RecoveryBox sont conteneurisés avec Docker. En cas de problème, il est utile de vérifier l'état de Docker et des conteneurs.</p>
+<h3 id="verification-generale">Vérification générale</h3>
+<pre><code class="language-bash"># État du service Docker
+systemctl status docker
+
+# Lister tous les conteneurs en cours d'exécution
+docker ps
+
+# Lister tous les conteneurs (y compris arrêtés)
+docker ps -a
+</code></pre>
+<h3 id="logs-dun-conteneur">Logs d'un conteneur</h3>
+<pre><code class="language-bash"># Logs du dernier conteneur concerné
+docker logs &lt;nom_du_conteneur&gt;
+
+# Logs en temps réel
+docker logs -f &lt;nom_du_conteneur&gt;
+</code></pre>
+<h3 id="redemarrer-un-conteneur">Redémarrer un conteneur</h3>
+<pre><code class="language-bash"># Redémarrer via systemd (recommandé)
+systemctl restart &lt;service&gt;.service
+
+# Redémarrer directement le conteneur (dernier recours)
+docker restart &lt;nom_du_conteneur&gt;
+</code></pre>
+<h3 id="nettoyage">Nettoyage</h3>
+<pre><code class="language-bash"># Supprimer les conteneurs arrêtés
+docker container prune
+
+# Supprimer les images inutilisées
+docker image prune
+</code></pre>
+<p>!!! warning "Important"
+    Privilégiez toujours le redémarrage via <code>systemctl</code> plutôt qu'un redémarrage direct de Docker. Le service systemd gère les dépendances et les montages de volumes.</p>
+<hr />
+<h2 id="apache2">Apache2</h2>
+<p>Plusieurs services (carto, console, librairie, wiki, etc.) sont servis via des VirtualHosts Apache2.</p>
+<h3 id="verification-du-service_5">Vérification du service</h3>
+<pre><code class="language-bash"># État du service Apache2
+systemctl status apache2
+
+# Tester la configuration
+apache2ctl configtest
+</code></pre>
+<h3 id="verification-des-virtualhosts">Vérification des VirtualHosts</h3>
+<pre><code class="language-bash"># Lister les VirtualHosts activés
+apache2ctl -S
+
+# Lister les sites activés
+ls -la /etc/apache2/sites-enabled/
+</code></pre>
+<h3 id="logs">Logs</h3>
+<pre><code class="language-bash"># Logs d'erreur globaux
+tail -f /var/log/apache2/error.log
+
+# Logs d'accès globaux
+tail -f /var/log/apache2/access.log
+</code></pre>
+<h3 id="resolution-de-problemes-courants_10">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tous les services web sont indisponibles</td>
+<td>Apache2 arrêté</td>
+<td><code>systemctl start apache2</code></td>
+</tr>
+<tr>
+<td>Un seul service ne répond pas</td>
+<td>VirtualHost désactivé</td>
+<td><code>a2ensite &lt;service&gt;.conf &amp;&amp; systemctl reload apache2</code></td>
+</tr>
+<tr>
+<td>Erreur SSL</td>
+<td>Certificat manquant ou expiré</td>
+<td>Vérifier les fichiers dans <code>/etc/ssl/</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="gps-synchronisation-temporelle">GPS &amp; Synchronisation temporelle</h2>
+<p>Le GPS fournit la position et permet la synchronisation de l'heure via Chrony.</p>
+<h3 id="verification-de-gpsd">Vérification de GPSD</h3>
+<pre><code class="language-bash"># État du service GPS
+systemctl status gpsd.service
+
+# Données GPS brutes
+gpspipe -w -n 5
+
+# Vérifier la position
+cgps -s
+</code></pre>
+<h3 id="verification-de-chrony">Vérification de Chrony</h3>
+<pre><code class="language-bash"># État du service Chrony
+systemctl status chrony.service
+
+# Sources de synchronisation
+chronyc sources
+
+# Précision de la synchronisation
+chronyc tracking
+</code></pre>
+<h3 id="resolution-de-problemes-courants_11">Résolution de problèmes courants</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Cause possible</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"No GPS device" dans rbstatus</td>
+<td>GPS USB non détecté</td>
+<td>Vérifier <code>lsusb</code> et les logs : <code>dmesg | grep tty</code></td>
+</tr>
+<tr>
+<td>Pas de fix GPS</td>
+<td>Signal faible ou antenne bloquée</td>
+<td>Déplacer l'antenne GPS vers un emplacement dégagé</td>
+</tr>
+<tr>
+<td>Heure incorrecte</td>
+<td>Chrony pas synchronisé</td>
+<td>Vérifier <code>chronyc sources</code> et la connectivité NTP</td>
+</tr>
+</tbody>
+</table>
+<p>!!! info "Documentation"
+    Consultez la fiche : <a href="../system-tools/"><strong>Outils système</strong></a> pour plus de détails sur gpsd et chrony.</p>
+<hr />
+<h2 id="commandes-utiles-de-debug">Commandes utiles de debug</h2>
+<p>Voici un récapitulatif des commandes les plus utiles pour le dépannage quotidien :</p>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rbstatus</code></td>
+<td>Affiche l'état de tous les services, du GPS et du système</td>
+</tr>
+<tr>
+<td><code>systemctl status &lt;service&gt;</code></td>
+<td>État d'un service systemd</td>
+</tr>
+<tr>
+<td><code>journalctl -u &lt;service&gt; -f</code></td>
+<td>Logs en temps réel d'un service</td>
+</tr>
+<tr>
+<td><code>docker ps</code></td>
+<td>Conteneurs Docker en cours d'exécution</td>
+</tr>
+<tr>
+<td><code>docker logs -f &lt;conteneur&gt;</code></td>
+<td>Logs d'un conteneur Docker</td>
+</tr>
+<tr>
+<td><code>network-configurator status</code></td>
+<td>État des interfaces et bridges réseau</td>
+</tr>
+<tr>
+<td><code>curl -I http://localhost:&lt;port&gt;/</code></td>
+<td>Tester l'accès HTTP d'un service</td>
+</tr>
+<tr>
+<td><code>ip link show</code></td>
+<td>Lister les interfaces réseau</td>
+</tr>
+<tr>
+<td><code>free -h</code></td>
+<td>Mémoire disponible</td>
+</tr>
+<tr>
+<td><code>df -h</code></td>
+<td>Espace disque disponible</td>
+</tr>
+</tbody>
+</table>
+<p>!!! tip "Astuce"
+    En cas de doute, un redémarrage complet de la RecoveryBox (<code>reboot</code>) résout souvent les problèmes temporaires liès au démarrage des services.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/mr-dgidgi/recoverybox" target="_blank" rel="noopener" title="GitHub project" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

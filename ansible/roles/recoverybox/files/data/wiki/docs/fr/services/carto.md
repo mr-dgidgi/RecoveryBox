@@ -44,7 +44,7 @@ L'outil `generate-map` permet de télécharger et d'intégrer de nouvelles zones
 Le script génère les tuiles automatiquement puis fusionne les nouvelles données avec celles déjà existantes. Cette opération peut prendre un temps variable selon la taille des cartes et la puissance de la machine.
 
 !!! info "Documentation dédiée"
-    Pour plus de détails sur l'utilisation de `generate-map` (procédure complète, niveaux de zoom, debug), consultez la fiche dédiée : [**generate-map**](../../admin/generate-map.md)
+    Pour plus de détails sur l'utilisation de `generate-map` (procédure complète, niveaux de zoom, debug), consultez la fiche dédiée : [**generate-map**](../admin/generate-map.md)
 
 #### Ajout de son propre fichier `.mbtiles`
 
