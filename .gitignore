@@ -1,8 +1,9 @@
 *.pyc
 *.tmp
-.vscode
+.vscode/
 __pycache__/
 RUN/
 .ansible
 .opencode/
 agent.md
+wiki-sources/.cache/
