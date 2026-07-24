@@ -5,114 +5,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="refresh" content="300">
   <title>RecoveryBox - Services</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0f1720;
-      color: #e6eef3;
-      padding: 24px;
-    }
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0;
-    }
-    h1 {
-      color: #ffcc00;
-      margin: 0 0 12px 0;
-      font-size: 2.2rem;
-    }
-    section {
-      background: #071018;
-      border: 1px solid #122233;
-      border-radius: 12px;
-      padding: 1.4rem 1.6rem;
-      margin-bottom: 1.4rem;
-      box-shadow: none;
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      color: #9fe3a2;
-    }
-    ul {
-      margin: 0.8rem 0 0;
-      padding-left: 1.3rem;
-    }
-    li {
-      margin-bottom: 0.6rem;
-    }
-    a {
-      color: #8feea1;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #122233;
-    }
-    .status-row:last-child {
-      border-bottom: none;
-    }
-    .badge {
-      padding: 0.15rem 0.6rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border: 1px solid #233;
-    }
-    .badge.running  { background: #06121a; color: #8feea1; }
-    .badge.warning  { background: #071826; color: #ffcc00; }
-    .badge.critical { background: #122233; color: #ff8b8b; }
-    .badge.disabled { background: #0b1220; color: #99a0a6; }
-    footer {
-      color: #99a0a6;
-      font-size: 0.95rem;
-    }
-    @media (max-width: 720px) {
-      body {
-        padding: 16px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./fonts.googleapis.com/css.49ea35f2.css">
+  <link rel="stylesheet" href="./recoverybox-theme.css">
 </head>
-<body>
-  <main>
+<body class="rb-app">
+  <main class="rb-container">
+    <form class="rb-theme-toggle">
+      <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" aria-label="Passage en mode nuit" type="radio" name="__palette" id="__palette_0">
+      <label id="theme-to-dark" class="md-header__button md-icon" title="Passage en mode nuit" for="__palette_1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+
+      <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" aria-label="Passage en mode jour" type="radio" name="__palette" id="__palette_1">
+      <label id="theme-to-light" class="md-header__button md-icon" title="Passage en mode jour" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    </form>
+
+
     <h1>RecoveryBox</h1>
     <p>Bienvenue sur la page d'accueil. / Welcome to the homepage.</p>
     <p>Choisissez un service ci-dessous. / Choose a service below.</p>
 
-    <section>
+    <section class="rb-card">
       <h2>Services</h2>
       <ul id="services-list"></ul>
     </section>
 
-    <section>
+    <section class="rb-card">
       <h2>Status</h2>
       <div id="status-content"></div>
     </section>
 
-    <section>
+    <section class="rb-card">
       <h2>GPS</h2>
       <div id="gps-content"></div>
     </section>
 
-    <section>
+    <section class="rb-card">
       <h2>Système</h2>
       <div id="system-content"></div>
     </section>
 
-    <footer>
+    <footer class="rb-card">
       <p>Si un service ne répond pas, vérifiez qu'il est démarré et que vous êtes connecté au réseau RecoveryBox. / If a service does not respond, check it is started and that you are connected to the RecoveryBox network.</p>
     </footer>
   </main>
   <script>
+  (function() {
+    const storageKey = 'rb-theme';
+    const root = document.documentElement;
+    const lightInput = document.getElementById('__palette_0');
+    const darkInput = document.getElementById('__palette_1');
+    const toDark = document.getElementById('theme-to-dark');
+    const toLight = document.getElementById('theme-to-light');
+
+    function getSavedTheme() {
+      try {
+        return localStorage.getItem(storageKey);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function setSavedTheme(theme) {
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch (err) {
+        // Ignore storage errors (private mode or strict file:// policy)
+      }
+    }
+
+    function getPreferredTheme() {
+      const saved = getSavedTheme();
+      if (saved === 'dark' || saved === 'light') {
+        return saved;
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        darkInput.checked = true;
+        toLight.hidden = false;
+        toDark.hidden = true;
+      } else {
+        lightInput.checked = true;
+        toDark.hidden = false;
+        toLight.hidden = true;
+      }
+    }
+
+    applyTheme(getPreferredTheme());
+
+    toDark.addEventListener('click', function(event) {
+      event.preventDefault();
+      setSavedTheme('dark');
+      applyTheme('dark');
+    });
+
+    toLight.addEventListener('click', function(event) {
+      event.preventDefault();
+      setSavedTheme('light');
+      applyTheme('light');
+    });
+  })();
+
   fetch('/rbstatus.json')
     .then(res => res.json())
     .then(data => {
@@ -130,20 +129,22 @@
 
       const statusDiv = document.getElementById('status-content');
       data.services.forEach(s => {
-        const badge = s.status === 0 ? 'running'
+        const dotClass = s.status === 0 ? 'online' : 'offline';
+        const statusLabel = s.status === 0 ? 'running'
                     : s.status === 1 ? 'critical'
                     : 'disabled';
-        statusDiv.innerHTML += '<div class="status-row"><span>' + s.name + '</span><span class="badge ' + badge + '">' + badge + '</span></div>';
+        statusDiv.innerHTML += '<div class="rb-status-row"><span>' + s.name + '</span><span class="rb-badge"><span class="rb-status-dot ' + dotClass + '"></span>' + statusLabel + '</span></div>';
       });
 
       const gpsDiv = document.getElementById('gps-content');
       const g = data.gps;
-      const gpsBadge = g.status === 0 ? 'running' : 'critical';
-      let gpsHtml = '<div class="status-row"><span>GPS</span><span class="badge ' + gpsBadge + '">' + g.fix + '</span></div>';
+      const gpsDot = g.status === 0 ? 'online' : 'offline';
+      const gpsLabel = g.status === 0 ? 'running' : 'critical';
+      let gpsHtml = '<div class="rb-status-row"><span>GPS</span><span class="rb-badge"><span class="rb-status-dot ' + gpsDot + '"></span>' + g.fix + '</span></div>';
       if (g.lat && g.lon) {
         let posText = 'Lat: ' + g.lat + ', Lon: ' + g.lon;
         if (g.alt) posText += ', Alt: ' + g.alt + 'm';
-        gpsHtml += '<div class="status-row"><span>Position</span><span>' + posText + '</span></div>';
+        gpsHtml += '<div class="rb-status-row"><span>Position</span><span class="rb-data">' + posText + '</span></div>';
       }
       gpsDiv.innerHTML = gpsHtml;
 
@@ -158,10 +159,10 @@
         sysItems.push({ label: 'Temp ' + (i + 1), value: t + '°C', threshold: t });
       });
       sysDiv.innerHTML = sysItems.map(function(item) {
-        const badge = item.threshold > 80 ? 'critical'
+        const dotClass = item.threshold > 80 ? 'offline'
                     : item.threshold > 60 ? 'warning'
-                    : 'running';
-        return '<div class="status-row"><span>' + item.label + '</span><span class="badge ' + badge + '">' + item.value + '</span></div>';
+                    : 'online';
+        return '<div class="rb-status-row"><span>' + item.label + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + dotClass + '"></span>' + item.value + '</span></div>';
       }).join('');
     });
   </script>

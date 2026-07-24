@@ -136,12 +136,3 @@
     - meshtastic_tools
     - dry_run
   when: recoverybox_enable_meshtastic
-
-- name: Install MkDocs Material
-  ansible.builtin.import_tasks: install_mkdocs.yml
-  tags:
-    - install_mkdocs
-    - dry_run
-  when:
-    - recoverybox_enable_apache
-    - recoverybox_enable_mkdocs

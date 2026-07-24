@@ -30,7 +30,6 @@ KIWIXFRWIKIPEDIAARG="all_no_pic"
 CUSTOMINSTALL=false
 DOWNLOADMBTILES="true"
 ENABLEHOTSPOT="true"
-ENABLEMKDOCS="true"
 
 #######################################################
 # Functions
@@ -394,7 +393,6 @@ recoverybox_enable_console: $EnableConsole
 recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
 recoverybox_enable_hotspot: $ENABLEHOTSPOT
-recoverybox_enable_mkdocs: $ENABLEMKDOCS
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia

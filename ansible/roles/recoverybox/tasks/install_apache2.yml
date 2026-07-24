@@ -23,13 +23,14 @@
     group: root
     mode: '0755'
 
-- name: Create index.html
+- name: Copy all web content to /data/www
   ansible.builtin.copy:
-    src: data/www/index.html
-    dest: /data/www/index.html
+    src: data/www/
+    dest: /data/www/
     owner: root
     group: root
     mode: '0644'
+    directory_mode: '0755'
 
 - name: Create recovery.box site
   ansible.builtin.copy:
