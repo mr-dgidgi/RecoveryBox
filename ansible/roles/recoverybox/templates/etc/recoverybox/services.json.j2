@@ -105,5 +105,16 @@
     "url": "http://meshtastic.recovery.box/",
     "version": "{{ recoverybox_version_meshtastic_web }}",
     "activated": {{ recoverybox_enable_meshtastic | to_json }}
+  },
+  {
+    "id": "wiki",
+    "name": "Wiki",
+    "type": "http",
+    "unit": null,
+    "check_url": "http://127.0.0.1/wiki",
+    "check_host": "recovery.box",
+    "url": "http://wiki.recovery.box/wiki/",
+    "version": "null",
+    "activated": true
   }
 ]

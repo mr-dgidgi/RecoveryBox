@@ -21,6 +21,7 @@ recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource: docker depName: ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
 
+
 # Enable services on demand
 recoverybox_enable_apache: true
 recoverybox_enable_library: true

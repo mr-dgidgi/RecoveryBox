@@ -29,6 +29,7 @@ KIWIXENWIKIPEDIAARG="all_no_pic"
 KIWIXFRWIKIPEDIAARG="all_no_pic"
 CUSTOMINSTALL=false
 DOWNLOADMBTILES="true"
+ENABLEHOTSPOT="true"
 
 #######################################################
 # Functions
@@ -375,7 +376,7 @@ menu_services() {
         EnableKiwix="true"
         set_kiwix_files
     fi
-    EnableHotspot="true" #automaticaly installed
+
     
     set_ansible_custom_vars
 }
@@ -391,7 +392,7 @@ recoverybox_enable_meshtastic: $EnableMeshtastic
 recoverybox_enable_console: $EnableConsole
 recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
-recoverybox_enable_hotspot: $EnableHotspot
+recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia
