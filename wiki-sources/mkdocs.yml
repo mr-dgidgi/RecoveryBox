@@ -14,7 +14,7 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Passage en mode nuit
-    # Night 
+    # Night
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
