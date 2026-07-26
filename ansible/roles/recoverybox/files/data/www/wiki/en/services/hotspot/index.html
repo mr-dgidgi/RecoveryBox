@@ -1445,6 +1445,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#56-ghz-access-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5/6 GHz Access Point
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2151,6 +2162,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#56-ghz-access-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5/6 GHz Access Point
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2266,6 +2288,7 @@
 <li>the country (<code>country_code</code>);</li>
 <li>radio performance settings.</li>
 </ul>
+<p>When the service starts, the script <code>ap_start.sh</code> merges the file <code>hostapd_base.conf</code> with a second file <code>hostapd_extra.conf</code>. The latter is intended to contain additional options not managed by Ansible. It is possible to create this file to add advanced options to hostapd.</p>
 <h4 id="modifying-the-dhcp-server">Modifying the DHCP server</h4>
 <p>The file <code>/etc/ap_config/dnsmasq.conf</code> allows modifying:</p>
 <ul>
@@ -2274,6 +2297,7 @@
 <li>DHCP lease duration;</li>
 <li>various DHCP options.</li>
 </ul>
+<p>Any modification not managed by Ansible will be overwritten in case of reinstallation. To customize the DHCP server by adding options not managed by Ansible, it is necessary to create a second configuration file in the directory <code>/etc/ap_config/dnsmasq.d/</code>. This file will be automatically included by dnsmasq.</p>
 <div class="admonition info">
 <p class="admonition-title">Restart required</p>
 <p>Any configuration change requires restarting the service via the <code>service-manager</code>.</p>
@@ -2295,6 +2319,25 @@
   ip: &quot;192.168.4.1&quot; # DNSmasq
   dhcp_range_start: &quot;192.168.4.100&quot; # DNSmasq
   dhcp_range_end: &quot;192.168.4.200&quot; # DNSmasq
+</code></pre>
+<h4 id="56-ghz-access-point">5/6 GHz Access Point</h4>
+<div class="admonition warning">
+<p class="admonition-title">5/6 GHz Access Point</p>
+<p>Intel Wi-Fi cards equipped with the LAR (Location Aware Regulatory) function are incapable of being activated on the 5 GHz and 6 GHz bands as an access point.</p>
+</div>
+<p>The Wi-Fi hotspot can operate on the 2.4 GHz, 5 GHz, and 6 GHz bands depending on the hardware. However, some Wi-Fi cards may not support all bands. Having not yet found a reliable and universal solution to enable the access point on the 5 GHz and 6 GHz bands, it is recommended to stay on the 2.4 GHz band to guarantee compatibility with all hardware.</p>
+<p>However, if you wish to test enabling the hotspot on 5/6 GHz, in addition to selecting the mode and channel in the <code>custom_config.yml</code> file, it is necessary to create a <code>hostapd_extra.conf</code> file in the <code>/etc/ap_config/</code> directory with the following options:</p>
+<pre><code class="language-conf">country_code= # FR for France, US for United States, etc.
+driver=nl80211
+ieee80211d=1
+ieee80211h=1
+ieee80211n=1           # Recommended to unlock 5GHz N
+ieee80211ac=1          # Recommended for 5GHz AC
+</code></pre>
+<p>A modification of the <code>ap_start.sh</code> file is also necessary to enable 5 GHz mode. This modification will be <strong>overwritten</strong> during an update or reinstallation. These lines must be added just before <code>docker rm -f hotspot 2&gt;/dev/null</code>:</p>
+<pre><code class="language-bash">iw reg set FR
+iw dev wlanAP scan &gt; /dev/null 2&gt;&amp;1 || true
+sleep 1
 </code></pre>
 <h3 id="c-debugging">C. Debugging</h3>
 <pre><code class="language-bash"># View hotspot logs

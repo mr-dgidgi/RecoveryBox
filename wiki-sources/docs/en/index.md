@@ -59,7 +59,6 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
     * [Meshtastic](./services/meshtastic.md)
     * [Carto](./services/carto.md)
     * [Console](./services/console.md)
-    * [Wiki](./services/wiki.md)
 * Administration
     * [Installation](./admin/install.md)
     * [Network Configuration](./admin/network.md)

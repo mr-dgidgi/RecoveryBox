@@ -72,6 +72,8 @@ The file `/etc/ap_config/hostapd.conf` allows modifying:
 - the country (`country_code`);
 - radio performance settings.
 
+When the service starts, the script `ap_start.sh` merges the file `hostapd_base.conf` with a second file `hostapd_extra.conf`. The latter is intended to contain additional options not managed by Ansible. It is possible to create this file to add advanced options to hostapd.
+
 #### Modifying the DHCP server
 
 The file `/etc/ap_config/dnsmasq.conf` allows modifying:
@@ -80,6 +82,8 @@ The file `/etc/ap_config/dnsmasq.conf` allows modifying:
 - DNS servers;
 - DHCP lease duration;
 - various DHCP options.
+
+Any modification not managed by Ansible will be overwritten in case of reinstallation. To customize the DHCP server by adding options not managed by Ansible, it is necessary to create a second configuration file in the directory `/etc/ap_config/dnsmasq.d/`. This file will be automatically included by dnsmasq.
 
 !!! info "Restart required"
     Any configuration change requires restarting the service via the `service-manager`.
@@ -104,6 +108,32 @@ recoverybox_hotspot_conf:
   ip: "192.168.4.1" # DNSmasq
   dhcp_range_start: "192.168.4.100" # DNSmasq
   dhcp_range_end: "192.168.4.200" # DNSmasq
+```
+
+#### 5/6 GHz Access Point
+
+!!! warning "5/6 GHz Access Point"
+    Intel Wi-Fi cards equipped with the LAR (Location Aware Regulatory) function are incapable of being activated on the 5 GHz and 6 GHz bands as an access point.
+
+The Wi-Fi hotspot can operate on the 2.4 GHz, 5 GHz, and 6 GHz bands depending on the hardware. However, some Wi-Fi cards may not support all bands. Having not yet found a reliable and universal solution to enable the access point on the 5 GHz and 6 GHz bands, it is recommended to stay on the 2.4 GHz band to guarantee compatibility with all hardware.
+
+However, if you wish to test enabling the hotspot on 5/6 GHz, in addition to selecting the mode and channel in the `custom_config.yml` file, it is necessary to create a `hostapd_extra.conf` file in the `/etc/ap_config/` directory with the following options:
+
+```conf
+country_code= # FR for France, US for United States, etc.
+driver=nl80211
+ieee80211d=1
+ieee80211h=1
+ieee80211n=1           # Recommended to unlock 5GHz N
+ieee80211ac=1          # Recommended for 5GHz AC
+```
+
+A modification of the `ap_start.sh` file is also necessary to enable 5 GHz mode. This modification will be **overwritten** during an update or reinstallation. These lines must be added just before `docker rm -f hotspot 2>/dev/null`:
+
+```bash
+iw reg set FR
+iw dev wlanAP scan > /dev/null 2>&1 || true
+sleep 1
 ```
 
 ### C. Debugging

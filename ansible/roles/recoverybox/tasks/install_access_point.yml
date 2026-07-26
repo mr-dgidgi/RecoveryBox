@@ -18,6 +18,12 @@
     state: directory
     mode: '0755'
 
+- name: Create dnsmasq.d directory
+  ansible.builtin.file:
+    path: /etc/ap_config/dnsmasq.d
+    state: directory
+    mode: '0755'
+
 - name: Create dnsmasq.conf
   ansible.builtin.template:
     src: etc/ap_config/dnsmasq.conf.j2
