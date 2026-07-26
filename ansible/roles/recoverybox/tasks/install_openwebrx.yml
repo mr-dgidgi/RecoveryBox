@@ -1,65 +1,93 @@
 ---
-- name: Create openwebrx directories
-  ansible.builtin.file:
-    path: /etc/owrx/{{ item }}
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  loop:
-    - var
-    - etc
-    - plugins/receiver
-    - plugins/map
+- name: Install OpenWebRX
+  when:
+    - recoverybox_enable_owrx
+    - recoverybox_enable_apache
+  block:
+    - name: Create openwebrx directories
+      ansible.builtin.file:
+        path: /etc/owrx/{{ item }}
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - var
+        - etc
+        - plugins/receiver
+        - plugins/map
 
-- name: Pull openwebrx docker image
-  community.docker.docker_image:
-    name: slechev/openwebrxplus-softmbe
-    tag: "{{ recoverybox_version_owrx }}"
-    source: pull
+    - name: Pull openwebrx docker image
+      community.docker.docker_image:
+        name: slechev/openwebrxplus-softmbe
+        tag: "{{ recoverybox_version_owrx }}"
+        source: pull
 
-- name: Install openwebrx custom settings.json
-  ansible.builtin.copy:
-    src: etc/owrx/var/settings.json
-    dest: /etc/owrx/var/settings.json
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Install openwebrx custom settings.json
+      ansible.builtin.copy:
+        src: etc/owrx/var/settings.json
+        dest: /etc/owrx/var/settings.json
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Install openwebrx custom custom-leaflet.js
-  ansible.builtin.copy:
-    src: etc/owrx/custom-leaflet.js
-    dest: /etc/owrx/custom-leaflet.js
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Install openwebrx custom custom-leaflet.js
+      ansible.builtin.copy:
+        src: etc/owrx/custom-leaflet.js
+        dest: /etc/owrx/custom-leaflet.js
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Create openwebrx service
-  ansible.builtin.template:
-    src: etc/systemd/system/openwebrx.service.j2
-    dest: /etc/systemd/system/openwebrx.service
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Create openwebrx service
+      ansible.builtin.template:
+        src: etc/systemd/system/openwebrx.service.j2
+        dest: /etc/systemd/system/openwebrx.service
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Create openwebrx apache2 site
-  ansible.builtin.copy:
-    src: etc/apache2/sites-available/owrx.conf
-    dest: /etc/apache2/sites-available/owrx.conf
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Create openwebrx apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/owrx.conf
+        dest: /etc/apache2/sites-available/owrx.conf
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Reload apache2 service
-  ansible.builtin.systemd_service:
-    name: apache2
-    state: reloaded
-  when: "'dry_run' not in ansible_run_tags"
+    - name: Reload apache2 service
+      ansible.builtin.systemd_service:
+        name: apache2
+        state: reloaded
+      when: "'dry_run' not in ansible_run_tags"
 
-- name: Enable openwebrx service
-  ansible.builtin.systemd_service:
-    name: openwebrx
-    daemon_reload: true
-    enabled: true
-    state: started
-  when: "'dry_run' not in ansible_run_tags"
+    - name: Enable openwebrx service
+      ansible.builtin.systemd_service:
+        name: openwebrx
+        daemon_reload: true
+        enabled: "{{ recoverybox_enable_owrx }}"
+        state: restarted
+      when: "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate OpenWebRX
+  when: not recoverybox_enable_owrx or not recoverybox_enable_apache
+  block:
+    - name: Check if owrx.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/owrx.conf
+      register: recoverybox_apache_file
+
+    - name: Disable owrx site
+      ansible.builtin.command:
+        cmd: a2dissite owrx.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
+
+    - name: Disable owrx service
+      ansible.builtin.systemd_service:
+        name: openwebrx
+        enabled: "{{ recoverybox_enable_owrx }}"
+        state: stopped
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - "'openwebrx.service' in ansible_facts.services"

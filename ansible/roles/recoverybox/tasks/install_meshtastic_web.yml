@@ -1,35 +1,63 @@
 ---
-- name: Pull meshtastic-web docker image
-  community.docker.docker_image:
-    name: mrdgidgi/meshtastic-web-client
-    tag: "{{ recoverybox_version_meshtastic_web }}"
-    source: pull
+- name: Install Meshtastic Web
+  when:
+    - recoverybox_enable_meshtastic
+    - recoverybox_enable_apache
+  block:
+    - name: Pull meshtastic-web docker image
+      community.docker.docker_image:
+        name: mrdgidgi/meshtastic-web-client
+        tag: "{{ recoverybox_version_meshtastic_web }}"
+        source: pull
 
-- name: Create meshtastic-web service
-  ansible.builtin.template:
-    src: etc/systemd/system/meshtastic-web.service.j2
-    dest: /etc/systemd/system/meshtastic-web.service
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Create meshtastic-web service
+      ansible.builtin.template:
+        src: etc/systemd/system/meshtastic-web.service.j2
+        dest: /etc/systemd/system/meshtastic-web.service
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Create meshtastic-web apache2 site
-  ansible.builtin.copy:
-    src: etc/apache2/sites-available/meshtastic-web.conf
-    dest: /etc/apache2/sites-available/meshtastic-web.conf
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Create meshtastic-web apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/meshtastic-web.conf
+        dest: /etc/apache2/sites-available/meshtastic-web.conf
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Enable meshtastic-web site
-  ansible.builtin.command:
-    cmd: a2ensite meshtastic-web.conf
-  changed_when: false
+    - name: Enable meshtastic-web site
+      ansible.builtin.command:
+        cmd: a2ensite meshtastic-web.conf
+      changed_when: false
 
-- name: Enable meshtastic-web service
-  ansible.builtin.systemd_service:
-    name: meshtastic-web
-    daemon_reload: true
-    enabled: true
-    state: started
-  when: "'dry_run' not in ansible_run_tags"
+    - name: Enable meshtastic-web service
+      ansible.builtin.systemd_service:
+        name: meshtastic-web
+        daemon_reload: true
+        enabled: "{{ recoverybox_enable_meshtastic }}"
+        state: restarted
+      when: "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate Meshtastic Web
+  when: not recoverybox_enable_meshtastic or not recoverybox_enable_apache
+  block:
+    - name: Check if meshtastic-web.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/meshtastic-web.conf
+      register: recoverybox_apache_file
+
+    - name: Disable meshtastic-web site
+      ansible.builtin.command:
+        cmd: a2dissite meshtastic-web.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
+
+    - name: Disable meshtastic-web service
+      ansible.builtin.systemd_service:
+        name: meshtastic-web
+        enabled: "{{ recoverybox_enable_meshtastic }}"
+        state: stopped
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - "'meshtastic-web.service' in ansible_facts.services"

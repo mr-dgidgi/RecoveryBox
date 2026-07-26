@@ -40,16 +40,13 @@
   tags:
     - install_apache2
     - dry_run
-  when: recoverybox_enable_apache
+
 
 - name: Install Kiwix
   ansible.builtin.import_tasks: install_kiwix.yml
   tags:
     - install_kiwix
     - dry_run
-  when:
-    - recoverybox_enable_kiwix
-    - recoverybox_enable_apache
 
 - name: Download Kiwix files
   ansible.builtin.include_tasks: download_kiwix_files.yml
@@ -66,9 +63,6 @@
   tags:
     - install_openwebrx
     - dry_run
-  when:
-    - recoverybox_enable_owrx
-    - recoverybox_enable_apache
 
 - name: Install rtl-sdr drivers
   ansible.builtin.import_tasks: install_rtlsdr_drivers.yml
@@ -83,42 +77,33 @@
   tags:
     - install_library
     - dry_run
-  when:
-    - recoverybox_enable_library
-    - recoverybox_enable_apache
 
 - name: Install Web Console
   ansible.builtin.import_tasks: install_console.yml
   tags:
     - install_console
     - dry_run
-  when:
-    - recoverybox_enable_console
-    - recoverybox_enable_apache
 
 - name: Install Tileserver-gl
   ansible.builtin.import_tasks: install_tileserver.yml
   tags:
     - install_tileserver
     - dry_run
-  when:
-    - recoverybox_enable_tileserver
-    - recoverybox_enable_apache
 
 - name: Install mapping tools
   ansible.builtin.import_tasks: install_mapping_tools.yml
   tags:
     - install_mapping_tools
     - dry_run
+  when:
+    - recoverybox_enable_apache
+    - recoverybox_enable_tileserver
 
 - name: Install Brouter
   ansible.builtin.import_tasks: install_brouter.yml
   tags:
     - install_brouter
     - dry_run
-  when:
-    - recoverybox_enable_brouter
-    - recoverybox_enable_apache
 
 - name: Download Brouter
   ansible.builtin.import_tasks: download_brouter_files.yml
@@ -135,9 +120,6 @@
     - install_meshtastic_web
     - meshtastic_tools
     - dry_run
-  when:
-    - recoverybox_enable_meshtastic
-    - recoverybox_enable_apache
 
 - name: Install Meshtastic Python
   ansible.builtin.import_tasks: install_meshtastic_python.yml
