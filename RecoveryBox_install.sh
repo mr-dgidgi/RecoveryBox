@@ -25,8 +25,8 @@ CUSTOMCONF=false
 CUSTOMMESHTASTIC=false
 KIWIXENWIKIPEDIA="false"
 KIWIXFRWIKIPEDIA="false"
-KIWIXENWIKIPEDIAARG="all_no_pic"
-KIWIXFRWIKIPEDIAARG="all_no_pic"
+KIWIXENWIKIPEDIAARG="all_nopic"
+KIWIXFRWIKIPEDIAARG="all_nopic"
 CUSTOMINSTALL=false
 DOWNLOADMBTILES="true"
 ENABLEHOTSPOT="true"
@@ -241,13 +241,13 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
-        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixEnWikipediaSize
+        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
             KIWIXENWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_maxi" ]];then
             KIWIXENWIKIPEDIAARG="all_maxi"
         else
-            KIWIXENWIKIPEDIAARG="all_no_pic"
+            KIWIXENWIKIPEDIAARG="all_nopic"
         fi
     fi
 
@@ -259,13 +259,13 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
-        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixFrWikipediaSize
+        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
             KIWIXFRWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_maxi" ]];then
             KIWIXFRWIKIPEDIAARG="all_maxi"
         else
-            KIWIXFRWIKIPEDIAARG="all_no_pic"
+            KIWIXFRWIKIPEDIAARG="all_nopic"
         fi
     fi
 
