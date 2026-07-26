@@ -29,19 +29,6 @@
     - install_management_tools
     - dry_run
 
-- name: Install Kiwix
-  ansible.builtin.import_tasks: install_kiwix.yml
-  tags:
-    - install_kiwix
-    - dry_run
-
-- name: Download Kiwix files
-  ansible.builtin.include_tasks: download_kiwix_files.yml
-  loop: "{{ recoverybox_kiwix_files }}"
-  when: item.enable
-  tags:
-    - download_kiwix_files
-
 - name: Install Access Point
   ansible.builtin.import_tasks: install_access_point.yml
   tags:
@@ -54,6 +41,42 @@
     - install_apache2
     - dry_run
   when: recoverybox_enable_apache
+
+- name: Install Kiwix
+  ansible.builtin.import_tasks: install_kiwix.yml
+  tags:
+    - install_kiwix
+    - dry_run
+  when:
+    - recoverybox_enable_kiwix
+    - recoverybox_enable_apache
+
+- name: Download Kiwix files
+  ansible.builtin.include_tasks: download_kiwix_files.yml
+  loop: "{{ recoverybox_kiwix_files }}"
+  when:
+    - item.enable
+    - recoverybox_enable_kiwix
+    - recoverybox_enable_apache
+  tags:
+    - download_kiwix_files
+
+- name: Install OpenwebRXplus
+  ansible.builtin.import_tasks: install_openwebrx.yml
+  tags:
+    - install_openwebrx
+    - dry_run
+  when:
+    - recoverybox_enable_owrx
+    - recoverybox_enable_apache
+
+- name: Install rtl-sdr drivers
+  ansible.builtin.import_tasks: install_rtlsdr_drivers.yml
+  tags:
+    - install_rtlsdr_drivers
+  when:
+    - recoverybox_enable_owrx
+    - recoverybox_enable_apache
 
 - name: Install rb-library
   ansible.builtin.import_tasks: install_rb_library.yml
@@ -105,19 +128,6 @@
     - recoverybox_enable_brouter
     - recoverybox_enable_apache
     - recoverybox_download_brouter
-
-- name: Install OpenwebRXplus
-  ansible.builtin.import_tasks: install_openwebrx.yml
-  tags:
-    - install_openwebrx
-    - dry_run
-  when: recoverybox_enable_owrx
-
-- name: Install rtl-sdr drivers
-  ansible.builtin.import_tasks: install_rtlsdr_drivers.yml
-  tags:
-    - install_rtlsdr_drivers
-  when: recoverybox_enable_owrx
 
 - name: Install Meshtastic Web Client
   ansible.builtin.import_tasks: install_meshtastic_web.yml
