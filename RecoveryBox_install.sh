@@ -14,11 +14,11 @@ MSGGREEN='\033[0;32m'
 MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(pwd)
 RECOVERBOXYDIR="/etc/recoverybox"
 
-WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
-LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
+WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F '"' '{print $2}' )
+LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F '"' '{print $2}' )
 
 CUSTOMCONF=false
 
@@ -142,6 +142,13 @@ install_ansible() {
 #######################################################
 
 configure_interfaces() {
+
+    # set systemd-resolver
+    apt-get install -y -qq  systemd-resolved > /dev/null
+    systemctl enable systemd-resolved
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
+    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
     if ! command -v network-configurator >/dev/null 2>&1; then
@@ -189,13 +196,6 @@ configure_interfaces() {
     systemctl disable networking.service
     systemctl mask networking.service 
     systemctl enable systemd-networkd
-
-    # set systemd-resolver
-    apt-get install -y -qq  systemd-resolved > /dev/null
-    systemctl enable systemd-resolved
-    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
-    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
 
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"

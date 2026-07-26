@@ -25,14 +25,14 @@
         group: root
         mode: '0755'
 
-    - name: Copy all web content to /data/www
-      ansible.builtin.copy:
+    - name: Copy all web content to /data/www (Optimized with rsync)
+      ansible.posix.synchronize:
         src: data/www/
         dest: /data/www/
-        owner: root
-        group: root
-        mode: '0644'
-        directory_mode: '0755'
+        delete: true
+        rsync_opts:
+          - "--chmod=F644,D755"
+          - "--chown=root:root"
 
     - name: Create recovery.box site
       ansible.builtin.copy:
