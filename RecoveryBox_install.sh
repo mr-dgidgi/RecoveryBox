@@ -481,6 +481,8 @@ main() {
         fi
     fi
 
+    ## avoid skipping the read command in the next step
+    stty flush stdin 2>/dev/null || true
     exec 0</dev/tty
     ## Download more map
     read -r -p "$SRVMSG Do you want to download a continent/country map ? [y/n] : " CustomMapGen
