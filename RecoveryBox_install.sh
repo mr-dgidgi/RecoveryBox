@@ -441,8 +441,10 @@ main() {
     fi
     ## checks / settings
     check_prerequisites
-    ## set keyboard layout
-    set_keyboard
+    if [[ ! -f $RECOVERBOXYDIR/rb_version ]]; then
+        ## set keyboard layout
+        set_keyboard
+    fi
     ## Install Ansible prerequisites
     install_ansible
 
@@ -479,6 +481,7 @@ main() {
         fi
     fi
 
+    exec 0</dev/tty
     ## Download more map
     read -r -p "$SRVMSG Do you want to download a continent/country map ? [y/n] : " CustomMapGen
     if [[ "$CustomMapGen" == "y" || "$CustomMapGen" == "Y" ]]; then
