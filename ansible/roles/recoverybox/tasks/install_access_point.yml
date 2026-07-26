@@ -12,13 +12,7 @@
     tag: "{{ recoverybox_version_simple_hotspot }}"
     source: pull
 
-- name: Create ap_config directory
-  ansible.builtin.file:
-    path: /etc/ap_config
-    state: directory
-    mode: '0755'
-
-- name: Create dnsmasq.d directory
+- name: Create ap_config directories
   ansible.builtin.file:
     path: /etc/ap_config/dnsmasq.d
     state: directory
