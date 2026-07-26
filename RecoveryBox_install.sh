@@ -14,19 +14,19 @@ MSGGREEN='\033[0;32m'
 MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(pwd)
 RECOVERBOXYDIR="/etc/recoverybox"
 
-WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
-LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F "= " '{print $2}' )
+WAN=$(grep "recoverybox_interface_wan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F '"' '{print $2}' )
+LAN=$(grep "recoverybox_interface_lan" "$SCRIPT_DIR/ansible/roles/recoverybox/defaults/main.yml" | awk -F '"' '{print $2}' )
 
 CUSTOMCONF=false
 
 CUSTOMMESHTASTIC=false
 KIWIXENWIKIPEDIA="false"
 KIWIXFRWIKIPEDIA="false"
-KIWIXENWIKIPEDIAARG="all_no_pic"
-KIWIXFRWIKIPEDIAARG="all_no_pic"
+KIWIXENWIKIPEDIAARG="all_nopic"
+KIWIXFRWIKIPEDIAARG="all_nopic"
 CUSTOMINSTALL=false
 DOWNLOADMBTILES="true"
 ENABLEHOTSPOT="true"
@@ -142,6 +142,13 @@ install_ansible() {
 #######################################################
 
 configure_interfaces() {
+
+    # set systemd-resolver
+    apt-get install -y -qq  systemd-resolved > /dev/null
+    systemctl enable systemd-resolved
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
+    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
     echo -e "$MSGYELLOW" "$SRVMSG" "Configuring network interfaces..." "$MSGNC"
 
     if ! command -v network-configurator >/dev/null 2>&1; then
@@ -190,13 +197,6 @@ configure_interfaces() {
     systemctl mask networking.service 
     systemctl enable systemd-networkd
 
-    # set systemd-resolver
-    apt-get install -y -qq  systemd-resolved > /dev/null
-    systemctl enable systemd-resolved
-    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-    echo "nameserver 8.8.8.8" > /run/systemd/resolve/stub-resolv.conf
-    sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
-
     if [[ $(systemctl is-enabled systemd-networkd) == "enabled" ]]; then
         echo -e "$MSGGREEN" "$SRVMSG" "Network interfaces configured successfully.${MSGNC}"
         echo -e "$MSGGREEN" "$SRVMSG" "The system MUST reboot to apply interface renaming and network changes.${MSGNC}"
@@ -241,13 +241,13 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
-        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixEnWikipediaSize
+        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
             KIWIXENWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_maxi" ]];then
             KIWIXENWIKIPEDIAARG="all_maxi"
         else
-            KIWIXENWIKIPEDIAARG="all_no_pic"
+            KIWIXENWIKIPEDIAARG="all_nopic"
         fi
     fi
 
@@ -259,13 +259,13 @@ set_kiwix_files(){
     else
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
-        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_no_pic, all_maxi) (default : all_no_pic) : " QuestionDownloadKiwixFrWikipediaSize
+        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
             KIWIXFRWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_maxi" ]];then
             KIWIXFRWIKIPEDIAARG="all_maxi"
         else
-            KIWIXFRWIKIPEDIAARG="all_no_pic"
+            KIWIXFRWIKIPEDIAARG="all_nopic"
         fi
     fi
 
@@ -397,11 +397,11 @@ recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia
-    language: french
+    language: fr
     enable: ${KIWIXFRWIKIPEDIA}
     arg: "$KIWIXFRWIKIPEDIAARG"
   - category: wikipedia
-    language: english
+    language: en
     enable: ${KIWIXENWIKIPEDIA}
     arg: "$KIWIXENWIKIPEDIAARG"
 EOL
@@ -441,8 +441,10 @@ main() {
     fi
     ## checks / settings
     check_prerequisites
-    ## set keyboard layout
-    set_keyboard
+    if [[ ! -f $RECOVERBOXYDIR/rb_version ]]; then
+        ## set keyboard layout
+        set_keyboard
+    fi
     ## Install Ansible prerequisites
     install_ansible
 
@@ -450,13 +452,13 @@ main() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
         read -rp "Do you want to use the existing custom configuration file? yes/no (default : yes) : " UseExistingConfig
         UseExistingConfig=$(yes_no_check "$UseExistingConfig")
-        if [[ $UseExistingConfig -eq 1 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
-            CUSTOMCONF=true
-        else
+        if [[ $UseExistingConfig -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Deleting custom configuration file." "$MSGNC"
             rm -f $RECOVERBOXYDIR/custom_config.yml
             CUSTOMCONF=false
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
+            CUSTOMCONF=true
         fi
     fi
     
@@ -479,6 +481,9 @@ main() {
         fi
     fi
 
+    ## avoid skipping the read command in the next step
+    stty flush stdin 2>/dev/null || true
+    exec 0</dev/tty
     ## Download more map
     read -r -p "$SRVMSG Do you want to download a continent/country map ? [y/n] : " CustomMapGen
     if [[ "$CustomMapGen" == "y" || "$CustomMapGen" == "Y" ]]; then

@@ -1,7 +1,7 @@
 ---
 - name: Get brouter files index
   ansible.builtin.uri:
-    url: "https://download.brouter.de/brouter/"
+    url: "https://brouter.de/brouter/segments4/"
     return_content: true
   register: recoverybox_brouter_index
 
@@ -11,7 +11,7 @@
 
 - name: Download brouter rd5 files
   ansible.builtin.get_url:
-    url: "https://download.brouter.de/brouter/{{ item }}"
+    url: "https://brouter.de/brouter/segments4/{{ item }}"
     dest: "/data/brouter/segments4/{{ item }}"
     mode: '0644'
     force: true

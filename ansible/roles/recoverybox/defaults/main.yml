@@ -64,15 +64,15 @@ recoverybox_meshtastic_node:
 # kiwix files to download, see https://lb.download.kiwix.org/zim/
 recoverybox_kiwix_files:
   - category: wikipedia
-    language: french
+    language: fr
     enable: true
-    arg: "all_no_pic" # all_mini,all_no_pic,all_maxi
+    arg: "all_nopic" # all_mini,all_nopic,all_maxi
   - category: wikipedia
-    language: english
+    language: en
     enable: true
-    arg: "all_no_pic" # all_mini,all_no_pic,all_maxi
+    arg: "all_nopic" # all_mini,all_nopic,all_maxi
 #  - category: maps
-#    language: english
+#    language: en
 #    enable: true
 #    arg: "croatia"
 
