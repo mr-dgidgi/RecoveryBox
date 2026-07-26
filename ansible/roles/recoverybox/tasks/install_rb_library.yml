@@ -1,42 +1,61 @@
 ---
-- name: Create /data/library directory
-  ansible.builtin.file:
-    path: /data/library
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+- name: Install RecoveryBox Library
+  when:
+    - recoverybox_enable_library
+    - recoverybox_enable_apache
+  block:
+    - name: Create /data/library directory
+      ansible.builtin.file:
+        path: /data/library
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
-- name: Clone library repository
-  ansible.builtin.git:
-    repo: "https://github.com/mr-dgidgi/rb-library.git"
-    dest: /data/library
-    version: "{{ recoverybox_version_library }}"
-    force: true
+    - name: Clone library repository
+      ansible.builtin.git:
+        repo: "https://github.com/mr-dgidgi/rb-library.git"
+        dest: /data/library
+        version: "{{ recoverybox_version_library }}"
+        force: true
 
-- name: Create /data/library/PDF/custom directory
-  ansible.builtin.file:
-    path: /data/library/PDF/custom
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+    - name: Create /data/library/PDF/custom directory
+      ansible.builtin.file:
+        path: /data/library/PDF/custom
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
 
-- name: Create library apache2 site
-  ansible.builtin.copy:
-    src: etc/apache2/sites-available/library.conf
-    dest: /etc/apache2/sites-available/library.conf
-    owner: root
-    group: root
-    mode: '0644'
+    - name: Create library apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/library.conf
+        dest: /etc/apache2/sites-available/library.conf
+        owner: root
+        group: root
+        mode: '0644'
 
-- name: Enable library site
-  ansible.builtin.command:
-    cmd: a2ensite library.conf
-  changed_when: false
+    - name: Enable library site
+      ansible.builtin.command:
+        cmd: a2ensite library.conf
+      changed_when: false
 
-- name: Reload apache2 service
-  ansible.builtin.systemd_service:
-    name: apache2
-    state: reloaded
-  when: "'dry_run' not in ansible_run_tags"
+    - name: Reload apache2 service
+      ansible.builtin.systemd_service:
+        name: apache2
+        state: reloaded
+      when: "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate RecoveryBox Library
+  when: not recoverybox_enable_library or not recoverybox_enable_apache
+  block:
+    - name: Check if library.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/library.conf
+      register: recoverybox_apache_file
+
+    - name: Disable library site
+      ansible.builtin.command:
+        cmd: a2dissite library.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists

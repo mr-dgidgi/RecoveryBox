@@ -12,9 +12,9 @@
     tag: "{{ recoverybox_version_simple_hotspot }}"
     source: pull
 
-- name: Create ap_config directory
+- name: Create ap_config directories
   ansible.builtin.file:
-    path: /etc/ap_config
+    path: /etc/ap_config/dnsmasq.d
     state: directory
     mode: '0755'
 
@@ -26,10 +26,10 @@
     group: root
     mode: '0644'
 
-- name: Create hostapd.conf
+- name: Create hostapd_base.conf
   ansible.builtin.template:
-    src: etc/ap_config/hostapd.conf.j2
-    dest: /etc/ap_config/hostapd.conf
+    src: etc/ap_config/hostapd_base.conf.j2
+    dest: /etc/ap_config/hostapd_base.conf
     owner: root
     group: root
     mode: '0644'

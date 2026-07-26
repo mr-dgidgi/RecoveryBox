@@ -61,7 +61,6 @@ nav:
           - Meshtastic: fr/services/meshtastic.md
           - OpenWebRX +: fr/services/owrx.md
           - Console: fr/services/console.md
-          - Wiki: fr/services/wiki.md
       - admin:
           - Installation: fr/admin/install.md
           - Rbstatus: fr/admin/rbstatus.md
@@ -82,7 +81,6 @@ nav:
           - Meshtastic: en/services/meshtastic.md
           - OpenWebRX +: en/services/owrx.md
           - Console: en/services/console.md
-          - Wiki: en/services/wiki.md
       - admin:
           - Installation: en/admin/install.md
           - Rbstatus: en/admin/rbstatus.md

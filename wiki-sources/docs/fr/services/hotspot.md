@@ -72,6 +72,8 @@ Le fichier `/etc/ap_config/hostapd.conf` permet de modifier :
 - le pays (`country_code`) ;
 - les performances radio.
 
+Lors du lancement du service, le script `ap_start.sh` fusionne le fichier `hostapd_base.conf` avec un second fichier `hostapd_extra.conf`. Ce dernier est destiné à contenir des options supplémentaires non gérées par Ansible. Il est possible de créer ce fichier pour ajouter des options avancées à hostapd.
+
 #### Modification du serveur DHCP
 
 Le fichier `/etc/ap_config/dnsmasq.conf` permet de modifier :
@@ -80,6 +82,8 @@ Le fichier `/etc/ap_config/dnsmasq.conf` permet de modifier :
 - les serveurs DNS ;
 - la durée des baux DHCP ;
 - différentes options DHCP.
+
+Toute modification non gérée par Ansible sera écrasée en cas de réinstallation. Pour personnaliser le serveur DHCP, en ajoutant des options non gérées par Ansible, il est nécessaire de créer un second fichier de configuration dans le répertoire `/etc/ap_config/dnsmasq.d/`. Ce fichier sera automatiquement inclus par dnsmasq.
 
 !!! info "Redémarrage requis"
     Toute modification de la configuration nécessite le redémarrage du service via le `service-manager`.
@@ -104,6 +108,32 @@ recoverybox_hotspot_conf:
   ip: "192.168.4.1" # DNSmasq
   dhcp_range_start: "192.168.4.100" # DNSmasq
   dhcp_range_end: "192.168.4.200" # DNSmasq
+```
+#### Point d'accès 5 GHz
+
+!!! warning "Point d'accès 5/6 GHz"
+    Les cartes Wi-Fi Intel équipées de la fonction LAR (Location Aware Regulatory) sont incapable d'être activées sur les bandes 5 GHz et 6 GHz en tant que point d'accès.
+
+Le hotspot Wi-Fi peut fonctionner sur les bandes 2,4 GHz, 5 GHz et 6 GHz selon le matériel. Cependant, certaines cartes Wi-Fi peuvent ne pas supporter toutes les bandes. N'ayant pas encore trouvé de solution fiable et universelle pour activer le point d'accès sur les bandes 5 GHz et 6 GHz, il est recommandé de rester sur la bande 2,4 GHz pour garantir la compatibilité avec tous les matériels.
+
+Cependant, su vous souhaite tester d'activer hotspot en 5 / 6 GHz, en plus de selectionner le mode et le canal dans le fichier `custom_config.yml`, il est nécessaire de créer un fichier `hostapd_extra.conf` dans le répertoire `/etc/ap_config/` avec les options suivantes :
+
+
+```conf
+country_code= # FR for france, US for United States, etc.
+driver=nl80211
+ieee80211d=1
+ieee80211h=1
+ieee80211n=1           # Recommandé pour débloquer le 5GHz N
+ieee80211ac=1          # Recommandé pour le 5GHz AC
+```
+
+Une modification du fichier `ap_start.sh` est également nécessaire pour activer le mode 5 GHz. Cette modification sera **écrasée* lors d'une mise à jour ou d'une réinstallation. Ces lignes sont à ajouter juste avant `docker rm -f hotspot 2>/dev/null`
+
+```bash
+iw reg set FR
+iw dev wlanAP scan > /dev/null 2>&1 || true
+sleep 1
 ```
 
 ### C. Debug
