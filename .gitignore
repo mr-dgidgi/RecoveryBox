@@ -7,3 +7,4 @@ RUN/
 .opencode/
 agent.md
 wiki-sources/.cache/
+.cache/
