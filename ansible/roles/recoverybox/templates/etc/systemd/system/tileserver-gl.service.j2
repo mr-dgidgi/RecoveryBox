@@ -11,7 +11,7 @@ Restart=always
 ExecStartPre=/usr/bin/docker rm -f tileserver-gl 2>/dev/null
 ExecStart=/usr/bin/docker run --rm --name tileserver-gl \
     -v /data/tileserver:/data \
-    -p 8090:8080 \
+    -p 18003:8080 \
     maptiler/tileserver-gl:{{ recoverybox_version_tileserver }}
 ExecStop=/usr/bin/docker stop tileserver-gl
 
