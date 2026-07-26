@@ -10,7 +10,7 @@ Restart=always
 RestartSec=3
 ExecStartPre=docker rm -f kiwix-server 2>/dev/null
 ExecStart=/usr/bin/docker run --rm --name kiwix-server\
-  -p 8080:8080\
+  -p 18001:8080\
   -v /data/kiwix:/data\
   ghcr.io/kiwix/kiwix-serve:{{ recoverybox_version_kiwix }}\
   "*.zim"
