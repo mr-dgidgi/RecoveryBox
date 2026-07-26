@@ -397,11 +397,11 @@ recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_kiwix_files:
   - category: wikipedia
-    language: french
+    language: fr
     enable: ${KIWIXFRWIKIPEDIA}
     arg: "$KIWIXFRWIKIPEDIAARG"
   - category: wikipedia
-    language: english
+    language: en
     enable: ${KIWIXENWIKIPEDIA}
     arg: "$KIWIXENWIKIPEDIAARG"
 EOL

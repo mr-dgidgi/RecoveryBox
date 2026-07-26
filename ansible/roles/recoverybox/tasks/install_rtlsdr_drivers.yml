@@ -6,6 +6,7 @@
       - git
       - cmake
       - debhelper
+      - pkg-config
     state: present
 
 - name: Clone rtl-sdr-blog repository
