@@ -6,6 +6,7 @@
       - git
       - cmake
       - debhelper
+      - build-essential
       - pkg-config
     state: present
 

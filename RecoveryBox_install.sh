@@ -450,13 +450,13 @@ main() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
         read -rp "Do you want to use the existing custom configuration file? yes/no (default : yes) : " UseExistingConfig
         UseExistingConfig=$(yes_no_check "$UseExistingConfig")
-        if [[ $UseExistingConfig -eq 1 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
-            CUSTOMCONF=true
-        else
+        if [[ $UseExistingConfig -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Deleting custom configuration file." "$MSGNC"
             rm -f $RECOVERBOXYDIR/custom_config.yml
             CUSTOMCONF=false
+        else
+            echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
+            CUSTOMCONF=true
         fi
     fi
     
