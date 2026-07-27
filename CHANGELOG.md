@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.1] - 2026-07-27
+
+### Added
+- `rb-update.sh` script added to check for updates and manage the update process for RecoveryBox.
+- `create-tag.yml` workflow added to automate version tagging on the `main` branch.
+
+### Fixed
+- Bug in dnsmasq configuration where the `conf-dir` directive was incorrectly pointing to `/etc/ap_config/dnsmasq.d` instead of `/etc/conf/dnsmasq.d/` causing incapability to start the service.
+
+
+### Changed
+
 ## [1.4.0] - 2026-07-26
 
 ### Added
