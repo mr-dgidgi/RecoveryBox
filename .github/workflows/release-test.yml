@@ -1,0 +1,14 @@
+name: release-test
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  Shellcheck:
+    uses: ./.github/workflows/shellcheck.yml
+
+  Ansible-Lint:
+    uses: ./.github/workflows/ansible-lint.yml
+
+  ansible-deploy-test:
+    uses: ./.github/workflows/ansible-deploy-test.yml

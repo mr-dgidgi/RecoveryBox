@@ -1,0 +1,67 @@
+---
+- name: Install Web Console
+  when:
+    - recoverybox_enable_console
+    - recoverybox_enable_apache
+  block:
+    - name: Install Shellinabox
+      ansible.builtin.apt:
+        name: shellinabox
+        state: present
+
+    - name: Copy shellinabox configuration file
+      ansible.builtin.copy:
+        src: etc/default/shellinabox
+        dest: /etc/default/shellinabox
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create console apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/console.conf
+        dest: /etc/apache2/sites-available/console.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable console site
+      ansible.builtin.command:
+        cmd: a2ensite console.conf
+      changed_when: false
+
+    - name: Reload apache2 service
+      ansible.builtin.systemd_service:
+        name: apache2
+        state: reloaded
+      when: "'dry_run' not in ansible_run_tags"
+
+    - name: Enable shellinabox service
+      ansible.builtin.systemd_service:
+        name: shellinabox
+        enabled: "{{ recoverybox_enable_console }}"
+        state: restarted
+      when: "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate Web Console
+  when: not recoverybox_enable_console or not recoverybox_enable_apache
+  block:
+    - name: Check if console.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/console.conf
+      register: recoverybox_apache_file
+
+    - name: Disable console site
+      ansible.builtin.command:
+        cmd: a2dissite console.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
+
+    - name: Disable shellinabox service
+      ansible.builtin.systemd_service:
+        name: shellinabox
+        enabled: "{{ recoverybox_enable_console }}"
+        state: stopped
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - "'shellinabox.service' in ansible_facts.services"

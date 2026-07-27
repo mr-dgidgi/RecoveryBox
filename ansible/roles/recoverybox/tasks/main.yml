@@ -1,0 +1,130 @@
+---
+- name: Setup Environment
+  ansible.builtin.import_tasks: setup_environment.yml
+  tags:
+    - setup_environment
+    - dry_run
+
+- name: Deploy Network basic configuration
+  ansible.builtin.import_tasks: deploy_network.yml
+  tags:
+    - deploy_network
+    - dry_run
+
+- name: Install Docker
+  ansible.builtin.import_tasks: install_docker.yml
+  tags:
+    - install_docker
+    - dry_run
+
+- name: Setup basic tools
+  ansible.builtin.import_tasks: setup_basic_tools.yml
+  tags:
+    - setup_basic_tools
+    - dry_run
+
+- name: Install Management Tools
+  ansible.builtin.import_tasks: install_management_tools.yml
+  tags:
+    - install_management_tools
+    - dry_run
+
+- name: Install Access Point
+  ansible.builtin.import_tasks: install_access_point.yml
+  tags:
+    - install_access_point
+    - dry_run
+
+- name: Install Apache2
+  ansible.builtin.import_tasks: install_apache2.yml
+  tags:
+    - install_apache2
+    - dry_run
+
+
+- name: Install Kiwix
+  ansible.builtin.import_tasks: install_kiwix.yml
+  tags:
+    - install_kiwix
+    - dry_run
+
+- name: Download Kiwix files
+  ansible.builtin.include_tasks: download_kiwix_files.yml
+  loop: "{{ recoverybox_kiwix_files }}"
+  when:
+    - item.enable
+    - recoverybox_enable_kiwix
+    - recoverybox_enable_apache
+  tags:
+    - download_kiwix_files
+
+- name: Install OpenwebRXplus
+  ansible.builtin.import_tasks: install_openwebrx.yml
+  tags:
+    - install_openwebrx
+    - dry_run
+
+- name: Install rtl-sdr drivers
+  ansible.builtin.import_tasks: install_rtlsdr_drivers.yml
+  tags:
+    - install_rtlsdr_drivers
+  when:
+    - recoverybox_enable_owrx
+    - recoverybox_enable_apache
+
+- name: Install rb-library
+  ansible.builtin.import_tasks: install_rb_library.yml
+  tags:
+    - install_library
+    - dry_run
+
+- name: Install Web Console
+  ansible.builtin.import_tasks: install_console.yml
+  tags:
+    - install_console
+    - dry_run
+
+- name: Install Tileserver-gl
+  ansible.builtin.import_tasks: install_tileserver.yml
+  tags:
+    - install_tileserver
+    - dry_run
+
+- name: Install mapping tools
+  ansible.builtin.import_tasks: install_mapping_tools.yml
+  tags:
+    - install_mapping_tools
+    - dry_run
+  when:
+    - recoverybox_enable_apache
+    - recoverybox_enable_tileserver
+
+- name: Install Brouter
+  ansible.builtin.import_tasks: install_brouter.yml
+  tags:
+    - install_brouter
+    - dry_run
+
+- name: Download Brouter
+  ansible.builtin.import_tasks: download_brouter_files.yml
+  tags:
+    - download_brouter_files
+  when:
+    - recoverybox_enable_brouter
+    - recoverybox_enable_apache
+    - recoverybox_download_brouter
+
+- name: Install Meshtastic Web Client
+  ansible.builtin.import_tasks: install_meshtastic_web.yml
+  tags:
+    - install_meshtastic_web
+    - meshtastic_tools
+    - dry_run
+
+- name: Install Meshtastic Python
+  ansible.builtin.import_tasks: install_meshtastic_python.yml
+  tags:
+    - install_meshtastic_python
+    - meshtastic_tools
+    - dry_run
+  when: recoverybox_enable_meshtastic

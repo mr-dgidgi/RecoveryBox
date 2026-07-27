@@ -1,11 +1,29 @@
 # RecoveryBox
 
-English below
+![Étoiles](https://img.shields.io/github/stars/mr-dgidgi/RecoveryBox)
+
+![Licence](https://img.shields.io/github/license/mr-dgidgi/RecoveryBox)
+
+![GitHub repo size](https://img.shields.io/github/repo-size/mr-dgidgi/RecoveryBox)
+
+![GitHub language count](https://img.shields.io/github/languages/count/mr-dgidgi/RecoveryBox)
+
+![GitHub Tag](https://img.shields.io/github/v/tag/mr-dgidgi/RecoveryBox)
+
+![Dernier commit](https://img.shields.io/github/last-commit/mr-dgidgi/RecoveryBox)
+
+| Pre-Release | main |
+|-------------|------|
+|![GitHub branch check runs](https://img.shields.io/github/check-runs/mr-dgidgi/RecoveryBox/Pre-Release)|![GitHub branch check runs](https://img.shields.io/github/check-runs/mr-dgidgi/RecoveryBox/main)|
+
+## English below
 
 ## Description
 **RecoveryBox** est un script d'installation qui configure un serveur de secours hors ligne pour accéder à des ressources essentielles en cas de panne d'internet. Il transforme un système Debian amd64 en point d'accès WiFi fournissant un accès local à Wikipédia, des PDFs de survie, des sites web archivés, des cartes, et des outils de radio SDR.
 
 Ce projet est développé pour se baser sur une chaîne d'installation Debian 13 utilisant un preseed personnalisé. Consultez [debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) pour plus d'informations sur la configuration de base du système.
+
+[Documentation disponible dans le repo](https://github.com/mr-dgidgi/RecoveryBox/tree/main/ansible/roles/recoverybox/files/data/wiki/docs)
 
 ## Ce qui est installé et utilisable
 
@@ -39,6 +57,7 @@ Ce projet est développé pour se baser sur une chaîne d'installation Debian 13
 - **Web Console** : Terminal disponible via le navigateur web.
 - **rbstatus** : Supervision des services et état du réseau directement depuis la console système.
 - **service-manager** : Utilitaire pour gérer les services principaux du système.
+- **MkDocs** : Wiki technique de la RecoveryBox (documentation des services et outils).
 
 ## Ajouts futurs prévus
 - **Fonctionnalités APRS** : Ajout de fonctionnalités APRS (Automatic Packet Reporting System) pour la transmission de données en temps réel
@@ -72,6 +91,8 @@ Après installation, redémarrez le système pour activer tous les services.
 
 This project is developed to rely on a **Debian 13** installation chain using a custom preseed. See [debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) for more details on the base system configuration.
 
+[Documentation inside the repo](https://github.com/mr-dgidgi/RecoveryBox/tree/main/ansible/roles/recoverybox/files/data/wiki/docs)
+
 ## Installed and Available
 
 ### Offline Resources & Web Access
@@ -104,6 +125,7 @@ This project is developed to rely on a **Debian 13** installation chain using a 
 - **Web Console**: Terminal available via the web browser.
 - **rbstatus**: Service and network status monitoring directly from the system console.
 - **service-manager**: Utility to manage the main services of the system.
+- **MkDocs**: RecoveryBox technical wiki (services and tools documentation).
 
 ## Roadmap & Planned Features
 * **APRS Capabilities**: Integration of Automatic Packet Reporting System (APRS) for real-time data transmission.

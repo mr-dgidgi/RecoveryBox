@@ -1,0 +1,120 @@
+[
+{
+    "id": "internet_ping",
+    "name": "Internet Access",
+    "type": "ping",
+    "url": null,
+    "version": null,
+    "activated": true
+  },
+  {
+    "id": "dns_resolve",
+    "name": "DNS Resolver",
+    "type": "dns",
+    "url": null,
+    "version": null,
+    "activated": true
+  },
+  {
+    "id": "kiwix",
+    "name": "Kiwix Server",
+    "type": "systemd",
+    "unit": "kiwix.service",
+    "url": "http://recovery.box:8080/",
+    "version": "{{ recoverybox_version_kiwix }}",
+    "activated": {{ recoverybox_enable_kiwix | to_json }}
+  },
+  {
+    "id": "ap",
+    "name": "AccessPoint",
+    "type": "systemd",
+    "unit": "ap.service",
+    "url": null,
+    "version": "{{ recoverybox_version_simple_hotspot }}",
+    "activated": {{ recoverybox_enable_hotspot | to_json }}
+  },
+  {
+    "id": "apache",
+    "name": "Apache Server",
+    "type": "systemd",
+    "unit": "apache2.service",
+    "url": null,
+    "version": null,
+    "activated": {{ recoverybox_enable_apache | to_json }}
+  },
+  {
+    "id": "library",
+    "name": "PDF Library",
+    "type": "http",
+    "check_url": "http://127.0.0.1",
+    "check_host": "library.recovery.box",
+    "url": "http://library.recovery.box/",
+    "version": "{{ recoverybox_version_library }}",
+    "activated": {{ recoverybox_enable_library | to_json }}
+  },
+  {
+    "id": "openwebrx",
+    "name": "OpenWebRX+",
+    "type": "systemd",
+    "unit": "openwebrx.service",
+    "url": "http://recovery.box:8073/",
+    "version": "{{ recoverybox_version_owrx }}",
+    "activated": {{ recoverybox_enable_owrx | to_json }}
+  },
+  {
+    "id": "chrony",
+    "name": "Time Sync",
+    "type": "systemd",
+    "unit": "chrony.service",
+    "url": null,
+    "version": null,
+    "activated": true
+  },
+  {
+    "id": "brouter",
+    "name": "Brouter (mapping)",
+    "type": "systemd",
+    "unit": "brouter.service",
+    "url": "http://map.recovery.box/",
+    "version": "{{ recoverybox_version_brouter_web }}",
+    "activated": {{ recoverybox_enable_brouter | to_json }}
+  },
+  {
+    "id": "tileserver",
+    "name": "TileServer (mapping)",
+    "type": "systemd",
+    "unit": "tileserver-gl.service",
+    "url": null,
+    "version": "{{ recoverybox_version_tileserver }}",
+    "activated": {{ recoverybox_enable_tileserver | to_json }}
+  },
+  {
+    "id": "shellinabox",
+    "name": "Web Console",
+    "type": "systemd",
+    "unit": "shellinabox.service",
+    "url": "http://console.recovery.box/",
+    "version": null,
+    "activated": {{ recoverybox_enable_console | to_json }}
+  },
+  {
+    "id": "meshtastic",
+    "name": "Meshtastic Web Client",
+    "type": "systemd",
+    "unit": "meshtastic-web.service",
+    "url": "http://meshtastic.recovery.box/",
+    "version": "{{ recoverybox_version_meshtastic_web }}",
+    "activated": {{ recoverybox_enable_meshtastic | to_json }}
+  },
+  {
+    "id": "wiki",
+    "name": "Wiki",
+    "type": "http",
+    "unit": null,
+    "check_url": "http://127.0.0.1/",
+    "check_host": "recovery.box",
+    "url": "http://recovery.box/wiki/",
+    "version": "null",
+    "activated": true
+  }
+]

@@ -1,0 +1,92 @@
+---
+- name: Install Tileserver-gl
+  when:
+    - recoverybox_enable_tileserver
+    - recoverybox_enable_apache
+  block:
+    - name: Pull tileserver-gl repository
+      community.docker.docker_image:
+        name: "maptiler/tileserver-gl"
+        tag: "{{ recoverybox_version_tileserver }}"
+        source: pull
+
+    - name: Create /data/tileserver/ directory
+      ansible.builtin.file:
+        path: /data/tileserver
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create tileserver-gl service
+      ansible.builtin.template:
+        src: etc/systemd/system/tileserver-gl.service.j2
+        dest: /etc/systemd/system/tileserver-gl.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Custom config.json
+      ansible.builtin.copy:
+        src: data/tileserver/config.json
+        dest: /data/tileserver/config.json
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable tileserver-gl service
+      ansible.builtin.systemd_service:
+        name: tileserver-gl
+        enabled: "{{ recoverybox_enable_tileserver }}"
+        daemon_reload: true
+        state: restarted
+      when: "'dry_run' not in ansible_run_tags"
+
+    - name: Create style directory
+      ansible.builtin.file:
+        path: /data/tileserver/styles/liberty
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Import sprites
+      ansible.builtin.copy:
+        src: data/tileserver/styles/liberty/
+        dest: /data/tileserver/styles/liberty/
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Import fonts
+      ansible.builtin.git:
+        repo: "https://github.com/korywka/fonts.pbf.git"
+        dest: /data/tileserver/fonts
+        version: "{{ recoverybox_version_fonts }}"
+
+    - name: Check if map.mbtiles already exists
+      ansible.builtin.stat:
+        path: "/data/tileserver/map.mbtiles"
+      register: recoverybox_mbtiles_file
+      when: recoverybox_download_mbtiles
+
+    - name: Download world.mbtiles
+      ansible.builtin.get_url:
+        url: "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles"
+        dest: "/data/tileserver/map.mbtiles"
+        mode: '0644'
+      when:
+        - recoverybox_download_mbtiles
+        - not recoverybox_mbtiles_file.stat.exists
+        - "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate Tileserver-gl
+  when: not recoverybox_enable_tileserver or not recoverybox_enable_apache
+  block:
+    - name: Disable tileserver-gl service
+      ansible.builtin.systemd_service:
+        name: tileserver-gl
+        enabled: "{{ recoverybox_enable_tileserver }}"
+        state: stopped
+      when:
+        - "'dry_run' not in ansible_run_tags"

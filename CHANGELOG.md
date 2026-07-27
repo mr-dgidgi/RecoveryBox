@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-07-26
+
+### Added
+- CI workflow `shellcheck`, `ansible-lint` and `ansible-deply-test` created and managed by `push-test.yml` and `release-test.yml`
+- CI workflow `deploy-wiki` created to upload the wiki to [https://recoverybox.fr](https://recoverybox.fr)
+- Ansible-playbook is now used for the installation
+- Wiki service added to the RecoveryBox at `http://recovery.box/wiki`
+- `Wiki_generator.sh` script added to generate the wiki from the `wiki-sources` folder
+
+### Fixed
+
+
+### Changed
+- `recovery_box_install.sh` renamed `RecoveryBox_install.sh` for name consistency
+ - Total rework on the installer behaviour. Most of the actions are now handled by Ansible and the file is easier to maintain
+  - `RecoveryBox_install.sh` can generate a custom_config.yml file
+  - `RecoveryBox_install.sh` can read a custom_config.yml file manually generated
+  - You can choose which service you want to activate or deactivate during the installation
+  - You can rerun `RecoveryBox_install.sh` to activate or deactivate services
+  - You can rerun `RecoveryBox_install.sh` to update the services
+  - The network configuration is now at the end of the installation script and is run only if the system isn't running on systemd-networkd only.
+- `services-manager` reworked to list dynamicaly the services activated
+- More variables added in `recoverybox_hotspot_conf` to customize the hotspot
+- `services.json` contain the version of each service
+- `ap_start.sh` modified to aggregate `hostapd_base.conf` and `hostapd_extra.conf`
+- `dnsmasq.conf` modified to include configuration files in the `dnsmasq.d/` folder
+- `hostapd.conf` renamed to `hostapd_base.conf`
+
 ## [1.3.0] - 2026-07-12
 
 ### Added
