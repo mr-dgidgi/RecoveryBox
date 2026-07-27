@@ -18,9 +18,9 @@ jobs:
       - name: Create and Push Tag
         run: |
           VERSION=$(cat VERSION | tr -d ' \n\r')
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git tag -a "$VERSION" -m "$VERSION"
           git push origin "$VERSION"
