@@ -19,4 +19,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           localDir: 'ansible/roles/recoverybox/files/data/www/wiki/'
           remoteDir: 'www/wiki/'
-          concurrency: 10
+          concurrency: 8
