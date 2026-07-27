@@ -36,7 +36,7 @@ Check_Update() {
         echo -e "${SRVMSG} ${MSGGREEN}Recovery Box is up to date.${MSGNC}"
         return 1
     else
-        echo -e "${SRVMSG} New version available: ${LastVersion}"
+        echo -e "${SRVMSG} ${MSGGREEN}New version available: ${LastVersion}"
         return 0
     fi
     
@@ -84,12 +84,12 @@ Update_RecoveryBox() {
 }
 
 main() {
-    UpdateNeeded=$(Check_Update)
-    if [[ $UpdateNeeded -eq 1 ]]; then
+    
+    if ! Check_Update; then
         echo -e "${SRVMSG} ${MSGGREEN}No update needed.${MSGNC}"
         exit 0
     else
-        read -rp "${SRVMSG} ${MSGYELLOW}Do you want to update Recovery Box? (Y/N): ${MSGNC}" ChooseUpdate
+        read -rp "Do you want to update Recovery Box? (Y/N):" ChooseUpdate
         if [[ $(yes_no_check "$ChooseUpdate") -eq 1 ]]; then
             Download_Update
             if [[ $FULL == true ]]; then

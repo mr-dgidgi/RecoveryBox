@@ -1,0 +1,26 @@
+name: Create Tag
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Create and Push Tag
+        run: |
+          VERSION=$(cat VERSION | tr -d ' \n\r')
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag -a "$VERSION" -m "$VERSION"
+          git push origin "$VERSION"
