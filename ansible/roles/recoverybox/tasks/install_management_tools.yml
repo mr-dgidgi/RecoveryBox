@@ -38,3 +38,11 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: Install rb-update
+  ansible.builtin.copy:
+    src: usr/local/bin/rb-update.sh
+    dest: /usr/local/bin/rb-update
+    owner: root
+    group: root
+    mode: '0755'
