@@ -14,9 +14,9 @@ jobs:
       - name: Upload via SFTP
         uses: wangyucode/sftp-upload-action@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          host: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
           localDir: 'ansible/roles/recoverybox/files/data/www/wiki/'
-          remoteDir: '/wiki/'
+          remoteDir: 'www/wiki/'
           concurrency: 10
