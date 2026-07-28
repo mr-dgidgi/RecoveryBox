@@ -70,6 +70,8 @@ nav:
           - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
           - Outils système: fr/admin/system-tools.md
           - Debug: fr/admin/debug.md
+          - Mise à jour (rb-update): fr/admin/rb-update.md
+          - Variables Ansible: fr/admin/ansible-variables.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
@@ -90,3 +92,5 @@ nav:
           - Meshtastic-Daemon: en/admin/meshtastic-daemon.md
           - System Tools: en/admin/system-tools.md
           - Debug: en/admin/debug.md
+          - Update (rb-update): en/admin/rb-update.md
+          - Ansible Variables: en/admin/ansible-variables.md

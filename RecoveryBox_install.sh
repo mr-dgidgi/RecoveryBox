@@ -454,7 +454,7 @@ main() {
         UseExistingConfig=$(yes_no_check "$UseExistingConfig")
         if [[ $UseExistingConfig -eq 0 ]]; then
             echo -e "$MSGYELLOW" "$SRVMSG" "Deleting custom configuration file." "$MSGNC"
-            rm -f $RECOVERBOXYDIR/custom_config.yml
+            mv $RECOVERBOXYDIR/custom_config.yml $RECOVERBOXYDIR/custom_config.yml.bak
             CUSTOMCONF=false
         else
             echo -e "$MSGYELLOW" "$SRVMSG" "Using existing custom configuration file." "$MSGNC"
