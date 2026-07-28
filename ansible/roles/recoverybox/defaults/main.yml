@@ -1,6 +1,6 @@
 ---
 # renovate: datasource=github-releases depName=mr-dgidgi/rb-library
-recoverybox_version_library: "1.0.1"
+recoverybox_version_library: "1.1.0"
 recoverybox_version_fonts: "master"
 # renovate: datasource=git-tags depName=https://github.com/rtlsdrblog/rtl-sdr-blog
 recoverybox_version_rtlsdr: "v1.3.6"
