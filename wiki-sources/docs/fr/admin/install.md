@@ -8,7 +8,7 @@ tags:
 
 # Installation avancée
 
-Cette page décrit plus en détail le fonctionnement du script `recovery_box_install.sh`, ses prérequis et les différents scénarios d'installation possibles.
+Cette page décrit plus en détail le fonctionnement du script **[RecoveryBox_install.sh](RecoveryBox_install.md)**, ses prérequis et les différents scénarios d'installation possibles.
 
 ---
 
@@ -49,17 +49,7 @@ Dans ce cas, il est impératif de :
 - créer le répertoire `/data` ;
 - installer Git ;
 - cloner le dépôt RecoveryBox ;
-- lancer `recovery_box_install.sh`.
-
-Avant d'exécuter le script, **NetworkManager doit être désactivé**, car la Recovery Box utilise exclusivement **systemd-networkd** pour la gestion des interfaces réseau.
-
-Par exemple :
-
-```bash
-systemctl disable NetworkManager
-systemctl stop NetworkManager
-systemctl enable systemd-networkd
-```
+|- lancer `RecoveryBox_install.sh`.
 
 Le redémarrage de la machine après l'installation reste nécessaire afin d'appliquer l'ensemble de la configuration système.
 
@@ -102,13 +92,13 @@ Certaines fonctionnalités risquent de ne pas fonctionner correctement selon l'h
 
 ## Plusieurs interfaces Ethernet
 
-La Recovery Box peut être installée sur une machine disposant de plusieurs interfaces réseau.
+La RecoveryBox peut être installée sur une machine disposant de plusieurs interfaces réseau.
 
 Le script permet de renommer les interfaces afin de leur attribuer des noms explicites (`Wan`, `Lan`, etc.), indépendamment du nom attribué par Linux.
 
 Les interfaces supplémentaires peuvent ensuite être configurées manuellement avec `network-configurator` selon les besoins.
 
-Il n'y a aucune limitation sur le nombre d'interface réseau en dehors des limitations physiques (nombre de ports pci ou usb)
+Il n'y a aucune limitation sur le nombre d'interfaces réseau en dehors des limites physiques (nombre de ports PCI ou USB)
 
 ---
 
@@ -153,50 +143,11 @@ Une fois le pilote installé, le script `network-configurator` pourra être util
 
 # Déroulement de l'installation
 
-Le script réalise automatiquement les opérations suivantes :
+Les étapes principales sont décrites sur la page dédiée de **[RecoveryBox_install.sh](RecoveryBox_install.md)**.
 
-**Actions directes du script :**
+La durée de l'installation dépend principalement des téléchargements optionnels sélectionnés.Sans téléchargement de contenu, l'installation est généralement relativement rapide. En revanche, le téléchargement de Wikipédia ou des données cartographiques peut représenter plusieurs dizaines de gigaoctets et nécessiter plusieurs heures selon la connexion Internet.
 
-1. Vérification des prérequis (droits root, architecture amd64, présence de `/data`, système Debian, interface Wi-Fi).
-2. Configuration du clavier (optionnel).
-3. Installation d'Ansible et de ses dépendances (python3-docker, python3-apt, collections Galaxy).
-4. Choix de la langue et de la langue des contenus.
-5. Choix du mode d'installation (par défaut ou personnalisé).
-6. Configuration des services *(mode personnalisé)* : activation/désactivation de chaque service, téléchargements Kiwix, nœud Meshtastic.
-7. Génération du fichier `/etc/recoverybox/custom_config.yml`.
-8. Exécution du playbook Ansible (voir ci-dessous).
-9. Génération de cartes supplémentaires via `generate-map` *(optionnel)*.
-10. Configuration des interfaces réseau si nécessaire.
-11. Enregistrement de la version et demande de redémarrage.
-
-**Tâches du playbook Ansible (exécutées automatiquement) :**
-
-| # | Tâche | Description |
-|---|-------|-------------|
-| 1 | Environnement système | Installation des paquets de base (curl, git, wget, firmware, gpsd, chrony, tippecanoe, etc.) et création des répertoires. |
-| 2 | Configuration réseau | Déploiement des scripts iptables, activation du routage IPv4, configuration du pare-feu. |
-| 3 | Installation de Docker | Installation de Docker et de ses dépendances. |
-| 4 | Configuration GPS | Configuration de GPSD et Chrony pour la synchronisation temporelle via GPS. |
-| 5 | Outils de gestion | Installation de rbstatus, services-manager, network-configurator et du registry des services. |
-| 6 | Installation de Kiwix | Déploiement du conteneur Docker Kiwix. |
-| 7 | Téléchargement Kiwix | Téléchargement des fichiers ZIM de Wikipédia (FR/EN, selon la configuration). |
-| 8 | Point d'accès Wi-Fi | Installation et configuration du hotspot **recoverybox** (simple-hotspot, hostapd, dnsmasq). |
-| 9 | Apache2 | Installation et configuration du serveur web Apache2 *(conditionnel)*. |
-| 10 | Bibliothèque PDF | Téléchargement des documents de survie *(conditionnel)*. |
-| 11 | Console Web | Déploiement de ShellInABox *(conditionnel)*. |
-| 12 | TileServer-GL | Installation du serveur de cartographie et du style Liberty *(conditionnel)*. |
-| 13 | Outils cartographiques | Installation de Planetiler et de l'outil `generate-map`. |
-| 14 | BRouter | Installation du moteur de calcul d'itinéraire *(conditionnel)*. |
-| 15 | Données BRouter | Téléchargement des données de routage *(conditionnel)*. |
-| 16 | OpenWebRX Plus | Déploiement de l'interface SDR *(conditionnel)*. |
-| 17 | Pilotes RTL-SDR | Compilation et installation des pilotes RTL-SDR Blog *(conditionnel)*. |
-| 18 | Meshtastic Web Client | Déploiement du client web Meshtastic *(conditionnel)*. |
-| 19 | Meshtastic Daemon | Installation du daemon Python et intégration BRouter *(conditionnel)*. |
-| 20 | MkDocs | Déploiement du wiki technique RecoveryBox *(conditionnel)*. |
-
-La durée de l'installation dépend principalement des téléchargements optionnels sélectionnés.
-
-Sans téléchargement de contenu, l'installation est généralement relativement rapide. En revanche, le téléchargement de Wikipédia ou des données cartographiques peut représenter plusieurs dizaines de gigaoctets et nécessiter plusieurs heures selon la connexion Internet.
+Par ailleurs, la génération des cartes détaillées pendant l'installation peut être très longue selon la puissance de la machine et le nombre de tuiles à générer.
 
 ---
 
@@ -212,3 +163,10 @@ Ce redémarrage permet notamment :
 - la prise en compte de l'ensemble de la configuration système.
 
 Une fois le système redémarré, la Recovery Box est accessible via le point d'accès Wi-Fi **recoverybox** ainsi que par les différents services Web installés.
+
+---
+
+## Voir aussi
+
+- **[RecoveryBox_install.sh](RecoveryBox_install.md)** — Documentation complète du script d'installation principal (modes, configuration, dépannage)
+- **[rb-update](rb-update.md)** — Script de mise à jour automatisée de la RecoveryBox

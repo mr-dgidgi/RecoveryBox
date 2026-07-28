@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.3] - 2026-07-28
+
+### Changed
+- `RecoveryBox_install.sh`: The script now automatically backs up the existing `custom_config.yml` to `custom_config.yml.bak` before deletion during reinstallation.
+- Wiki documentation updated
+
 ## [1.4.2] - 2026-07-28
-
-### Added
-
-### Fixed
 
 ### Changed
 - `rb-library` updated to version 1.1.0 with UI matching the RecoveryBox theme.

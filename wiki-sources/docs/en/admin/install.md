@@ -8,7 +8,7 @@ tags:
 
 # Advanced Installation
 
-This page describes in more detail how the `recovery_box_install.sh` script works, its prerequisites, and the various possible installation scenarios.
+This page describes in more detail how the **[RecoveryBox_install.sh](RecoveryBox_install.md)** script works, its prerequisites, and the various possible installation scenarios.
 
 ---
 
@@ -49,7 +49,7 @@ In this case, it is mandatory to:
 - create the `/data` directory;
 - install Git;
 - clone the RecoveryBox repository;
-- run `recovery_box_install.sh`.
+- run `RecoveryBox_install.sh`.
 
 Before running the script, **NetworkManager must be disabled**, as RecoveryBox exclusively uses **systemd-networkd** for network interface management.
 
@@ -108,13 +108,13 @@ The script allows renaming interfaces to assign them explicit names (`Wan`, `Lan
 
 Additional interfaces can then be manually configured with `network-configurator` as needed.
 
-There is no limitation on the number of network interfaces beyond physical limitations (number of PCI or USB ports).
+There is no limitation on the number of network interfaces beyond physical limitations (number of PCI or USB ports)
 
 ---
 
 ## Mandatory Wi-Fi card
 
-A Wi-Fi interface is **mandatory**.
+The presence of a Wi-Fi interface is **mandatory**.
 
 This interface is used to create the RecoveryBox Wi-Fi access point.
 
@@ -153,50 +153,11 @@ Once the driver is installed, the `network-configurator` script can be used to c
 
 # Installation Workflow
 
-The script automatically performs the following operations:
+The main steps are described on the dedicated **[RecoveryBox_install.sh](RecoveryBox_install.md)** page.
 
-**Direct script actions:**
+Installation duration depends mainly on the optional downloads selected. Without content downloads, installation is generally relatively quick. However, downloading Wikipedia or cartographic data can represent several tens of gigabytes and require several hours depending on the Internet connection.
 
-1. Prerequisites check (root rights, amd64 architecture, `/data` presence, Debian system, Wi-Fi interface).
-2. Keyboard configuration (optional).
-3. Ansible installation and dependencies (python3-docker, python3-apt, Galaxy collections).
-4. Language and content language selection.
-5. Installation mode selection (default or custom).
-6. Service configuration *(custom mode)*: enable/disable each service, Kiwix downloads, Meshtastic node.
-7. Generation of `/etc/recoverybox/custom_config.yml` file.
-8. Ansible playbook execution (see below).
-9. Additional map generation via `generate-map` *(optional)*.
-10. Network interface configuration if needed.
-11. Version recording and reboot request.
-
-**Ansible playbook tasks (executed automatically):**
-
-| # | Task | Description |
-|---|------|-------------|
-| 1 | System environment | Installation of base packages (curl, git, wget, firmware, gpsd, chrony, tippecanoe, etc.) and directory creation. |
-| 2 | Network configuration | Deployment of iptables scripts, IPv4 routing enablement, firewall configuration. |
-| 3 | Docker installation | Installation of Docker and its dependencies. |
-| 4 | GPS configuration | Configuration of GPSD and Chrony for time synchronization via GPS. |
-| 5 | Management tools | Installation of rbstatus, services-manager, network-configurator, and service registry. |
-| 6 | Kiwix installation | Deployment of the Kiwix Docker container. |
-| 7 | Kiwix download | Download of Wikipedia ZIM files (FR/EN, according to configuration). |
-| 8 | Wi-Fi access point | Installation and configuration of the **recoverybox** hotspot (simple-hotspot, hostapd, dnsmasq). |
-| 9 | Apache2 | Installation and configuration of the Apache2 web server *(conditional)*. |
-| 10 | PDF Library | Download of survival documents *(conditional)*. |
-| 11 | Web Console | Deployment of ShellInABox *(conditional)*. |
-| 12 | TileServer-GL | Installation of the cartography server and Liberty style *(conditional)*. |
-| 13 | Mapping tools | Installation of Planetiler and the `generate-map` tool. |
-| 14 | BRouter | Installation of the routing engine *(conditional)*. |
-| 15 | BRouter data | Download of routing data *(conditional)*. |
-| 16 | OpenWebRX Plus | Deployment of the SDR interface *(conditional)*. |
-| 17 | RTL-SDR drivers | Compilation and installation of RTL-SDR Blog drivers *(conditional)*. |
-| 18 | Meshtastic Web Client | Deployment of the Meshtastic web client *(conditional)*. |
-| 19 | Meshtastic Daemon | Installation of the Python daemon and BRouter integration *(conditional)*. |
-| 20 | MkDocs | Deployment of the RecoveryBox technical wiki *(conditional)*. |
-
-Installation duration depends mainly on the optional downloads selected.
-
-Without content downloads, installation is generally relatively quick. However, downloading Wikipedia or cartographic data can represent several tens of gigabytes and require several hours depending on the Internet connection.
+Furthermore, generating detailed maps during installation can be very long depending on the machine power and the number of tiles to generate.
 
 ---
 
@@ -212,3 +173,10 @@ This reboot notably allows:
 - applying the full system configuration.
 
 Once the system has rebooted, RecoveryBox is accessible via the **recoverybox** Wi-Fi access point and through the installed web services.
+
+---
+
+## See Also
+
+- **[RecoveryBox_install.sh](RecoveryBox_install.md)** — Complete documentation of the main installation script (modes, configuration, troubleshooting)
+- **[rb-update](rb-update.md)** — Automated RecoveryBox update script
