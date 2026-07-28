@@ -19,8 +19,12 @@ jobs:
         run: |
           VERSION=$(cat VERSION | tr -d ' \n\r')
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Tag $VERSION already exists, skipping."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git tag -a "$VERSION" -m "$VERSION"
-          git push origin "$VERSION"
+            git tag -a "$VERSION" -m "$VERSION"
+            git push origin "$VERSION"
+          fi
