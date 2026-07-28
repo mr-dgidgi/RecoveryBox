@@ -62,14 +62,16 @@ nav:
           - OpenWebRX +: fr/services/owrx.md
           - Console: fr/services/console.md
       - admin:
-          - Installation: fr/admin/install.md
-          - Rbstatus: fr/admin/rbstatus.md
-          - Generate-map: fr/admin/generate-map.md
-          - Network-Configurator: fr/admin/network-configurator.md
-          - Réseau: fr/admin/network.md
-          - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
-          - Outils système: fr/admin/system-tools.md
-          - Debug: fr/admin/debug.md
+           - Installation: fr/admin/install.md
+           - Rbstatus: fr/admin/rbstatus.md
+           - Generate-map: fr/admin/generate-map.md
+           - Network-Configurator: fr/admin/network-configurator.md
+           - Réseau: fr/admin/network.md
+           - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
+           - Outils système: fr/admin/system-tools.md
+           - Debug: fr/admin/debug.md
+           - Mise à jour (rb-update): fr/admin/rb-update.md
+           - Variables Ansible: fr/admin/ansible-variables.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
@@ -82,11 +84,13 @@ nav:
           - OpenWebRX +: en/services/owrx.md
           - Console: en/services/console.md
       - admin:
-          - Installation: en/admin/install.md
-          - Rbstatus: en/admin/rbstatus.md
-          - Generate-map: en/admin/generate-map.md
-          - Network-Configurator: en/admin/network-configurator.md
-          - Network: en/admin/network.md
-          - Meshtastic-Daemon: en/admin/meshtastic-daemon.md
-          - System Tools: en/admin/system-tools.md
-          - Debug: en/admin/debug.md
+           - Installation: en/admin/install.md
+           - Rbstatus: en/admin/rbstatus.md
+           - Generate-map: en/admin/generate-map.md
+           - Network-Configurator: en/admin/network-configurator.md
+           - Network: en/admin/network.md
+           - Meshtastic-Daemon: en/admin/meshtastic-daemon.md
+           - System Tools: en/admin/system-tools.md
+           - Debug: en/admin/debug.md
+           - Update (rb-update): en/admin/rb-update.md
+           - Ansible Variables: en/admin/ansible-variables.md
