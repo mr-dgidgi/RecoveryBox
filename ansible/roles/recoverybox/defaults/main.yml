@@ -1,24 +1,24 @@
 ---
-# renovate: datasource: github-releases depName: mr-dgidgi/rb-library
+# renovate: datasource=github-releases depName=mr-dgidgi/rb-library
 recoverybox_version_library: "1.0.1"
 recoverybox_version_fonts: "master"
-# renovate: datasource: git-tags depName: https://github.com/rtlsdrblog/rtl-sdr-blog
+# renovate: datasource=git-tags depName=https://github.com/rtlsdrblog/rtl-sdr-blog
 recoverybox_version_rtlsdr: "v1.3.6"
-# renovate: datasource: docker depName: joeakeem/brouter
+# renovate: datasource=docker depName=joeakeem/brouter
 recoverybox_version_brouter_container: "v1.7.9"
-# renovate: datasource: github-releases depName: nrenner/brouter-web
+# renovate: datasource=github-releases depName=nrenner/brouter-web
 recoverybox_version_brouter_web: "0.18.1"
-# renovate: datasource: docker depName: mrdgidgi/meshtastic-web-client
+# renovate: datasource=docker depName=mrdgidgi/meshtastic-web-client
 recoverybox_version_meshtastic_web: "2.7.1"
-# renovate: datasource: docker depName: ghcr.io/kiwix/kiwix-serve
+# renovate: datasource=docker depName=ghcr.io/kiwix/kiwix-serve
 recoverybox_version_kiwix: "3.8.2"
-# renovate: datasource: docker depName: mrdgidgi/simple-hotspot
+# renovate: datasource=docker depName=mrdgidgi/simple-hotspot
 recoverybox_version_simple_hotspot: "1.0"
-# renovate: datasource: docker depName: slechev/openwebrxplus-softmbe
+# renovate: datasource=docker depName=slechev/openwebrxplus-softmbe
 recoverybox_version_owrx: "1.2.118"
-# renovate: datasource: docker depName: maptiler/tileserver-gl
+# renovate: datasource=docker depName=maptiler/tileserver-gl
 recoverybox_version_tileserver: "v5.6.0"
-# renovate: datasource: docker depName: ghcr.io/onthegomap/planetiler
+# renovate: datasource=docker depName=ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
 
 
