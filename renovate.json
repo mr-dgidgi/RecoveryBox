@@ -7,9 +7,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["(^|/).*\\.sh$"],
+      "fileMatch": ["(^|/).*\\.yml$", "(^|/).*\\.yaml$", "(^|/).*\\.json$", "(^|/).*\\.sh$"],
       "matchStrings": [
-        "# renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s+Vrecoverybox_version_[A-Za-z0-9_]+=\"(?<currentValue>[^\"]+)\""
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: packageName=(?<packageName>\\S+))?\\n\\s*\\S+:\\s*\"?(?<currentValue>[^\"]+)\"?"
       ]
     }
   ]
