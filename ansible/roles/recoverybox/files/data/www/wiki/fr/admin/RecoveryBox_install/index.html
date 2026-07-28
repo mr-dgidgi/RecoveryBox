@@ -6,15 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Script d'installation automatisé de la RecoveryBox sur Debian/amd64.">
       
       
-        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/system-tools/">
+      
+        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/RecoveryBox_install/">
       
       
-        <link rel="prev" href="../meshtastic-daemon/">
-      
-      
-        <link rel="next" href="../debug/">
       
       
         
@@ -29,7 +27,7 @@
     
     
       
-        <title>Outils système - RecoveryBox Wiki</title>
+        <title>RecoveryBox_install.sh - RecoveryBox Wiki</title>
       
     
     
@@ -82,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#outils-systeme" class="md-skip">
+        <a href="#recoverybox_installsh" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Outils système
+              RecoveryBox_install.sh
             
           </span>
         </div>
@@ -270,12 +268,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../" class="md-tabs__link">
           
   
@@ -384,29 +380,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -424,7 +415,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -749,8 +740,6 @@
                 
   
   
-    
-  
   
   
     
@@ -761,11 +750,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
           <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
@@ -786,7 +775,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -969,37 +958,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Outils système
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../system-tools/" class="md-nav__link">
         
   
   
@@ -1015,93 +977,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GPSD
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="GPSD">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Chrony
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Chrony">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Driver RTLSDR
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1938,22 +1813,66 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
+  <a href="#presentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GPSD
+        Présentation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="GPSD">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modes-dexecution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes d'exécution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guide-dutilisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guide d'utilisation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Guide d&#39;utilisation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
+  <a href="#installation-complete-mode-interactif" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        Installation complète (mode interactif)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-uniquement-mode-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration uniquement (mode config)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-avec-configuration-existante-mode-custom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation avec configuration existante (mode custom)
       
     </span>
   </a>
@@ -1966,38 +1885,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
+  <a href="#depannage-courant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Chrony
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Chrony">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Driver RTLSDR
+        Dépannage courant
       
     </span>
   </a>
@@ -2024,26 +1915,236 @@
   
 
 
-<h1 id="outils-systeme">Outils système</h1>
-<h2 id="gpsd">GPSD</h2>
-<p>Le service gpsd permet de gérer la communication avec le GPS et de fournir les informations de position et de temps aux applications qui en ont besoin. Il est configuré pour écouter sur le port 2947 et peut être interrogé par des clients compatibles avec le protocole gpsd.</p>
-<p>Ce service est automatiquement installé et démarré qu'un GPS soit présent ou non sur la RecoveryBox. Le service est conffiguré pour se lancer même si aucune application ne l'intéroge. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.</p>
-<h3 id="fichier-de-configuration">Fichier de configuration</h3>
-<pre><code>/etc/default/gpsd
+<h1 id="recoverybox_installsh">RecoveryBox_install.sh</h1>
+<h2 id="presentation">Présentation</h2>
+<p><code>RecoveryBox_install.sh</code> est le script d'installation principal du projet <strong>RecoveryBox</strong>. Il automatise le déploiement complet ainsi que la mise à jour et l'activation/désactivation des services.</p>
+<p>Le script orchestre l'ensemble du processus :
+- Vérification des prérequis système (root, architecture amd64, point de montage <code>/data</code>, interface WiFi)
+- Installation d'Ansible et des collections requises
+- Configuration interactive des services à activer
+- Exécution du playbook Ansible (déploiement Docker, services, réseau)
+- Configuration finale du réseau via <code>systemd-networkd</code>
+- Redémarrage obligatoire pour appliquer la configuration</p>
+<div class="admonition warning">
+<p class="admonition-title">Exécution en root</p>
+<p>Le script <strong>doit être exécuté en root</strong> (<code>sudo</code>). Il vérifie l'UID au démarrage et s'arrête en cas de non-conformité.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Redémarrage obligatoire</p>
+<p>Un redémarrage complet du système est <strong>requis</strong> à la fin de l'installation pour activer <code>systemd-networkd</code>, le point d'accès WiFi et l'ensemble des services.</p>
+</div>
+<hr />
+<h2 id="modes-dexecution">Modes d'exécution</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Installation complète (interactive)</strong></td>
+<td><code>sudo ./RecoveryBox_install.sh</code></td>
+<td>Lance l'installation complète avec menus interactifs</td>
+</tr>
+<tr>
+<td><strong>Configuration uniquement</strong></td>
+<td><code>sudo ./RecoveryBox_install.sh config</code></td>
+<td>Affiche uniquement le menu de configuration des services (génère <code>/etc/recoverybox/custom_config.yml</code>)</td>
+</tr>
+<tr>
+<td><strong>Installation avec config existante</strong></td>
+<td><code>sudo ./RecoveryBox_install.sh custom</code></td>
+<td>Utilise <code>/etc/recoverybox/custom_config.yml</code> existant (passe le menu)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="guide-dutilisation">Guide d'utilisation</h2>
+<h3 id="installation-complete-mode-interactif">Installation complète (mode interactif)</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh
 </code></pre>
-<h2 id="chrony">Chrony</h2>
-<p>Le service chrony permet de gérer la synchronisation de l'heure du système. Par défaut il utilise des serveurs NTP publics pour se synchroniser. </p>
-<p>Dans la RecoveryBox, chrony est configuré pour utiliser le GPS comme source de temps principale et fournir l'heure exacte aux équipements connectés à la RecoveryBox.</p>
-<h3 id="fichier-de-configuration_1">Fichier de configuration</h3>
-<pre><code>/etc/chrony/000-gps.conf
+<ul>
+<li>Le script propose de reconfigurer la disposition clavier via <code>dpkg-reconfigure keyboard-configuration</code>.</li>
+<li>** Installation par défaut ? (oui/non) **</li>
+<li><strong>Oui</strong> → Tous les services sont activés avec leurs valeurs par défaut. Pas de menu détaillé.</li>
+<li>
+<p><strong>Non</strong> → Menu détaillé de configuration service par service (voir ci-dessous).</p>
+</li>
+<li>
+<p>Chaque service peut être activé ou désactivé individuellement :</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Apache (serveur web)</strong></td>
+<td><code>true</code></td>
+<td>Active Apache + modules (PHP, etc.)</td>
+</tr>
+<tr>
+<td><strong>RecoveryBox Library</strong></td>
+<td><code>true</code></td>
+<td>Bibliothèque locale (nécessite Apache)</td>
+</tr>
+<tr>
+<td><strong>BRouter</strong></td>
+<td><code>true</code></td>
+<td>Routage hors-ligne (vélo, rando, voiture)</td>
+</tr>
+<tr>
+<td><strong>Téléchargement cartes BRouter</strong></td>
+<td><code>true</code></td>
+<td>Télécharge les données cartographiques</td>
+</tr>
+<tr>
+<td><strong>TileServer-GL</strong></td>
+<td><code>true</code></td>
+<td>Serveur de tuiles vectorielles (OSM)</td>
+</tr>
+<tr>
+<td><strong>Téléchargement carte monde (mbtiles)</strong></td>
+<td><code>true</code></td>
+<td>Télécharge la carte monde pour TileServer</td>
+</tr>
+<tr>
+<td><strong>Meshtastic</strong></td>
+<td><code>true</code></td>
+<td>Services Meshtastic (MQTT, web, etc.)</td>
+</tr>
+<tr>
+<td><strong>Web Console</strong></td>
+<td><code>true</code></td>
+<td>Console web d'administration (ShellInABox)</td>
+</tr>
+<tr>
+<td><strong>OpenWebRX+</strong></td>
+<td><code>true</code></td>
+<td>SDR web (réception radio)</td>
+</tr>
+<tr>
+<td><strong>Kiwix (Wikipédia hors-ligne)</strong></td>
+<td><code>true</code></td>
+<td>Serveur Kiwix + fichiers ZIM</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Fichier de configuration généré</p>
+<p>À l'issue du menu, le script génère <strong><code>/etc/recoverybox/custom_config.yml</code></strong> contenant les variables Ansible (<code>extra-vars</code>) correspondant à vos choix.</p>
+</div>
+<ul>
+<li>Le script lance automatiquement le playbook <code>ansible/Install.yml</code> :</li>
+<li>Le script propose de lancer <code>/usr/local/bin/generate-map</code> pour télécharger un continent/pays spécifique (BRouter, TileServer).</li>
+<li>Si <code>systemd-networkd</code> n'est pas encore le gestionnaire réseau unique, le script utilise l'outil <code>network-configurator</code> pour :</li>
+<li>Créer les bridges <code>WAN</code> / <code>LAN</code></li>
+<li>Renommer l'interface WiFi en <code>wlanAP</code></li>
+<li>Lier une interface physique au WAN (DHCP ou statique)</li>
+<li>Basculer vers <code>systemd-networkd</code> + <code>systemd-resolved</code></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Redémarrage requis</p>
+<p>Cette étape <strong>nécessite un redémarrage</strong> pour prendre effet.</p>
+</div>
+<ul>
+<li>Copie du fichier <code>VERSION</code> vers <code>/etc/recoverybox/rb_version</code></li>
+<li>Affichage du message : <strong>REDÉMARRAGE OBLIGATOIRE</strong></li>
+</ul>
+<hr />
+<h3 id="configuration-uniquement-mode-config">Configuration uniquement (mode <code>config</code>)</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh config
 </code></pre>
-<h2 id="driver-rtlsdr">Driver RTLSDR</h2>
+<p>Lance uniquement le menu de configuration des services (sans exécuter le playbook). Ceci génère ou met à jour le fichier <code>/etc/recoverybox/custom_config.yml</code> avec vos choix.</p>
+<h3 id="installation-avec-configuration-existante-mode-custom">Installation avec configuration existante (mode <code>custom</code>)</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh custom
+</code></pre>
+<p>Le script utilise le fichier <code>/etc/recoverybox/custom_config.yml</code> existant pour exécuter le playbook Ansible sans passer par le menu interactif. Ce mode est utile pour les mises à jour ou les réinstallations avec la même configuration.</p>
+<hr />
+<div class="admonition note">
+<p class="admonition-title">Détection de mise à jour</p>
+<p>Le script détecte <code>/etc/recoverybox/rb_version</code> et ajoute le suffixe <code>-upgrading</code> s'il existe.</p>
+</div>
+<hr />
+<h2 id="depannage-courant">Dépannage courant</h2>
+<table>
+<thead>
+<tr>
+<th>Symptôme</th>
+<th>Cause probable</th>
+<th>Résolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user is not root</code></td>
+<td>Script lancé sans <code>sudo</code></td>
+<td>Relancer avec <code>sudo</code></td>
+</tr>
+<tr>
+<td><code>/data does not exist</code></td>
+<td>Point de montage manquant</td>
+<td><code>mkdir /data &amp;&amp; mount /dev/sdX /data</code></td>
+</tr>
+<tr>
+<td><code>This script is only for Debian based systems</code></td>
+<td>OS non-Debian</td>
+<td>Utiliser Debian/Ubuntu/Devuan amd64</td>
+</tr>
+<tr>
+<td><code>This script is only for amd64 architecture</code></td>
+<td>Architecture ARM/autre</td>
+<td>Matériel x86_64 requis</td>
+</tr>
+<tr>
+<td><code>No wireless interface found</code></td>
+<td>Pas d'interface WiFi / pilote manquant</td>
+<td>Ajouter carte WiFi USB compatible AP (ath9k, ath10k, mt76, etc.)</td>
+</tr>
+<tr>
+<td><code>Ansible binaries are not available</code></td>
+<td>Échec installation Ansible</td>
+<td>Vérifier <code>apt</code>, réseau, dépôts Debian</td>
+</tr>
+<tr>
+<td><code>community.docker is not available</code></td>
+<td>Échec <code>ansible-galaxy</code></td>
+<td>Vérifier connexion Internet, relancer script</td>
+</tr>
+<tr>
+<td><code>network-configurator command not found</code></td>
+<td>Ansible n'a pas déployé l'outil</td>
+<td>Vérifier playbook Ansible, relancer</td>
+</tr>
+<tr>
+<td><code>failed to configure network interfaces</code></td>
+<td><code>systemd-networkd</code> non activé</td>
+<td>Vérifier <code>systemctl status systemd-networkd</code></td>
+</tr>
+<tr>
+<td><code>Ansible playbook execution failed</code></td>
+<td>Erreur playbook (Docker, réseau, etc.)</td>
+<td>Relancer en debug : <code>ansible-playbook -vvv ...</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
 
 
 
+
+  
+  
 
 
 

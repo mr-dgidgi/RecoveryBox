@@ -734,34 +734,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../fr/services/wiki.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Wiki
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1031,6 +1003,62 @@
     
   
     Debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/rb-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mise à jour (rb-update)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/ansible-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables Ansible
   
 
     
@@ -1416,34 +1444,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../services/wiki.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Wiki
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1738,6 +1738,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rb-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update (rb-update)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ansible-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1792,7 +1848,7 @@
 
 
 <h1 id="advanced-installation">Advanced Installation</h1>
-<p>This page describes in more detail how the <code>recovery_box_install.sh</code> script works, its prerequisites, and the various possible installation scenarios.</p>
+<p>This page describes in more detail how the <strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong> script works, its prerequisites, and the various possible installation scenarios.</p>
 <hr />
 <h1 id="supported-platforms">Supported Platforms</h1>
 <h2 id="architecture">Architecture</h2>
@@ -1818,7 +1874,7 @@
 <li>create the <code>/data</code> directory;</li>
 <li>install Git;</li>
 <li>clone the RecoveryBox repository;</li>
-<li>run <code>recovery_box_install.sh</code>.</li>
+<li>run <code>RecoveryBox_install.sh</code>.</li>
 </ul>
 <p>Before running the script, <strong>NetworkManager must be disabled</strong>, as RecoveryBox exclusively uses <strong>systemd-networkd</strong> for network interface management.</p>
 <p>For example:</p>
@@ -1853,10 +1909,10 @@ systemctl enable systemd-networkd
 <p>RecoveryBox can be installed on a machine with multiple network interfaces.</p>
 <p>The script allows renaming interfaces to assign them explicit names (<code>Wan</code>, <code>Lan</code>, etc.), independently of the name assigned by Linux.</p>
 <p>Additional interfaces can then be manually configured with <code>network-configurator</code> as needed.</p>
-<p>There is no limitation on the number of network interfaces beyond physical limitations (number of PCI or USB ports).</p>
+<p>There is no limitation on the number of network interfaces beyond physical limitations (number of PCI or USB ports)</p>
 <hr />
 <h2 id="mandatory-wi-fi-card">Mandatory Wi-Fi card</h2>
-<p>A Wi-Fi interface is <strong>mandatory</strong>.</p>
+<p>The presence of a Wi-Fi interface is <strong>mandatory</strong>.</p>
 <p>This interface is used to create the RecoveryBox Wi-Fi access point.</p>
 <p>It can be:</p>
 <ul>
@@ -1878,135 +1934,9 @@ systemctl enable systemd-networkd
 <p>Once the driver is installed, the <code>network-configurator</code> script can be used to configure the interface.</p>
 <hr />
 <h1 id="installation-workflow">Installation Workflow</h1>
-<p>The script automatically performs the following operations:</p>
-<p><strong>Direct script actions:</strong></p>
-<ol>
-<li>Prerequisites check (root rights, amd64 architecture, <code>/data</code> presence, Debian system, Wi-Fi interface).</li>
-<li>Keyboard configuration (optional).</li>
-<li>Ansible installation and dependencies (python3-docker, python3-apt, Galaxy collections).</li>
-<li>Language and content language selection.</li>
-<li>Installation mode selection (default or custom).</li>
-<li>Service configuration <em>(custom mode)</em>: enable/disable each service, Kiwix downloads, Meshtastic node.</li>
-<li>Generation of <code>/etc/recoverybox/custom_config.yml</code> file.</li>
-<li>Ansible playbook execution (see below).</li>
-<li>Additional map generation via <code>generate-map</code> <em>(optional)</em>.</li>
-<li>Network interface configuration if needed.</li>
-<li>Version recording and reboot request.</li>
-</ol>
-<p><strong>Ansible playbook tasks (executed automatically):</strong></p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Task</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>System environment</td>
-<td>Installation of base packages (curl, git, wget, firmware, gpsd, chrony, tippecanoe, etc.) and directory creation.</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Network configuration</td>
-<td>Deployment of iptables scripts, IPv4 routing enablement, firewall configuration.</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Docker installation</td>
-<td>Installation of Docker and its dependencies.</td>
-</tr>
-<tr>
-<td>4</td>
-<td>GPS configuration</td>
-<td>Configuration of GPSD and Chrony for time synchronization via GPS.</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Management tools</td>
-<td>Installation of rbstatus, services-manager, network-configurator, and service registry.</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Kiwix installation</td>
-<td>Deployment of the Kiwix Docker container.</td>
-</tr>
-<tr>
-<td>7</td>
-<td>Kiwix download</td>
-<td>Download of Wikipedia ZIM files (FR/EN, according to configuration).</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Wi-Fi access point</td>
-<td>Installation and configuration of the <strong>recoverybox</strong> hotspot (simple-hotspot, hostapd, dnsmasq).</td>
-</tr>
-<tr>
-<td>9</td>
-<td>Apache2</td>
-<td>Installation and configuration of the Apache2 web server <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>10</td>
-<td>PDF Library</td>
-<td>Download of survival documents <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Web Console</td>
-<td>Deployment of ShellInABox <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>12</td>
-<td>TileServer-GL</td>
-<td>Installation of the cartography server and Liberty style <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>13</td>
-<td>Mapping tools</td>
-<td>Installation of Planetiler and the <code>generate-map</code> tool.</td>
-</tr>
-<tr>
-<td>14</td>
-<td>BRouter</td>
-<td>Installation of the routing engine <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>15</td>
-<td>BRouter data</td>
-<td>Download of routing data <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>16</td>
-<td>OpenWebRX Plus</td>
-<td>Deployment of the SDR interface <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>17</td>
-<td>RTL-SDR drivers</td>
-<td>Compilation and installation of RTL-SDR Blog drivers <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>18</td>
-<td>Meshtastic Web Client</td>
-<td>Deployment of the Meshtastic web client <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>19</td>
-<td>Meshtastic Daemon</td>
-<td>Installation of the Python daemon and BRouter integration <em>(conditional)</em>.</td>
-</tr>
-<tr>
-<td>20</td>
-<td>MkDocs</td>
-<td>Deployment of the RecoveryBox technical wiki <em>(conditional)</em>.</td>
-</tr>
-</tbody>
-</table>
-<p>Installation duration depends mainly on the optional downloads selected.</p>
-<p>Without content downloads, installation is generally relatively quick. However, downloading Wikipedia or cartographic data can represent several tens of gigabytes and require several hours depending on the Internet connection.</p>
+<p>The main steps are described on the dedicated <strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong> page.</p>
+<p>Installation duration depends mainly on the optional downloads selected. Without content downloads, installation is generally relatively quick. However, downloading Wikipedia or cartographic data can represent several tens of gigabytes and require several hours depending on the Internet connection.</p>
+<p>Furthermore, generating detailed maps during installation can be very long depending on the machine power and the number of tiles to generate.</p>
 <hr />
 <h1 id="after-installation">After Installation</h1>
 <p>When the installation is complete, a <strong>full reboot</strong> is essential.</p>
@@ -2018,6 +1948,12 @@ systemctl enable systemd-networkd
 <li>applying the full system configuration.</li>
 </ul>
 <p>Once the system has rebooted, RecoveryBox is accessible via the <strong>recoverybox</strong> Wi-Fi access point and through the installed web services.</p>
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong> — Complete documentation of the main installation script (modes, configuration, troubleshooting)</li>
+<li><strong><a href="../rb-update/">rb-update</a></strong> — Automated RecoveryBox update script</li>
+</ul>
 
 
 

@@ -6,15 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Automated RecoveryBox update script via GitHub.">
       
       
-        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/system-tools/">
+      
+        <link rel="canonical" href="http://recovery.box/wiki/en/admin/rb-update/">
       
       
-        <link rel="prev" href="../meshtastic-daemon/">
+        <link rel="prev" href="../debug/">
       
       
-        <link rel="next" href="../debug/">
+        <link rel="next" href="../ansible-variables/">
       
       
         
@@ -29,7 +31,7 @@
     
     
       
-        <title>Outils système - RecoveryBox Wiki</title>
+        <title>rb-update - RecoveryBox Wiki</title>
       
     
     
@@ -82,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#outils-systeme" class="md-skip">
+        <a href="#rb-update" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Outils système
+              rb-update
             
           </span>
         </div>
@@ -270,13 +272,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../fr/" class="md-tabs__link">
           
   
   
@@ -292,11 +292,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../en/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -384,29 +386,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -424,7 +421,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -442,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../fr/" class="md-nav__link">
         
   
   
@@ -470,7 +467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/" class="md-nav__link">
+      <a href="../../../fr/quickstart/" class="md-nav__link">
         
   
   
@@ -548,6 +545,716 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../fr/services/hotspot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hotspot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/carto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cartographie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/kiwix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kiwix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Librairie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/meshtastic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/owrx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenWebRX +
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/services/console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    admin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    admin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/rbstatus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rbstatus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/generate-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generate-map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/network-configurator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network-Configurator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Réseau
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/meshtastic-daemon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meshtastic-Daemon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/system-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Outils système
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/rb-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mise à jour (rb-update)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fr/admin/ansible-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Services
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../services/hotspot/" class="md-nav__link">
         
   
@@ -583,7 +1290,7 @@
   <span class="md-ellipsis">
     
   
-    Cartographie
+    Cartography
   
 
     
@@ -639,7 +1346,7 @@
   <span class="md-ellipsis">
     
   
-    Librairie
+    Library
   
 
     
@@ -765,10 +1472,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
             
   
   
@@ -786,8 +1493,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -923,7 +1630,7 @@
   <span class="md-ellipsis">
     
   
-    Réseau
+    Network
   
 
     
@@ -969,44 +1676,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Outils système
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../system-tools/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Outils système
+    System Tools
   
 
     
@@ -1015,93 +1695,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GPSD
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="GPSD">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Chrony
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Chrony">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Driver RTLSDR
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1139,102 +1732,26 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../rb-update/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
     
   
-    Mise à jour (rb-update)
-  
-
-    
-  </span>
   
   
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ansible-variables/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Variables Ansible
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
+    <li class="md-nav__item md-nav__item--active">
       
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
   
   
   <span class="md-ellipsis">
     
   
-    Documentation (EN)
+    Update (rb-update)
   
 
     
@@ -1242,612 +1759,10 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Documentation (EN)
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/quickstart/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Services
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Services
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/hotspot/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Hotspot
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/carto/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cartography
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/kiwix/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kiwix
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/library/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Library
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/meshtastic/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Meshtastic
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/owrx/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    OpenWebRX +
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/services/console/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Console
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    admin
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_4">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    admin
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/install/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/rbstatus/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Rbstatus
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/generate-map/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Generate-map
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/network-configurator/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Network-Configurator
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/network/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Network
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/meshtastic-daemon/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Meshtastic-Daemon
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/system-tools/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    System Tools
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/debug/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Debug
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../en/admin/rb-update/" class="md-nav__link">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1863,6 +1778,181 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-update-major-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Update (Major Version)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minor-update-1x-patch-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minor Update (1.x Patch Releases)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-update-system-recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Update (System + RecoveryBox)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-version-check-check_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Version Check (Check_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-download-download_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Download (Download_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optional-system-update-update_system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optional System Update (Update_System)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-apply-update-update_recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Apply Update (Update_RecoveryBox)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1875,7 +1965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../en/admin/ansible-variables/" class="md-nav__link">
+      <a href="../ansible-variables/" class="md-nav__link">
         
   
   
@@ -1938,22 +2028,66 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GPSD
+        Overview
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="GPSD">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Guide">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
+  <a href="#standard-update-major-version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        Standard Update (Major Version)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minor-update-1x-patch-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minor Update (1.x Patch Releases)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-update-system-recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Update (System + RecoveryBox)
       
     </span>
   </a>
@@ -1966,22 +2100,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
+  <a href="#detailed-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Chrony
+        Detailed Workflow
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Chrony">
+    <nav class="md-nav" aria-label="Detailed Workflow">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
+  <a href="#1-version-check-check_update" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        1. Version Check (Check_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-download-download_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Download (Download_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optional-system-update-update_system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optional System Update (Update_System)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-apply-update-update_recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Apply Update (Update_RecoveryBox)
       
     </span>
   </a>
@@ -1994,10 +2161,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
+  <a href="#common-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Driver RTLSDR
+        Common Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Files
       
     </span>
   </a>
@@ -2024,26 +2202,188 @@
   
 
 
-<h1 id="outils-systeme">Outils système</h1>
-<h2 id="gpsd">GPSD</h2>
-<p>Le service gpsd permet de gérer la communication avec le GPS et de fournir les informations de position et de temps aux applications qui en ont besoin. Il est configuré pour écouter sur le port 2947 et peut être interrogé par des clients compatibles avec le protocole gpsd.</p>
-<p>Ce service est automatiquement installé et démarré qu'un GPS soit présent ou non sur la RecoveryBox. Le service est conffiguré pour se lancer même si aucune application ne l'intéroge. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.</p>
-<h3 id="fichier-de-configuration">Fichier de configuration</h3>
-<pre><code>/etc/default/gpsd
+<h1 id="rb-update">rb-update</h1>
+<h2 id="overview">Overview</h2>
+<p><code>rb-update</code> is a utility script that automates <strong>RecoveryBox</strong> updates by checking the latest version available on GitHub, downloading it, and re-running the installation script.</p>
+<p>It is deployed by Ansible to <code>/usr/local/bin/rb-update.sh</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Root execution required</p>
+<p>The script <strong>must be run as root</strong> (<code>sudo rb-update.sh</code>). It does not explicitly check UID but <code>apt</code>, <code>git</code>, and the <code>RecoveryBox_install.sh</code> call all require root privileges.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Reboot may be required</p>
+<p>Depending on applied updates (kernel, systemd-networkd, Docker, etc.), a <strong>reboot may be necessary</strong> after the update completes.</p>
+</div>
+<hr />
+<h2 id="execution-modes">Execution Modes</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Major update (default)</strong></td>
+<td><code>sudo rb-update.sh</code></td>
+<td>Checks latest GitHub <em>release</em> (<code>latest</code> tag)</td>
+</tr>
+<tr>
+<td><strong>Minor update</strong></td>
+<td><code>sudo rb-update.sh --minor</code></td>
+<td>Checks latest <code>1.x</code> branch tag. Gets latest patches</td>
+</tr>
+<tr>
+<td><strong>Full system + RB update</strong></td>
+<td><code>sudo rb-update.sh --full</code></td>
+<td>Updates Debian packages (<code>apt upgrade</code>) <strong>then</strong> RecoveryBox</td>
+</tr>
+<tr>
+<td><strong>Minor + full</strong></td>
+<td><code>sudo rb-update.sh --minor --full</code></td>
+<td>Combines <code>--minor</code> and <code>--full</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Options <code>--minor</code> and <code>--full</code> are cumulative and can be combined in any order.</p>
+</div>
+<hr />
+<h2 id="usage-guide">Usage Guide</h2>
+<h3 id="standard-update-major-version">Standard Update (Major Version)</h3>
+<pre><code class="language-bash">sudo rb-update.sh
 </code></pre>
-<h2 id="chrony">Chrony</h2>
-<p>Le service chrony permet de gérer la synchronisation de l'heure du système. Par défaut il utilise des serveurs NTP publics pour se synchroniser. </p>
-<p>Dans la RecoveryBox, chrony est configuré pour utiliser le GPS comme source de temps principale et fournir l'heure exacte aux équipements connectés à la RecoveryBox.</p>
-<h3 id="fichier-de-configuration_1">Fichier de configuration</h3>
-<pre><code>/etc/chrony/000-gps.conf
+<ol>
+<li>Reads current version from <code>/etc/recoverybox/rb_version</code></li>
+<li>Queries GitHub API for latest <code>latest</code> release tag</li>
+<li>If a newer version is available, prompts for confirmation (<code>Y/N</code>)</li>
+<li>Downloads source code (git fetch/reset/checkout or clone if missing)</li>
+<li>Runs <code>RecoveryBox_install.sh</code> (interactive or <code>custom</code> mode depending on <code>/etc/recoverybox/custom_config.yml</code> presence)</li>
+</ol>
+<h3 id="minor-update-1x-patch-releases">Minor Update (1.x Patch Releases)</h3>
+<pre><code class="language-bash">sudo rb-update.sh --minor
 </code></pre>
-<h2 id="driver-rtlsdr">Driver RTLSDR</h2>
+<p>Same as standard mode but targets the latest <code>1.x</code> tag instead of <code>latest</code>. Useful for staying on a stable branch.</p>
+<h3 id="full-update-system-recoverybox">Full Update (System + RecoveryBox)</h3>
+<pre><code class="language-bash">sudo rb-update.sh --full
+</code></pre>
+<p>Adds an <code>apt-get update &amp;&amp; apt-get upgrade -y</code> step <strong>before</strong> the RecoveryBox update. Recommended to apply Debian security patches.</p>
+<hr />
+<h2 id="detailed-workflow">Detailed Workflow</h2>
+<h3 id="1-version-check-check_update">1. Version Check (<code>Check_Update</code>)</h3>
+<ul>
+<li>Reads <code>/etc/recoverybox/rb_version</code> (installed version)</li>
+<li>GitHub API request:</li>
+<li><code>major</code> mode (default): <code>GET /repos/mr-dgidgi/recoverybox/releases/latest</code></li>
+<li><code>minor</code> mode: <code>GET /repos/mr-dgidgi/recoverybox/tags</code> → filters latest <code>1.</code> tag</li>
+<li>Compares versions (string comparison)</li>
+<li>Displays current and available versions</li>
+</ul>
+<h3 id="2-download-download_update">2. Download (<code>Download_Update</code>)</h3>
+<ul>
+<li>Target directory: <code>/root/RecoveryBox</code></li>
+<li>If directory exists: <code>git fetch --all &amp;&amp; git reset --hard &amp;&amp; git checkout &lt;tag&gt;</code></li>
+<li>Otherwise: <code>git clone --depth 1 --branch &lt;tag&gt; https://github.com/mr-dgidgi/recoverybox.git /root/RecoveryBox</code></li>
+</ul>
+<h3 id="3-optional-system-update-update_system">3. Optional System Update (<code>Update_System</code>)</h3>
+<ul>
+<li>If <code>--full</code>: <code>apt-get update -y &amp;&amp; apt-get upgrade -y</code></li>
+<li>Exits on <code>apt</code> failure</li>
+</ul>
+<h3 id="4-apply-update-update_recoverybox">4. Apply Update (<code>Update_RecoveryBox</code>)</h3>
+<ul>
+<li>Executes <code>bash /root/RecoveryBox/RecoveryBox_install.sh</code></li>
+<li>Install script detects existing <code>/etc/recoverybox/rb_version</code> and appends <code>-upgrading</code> suffix</li>
+<li>Re-runs Ansible playbook with existing or interactive configuration</li>
+</ul>
+<hr />
+<h2 id="common-troubleshooting">Common Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Probable Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Current Recovery Box version: 0.0.0</code></td>
+<td><code>rb_version</code> file missing or empty</td>
+<td>Reinstall or create file manually</td>
+</tr>
+<tr>
+<td><code>curl</code> returns empty / timeout</td>
+<td>No Internet / GitHub API blocked</td>
+<td>Check connectivity, DNS, firewall</td>
+</tr>
+<tr>
+<td><code>git checkout</code> fails</td>
+<td>Tag doesn't exist / repo corrupted</td>
+<td>Remove <code>/root/RecoveryBox</code> and re-run</td>
+</tr>
+<tr>
+<td><code>apt-get upgrade</code> fails (<code>--full</code>)</td>
+<td>Package conflict / dpkg lock</td>
+<td><code>dpkg --configure -a &amp;&amp; apt --fix-broken install</code> then retry</td>
+</tr>
+<tr>
+<td><code>RecoveryBox_install.sh</code> not found</td>
+<td>Failed clone / wrong tag</td>
+<td>Check <code>/root/RecoveryBox</code>, delete and retry</td>
+</tr>
+<tr>
+<td>Script says no update available</td>
+<td>Already at latest version</td>
+<td>Normal behavior, nothing to do</td>
+</tr>
+<tr>
+<td>Ansible playbook fails</td>
+<td>Docker, network, config error</td>
+<td>See <strong><a href="../debug/">Debug</a></strong> or <strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong> documentation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="related-files">Related Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/local/bin/rb-update.sh</code></td>
+<td>Main script (managed by Ansible)</td>
+</tr>
+<tr>
+<td><code>/etc/recoverybox/rb_version</code></td>
+<td>Installed version (written by <code>RecoveryBox_install.sh</code>)</td>
+</tr>
+<tr>
+<td><code>/etc/recoverybox/custom_config.yml</code></td>
+<td>User config (re-applied on update)</td>
+</tr>
+<tr>
+<td><code>/root/RecoveryBox/</code></td>
+<td>Git clone of repository (update source)</td>
+</tr>
+</tbody>
+</table>
 
 
 
 
 
 
+
+  
+  
 
 
 

@@ -89,7 +89,7 @@ mkdir /data
 4. Clonez le dépôt du projet :
 
 ```bash
-git clone https://github.com/mr-dgidgi/RecoveryBox.git
+git clone --branch {{ rb_version }} https://github.com/mr-dgidgi/RecoveryBox.git
 ```
 
 5. Lancez le programme d'installation :

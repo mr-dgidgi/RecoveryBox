@@ -6,15 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Script de mise à jour automatisée de la RecoveryBox via GitHub.">
       
       
-        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/system-tools/">
+      
+        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/rb-update/">
       
       
-        <link rel="prev" href="../meshtastic-daemon/">
+        <link rel="prev" href="../debug/">
       
       
-        <link rel="next" href="../debug/">
+        <link rel="next" href="../ansible-variables/">
       
       
         
@@ -29,7 +31,7 @@
     
     
       
-        <title>Outils système - RecoveryBox Wiki</title>
+        <title>rb-update - RecoveryBox Wiki</title>
       
     
     
@@ -82,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#outils-systeme" class="md-skip">
+        <a href="#rb-update" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Outils système
+              rb-update
             
           </span>
         </div>
@@ -969,37 +971,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Outils système
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../system-tools/" class="md-nav__link">
         
   
   
@@ -1015,93 +990,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GPSD
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="GPSD">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Chrony
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Chrony">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Driver RTLSDR
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1139,10 +1027,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../rb-update/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mise à jour (rb-update)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1158,6 +1073,181 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Présentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modes-dexecution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes d'exécution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guide-dutilisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guide d'utilisation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Guide d&#39;utilisation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour-standard-version-majeure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour standard (version majeure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour-mineure-correctifs-1x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour mineure (correctifs 1.x)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour-complete-systeme-recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour complète (système + RecoveryBox)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fonctionnement-detaille" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fonctionnement détaillé
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fonctionnement détaillé">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-verification-de-version-check_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Vérification de version (Check_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-telechargement-download_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Téléchargement (Download_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mise-a-jour-systeme-optionnelle-update_system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Mise à jour système optionnelle (Update_System)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-application-de-la-mise-a-jour-update_recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Application de la mise à jour (Update_RecoveryBox)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#depannage-courant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dépannage courant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fichiers-concernes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers concernés
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1938,22 +2028,66 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
+  <a href="#presentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GPSD
+        Présentation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="GPSD">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modes-dexecution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes d'exécution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guide-dutilisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guide d'utilisation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Guide d&#39;utilisation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
+  <a href="#mise-a-jour-standard-version-majeure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        Mise à jour standard (version majeure)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour-mineure-correctifs-1x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour mineure (correctifs 1.x)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour-complete-systeme-recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise à jour complète (système + RecoveryBox)
       
     </span>
   </a>
@@ -1966,22 +2100,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
+  <a href="#fonctionnement-detaille" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Chrony
+        Fonctionnement détaillé
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Chrony">
+    <nav class="md-nav" aria-label="Fonctionnement détaillé">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
+  <a href="#1-verification-de-version-check_update" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        1. Vérification de version (Check_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-telechargement-download_update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Téléchargement (Download_Update)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mise-a-jour-systeme-optionnelle-update_system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Mise à jour système optionnelle (Update_System)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-application-de-la-mise-a-jour-update_recoverybox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Application de la mise à jour (Update_RecoveryBox)
       
     </span>
   </a>
@@ -1994,10 +2161,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
+  <a href="#depannage-courant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Driver RTLSDR
+        Dépannage courant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fichiers-concernes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers concernés
       
     </span>
   </a>
@@ -2024,26 +2202,188 @@
   
 
 
-<h1 id="outils-systeme">Outils système</h1>
-<h2 id="gpsd">GPSD</h2>
-<p>Le service gpsd permet de gérer la communication avec le GPS et de fournir les informations de position et de temps aux applications qui en ont besoin. Il est configuré pour écouter sur le port 2947 et peut être interrogé par des clients compatibles avec le protocole gpsd.</p>
-<p>Ce service est automatiquement installé et démarré qu'un GPS soit présent ou non sur la RecoveryBox. Le service est conffiguré pour se lancer même si aucune application ne l'intéroge. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.</p>
-<h3 id="fichier-de-configuration">Fichier de configuration</h3>
-<pre><code>/etc/default/gpsd
+<h1 id="rb-update">rb-update</h1>
+<h2 id="presentation">Présentation</h2>
+<p><code>rb-update</code> est un script utilitaire qui automatise la mise à jour de la <strong>RecoveryBox</strong> en vérifiant la dernière version disponible sur GitHub, en la téléchargeant et en relançant le script d'installation.</p>
+<p>Il est installé par Ansible sous <code>/usr/local/bin/rb-update.sh</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Exécution en root</p>
+<p>Le script <strong>doit être exécuté en root</strong> (<code>sudo rb-update.sh</code>). Il ne vérifie pas l'UID explicitement mais les opérations <code>apt</code>, <code>git</code> et l'appel à <code>RecoveryBox_install.sh</code> nécessitent les privilèges root.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Redémarrage possible</p>
+<p>Selon les mises à jour appliquées (noyau, systemd-networkd, Docker, etc.), un <strong>redémarrage peut être nécessaire</strong> à l'issue de la mise à jour.</p>
+</div>
+<hr />
+<h2 id="modes-dexecution">Modes d'exécution</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mise à jour majeure (défaut)</strong></td>
+<td><code>sudo rb-update.sh</code></td>
+<td>Vérifie la dernière <em>release</em> GitHub (tag <code>latest</code>)</td>
+</tr>
+<tr>
+<td><strong>Mise à jour mineure</strong></td>
+<td><code>sudo rb-update.sh --minor</code></td>
+<td>Vérifie le dernier tag de la branche <code>1.x</code>. Permet d'obtenir les derniers patchs</td>
+</tr>
+<tr>
+<td><strong>Mise à jour complète système + RB</strong></td>
+<td><code>sudo rb-update.sh --full</code></td>
+<td>Met à jour les paquets Debian (<code>apt upgrade</code>) <strong>puis</strong> RecoveryBox</td>
+</tr>
+<tr>
+<td><strong>Mineure + complète</strong></td>
+<td><code>sudo rb-update.sh --minor --full</code></td>
+<td>Combine <code>--minor</code> et <code>--full</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les options <code>--minor</code> et <code>--full</code> sont cumulatives et peuvent être combinées dans n'importe quel ordre.</p>
+</div>
+<hr />
+<h2 id="guide-dutilisation">Guide d'utilisation</h2>
+<h3 id="mise-a-jour-standard-version-majeure">Mise à jour standard (version majeure)</h3>
+<pre><code class="language-bash">sudo rb-update.sh
 </code></pre>
-<h2 id="chrony">Chrony</h2>
-<p>Le service chrony permet de gérer la synchronisation de l'heure du système. Par défaut il utilise des serveurs NTP publics pour se synchroniser. </p>
-<p>Dans la RecoveryBox, chrony est configuré pour utiliser le GPS comme source de temps principale et fournir l'heure exacte aux équipements connectés à la RecoveryBox.</p>
-<h3 id="fichier-de-configuration_1">Fichier de configuration</h3>
-<pre><code>/etc/chrony/000-gps.conf
+<ol>
+<li>Le script lit la version actuelle dans <code>/etc/recoverybox/rb_version</code></li>
+<li>Interroge l'API GitHub pour récupérer le dernier tag <code>latest</code></li>
+<li>Si une nouvelle version est disponible, demande confirmation (<code>Y/N</code>)</li>
+<li>Télécharge le code source (git fetch/reset/checkout ou clone si absent)</li>
+<li>Lance <code>RecoveryBox_install.sh</code> (mode interactif ou <code>custom</code> selon la présence de <code>/etc/recoverybox/custom_config.yml</code>)</li>
+</ol>
+<h3 id="mise-a-jour-mineure-correctifs-1x">Mise à jour mineure (correctifs 1.x)</h3>
+<pre><code class="language-bash">sudo rb-update.sh --minor
 </code></pre>
-<h2 id="driver-rtlsdr">Driver RTLSDR</h2>
+<p>Identique au mode standard mais cible le dernier tag <code>1.x</code> au lieu du <code>latest</code>. Utile pour rester sur une branche stable.</p>
+<h3 id="mise-a-jour-complete-systeme-recoverybox">Mise à jour complète (système + RecoveryBox)</h3>
+<pre><code class="language-bash">sudo rb-update.sh --full
+</code></pre>
+<p>Ajoute une étape <code>apt-get update &amp;&amp; apt-get upgrade -y</code> <strong>avant</strong> la mise à jour RecoveryBox. Recommandé pour appliquer les correctifs de sécurité Debian.</p>
+<hr />
+<h2 id="fonctionnement-detaille">Fonctionnement détaillé</h2>
+<h3 id="1-verification-de-version-check_update">1. Vérification de version (<code>Check_Update</code>)</h3>
+<ul>
+<li>Lit <code>/etc/recoverybox/rb_version</code> (version installée)</li>
+<li>Requête GitHub API :</li>
+<li>Mode <code>major</code> (défaut) : <code>GET /repos/mr-dgidgi/recoverybox/releases/latest</code></li>
+<li>Mode <code>minor</code> : <code>GET /repos/mr-dgidgi/recoverybox/tags</code> → filtre tag <code>1.</code> le plus récent</li>
+<li>Compare les versions (chaîne de caractères)</li>
+<li>Affiche la version actuelle et la version disponible</li>
+</ul>
+<h3 id="2-telechargement-download_update">2. Téléchargement (<code>Download_Update</code>)</h3>
+<ul>
+<li>Répertoire cible : <code>/root/RecoveryBox</code></li>
+<li>Si le dossier existe : <code>git fetch --all &amp;&amp; git reset --hard &amp;&amp; git checkout &lt;tag&gt;</code></li>
+<li>Sinon : <code>git clone --depth 1 --branch &lt;tag&gt; https://github.com/mr-dgidgi/recoverybox.git /root/RecoveryBox</code></li>
+</ul>
+<h3 id="3-mise-a-jour-systeme-optionnelle-update_system">3. Mise à jour système optionnelle (<code>Update_System</code>)</h3>
+<ul>
+<li>Si <code>--full</code> : <code>apt-get update -y &amp;&amp; apt-get upgrade -y</code></li>
+<li>Échoue si <code>apt</code> retourne une erreur (sortie du script)</li>
+</ul>
+<h3 id="4-application-de-la-mise-a-jour-update_recoverybox">4. Application de la mise à jour (<code>Update_RecoveryBox</code>)</h3>
+<ul>
+<li>Exécute <code>bash /root/RecoveryBox/RecoveryBox_install.sh</code></li>
+<li>Le script d'installation détecte <code>/etc/recoverybox/rb_version</code> existant et ajoute le suffixe <code>-upgrading</code></li>
+<li>Relance le playbook Ansible avec la configuration existante ou interactive</li>
+</ul>
+<hr />
+<h2 id="depannage-courant">Dépannage courant</h2>
+<table>
+<thead>
+<tr>
+<th>Symptôme</th>
+<th>Cause probable</th>
+<th>Résolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Current Recovery Box version: 0.0.0</code></td>
+<td>Fichier <code>rb_version</code> absent ou vide</td>
+<td>Réinstaller ou créer le fichier manuellement</td>
+</tr>
+<tr>
+<td><code>curl</code> retourne vide / timeout</td>
+<td>Pas d'accès Internet / API GitHub bloquée</td>
+<td>Vérifier connexion, DNS, pare-feu</td>
+</tr>
+<tr>
+<td><code>git checkout</code> échoue</td>
+<td>Tag inexistant / repo corrompu</td>
+<td>Supprimer <code>/root/RecoveryBox</code> et relancer</td>
+</tr>
+<tr>
+<td><code>apt-get upgrade</code> échoue (mode <code>--full</code>)</td>
+<td>Conflit paquets / verrou dpkg</td>
+<td><code>dpkg --configure -a &amp;&amp; apt --fix-broken install</code> puis relancer</td>
+</tr>
+<tr>
+<td><code>RecoveryBox_install.sh</code> non trouvé</td>
+<td>Clone raté / mauvais tag</td>
+<td>Vérifier <code>/root/RecoveryBox</code>, supprimer et relancer</td>
+</tr>
+<tr>
+<td>Le script ne propose pas de mise à jour</td>
+<td>Version déjà à jour</td>
+<td>Comportement normal, rien à faire</td>
+</tr>
+<tr>
+<td>Échec dans le playbook Ansible</td>
+<td>Erreur Docker, réseau, config</td>
+<td>Voir documentation <strong><a href="../debug/">Debug</a></strong> ou <strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="fichiers-concernes">Fichiers concernés</h2>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/local/bin/rb-update.sh</code></td>
+<td>Script principal (géré par Ansible)</td>
+</tr>
+<tr>
+<td><code>/etc/recoverybox/rb_version</code></td>
+<td>Version installée (écrit par <code>RecoveryBox_install.sh</code>)</td>
+</tr>
+<tr>
+<td><code>/etc/recoverybox/custom_config.yml</code></td>
+<td>Configuration utilisateur (rejouée à la mise à jour)</td>
+</tr>
+<tr>
+<td><code>/root/RecoveryBox/</code></td>
+<td>Clone Git du dépôt (source de mise à jour)</td>
+</tr>
+</tbody>
+</table>
 
 
 
 
 
 
+
+  
+  
 
 
 

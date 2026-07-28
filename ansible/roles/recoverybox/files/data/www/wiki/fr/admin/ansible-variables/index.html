@@ -6,15 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Documentation des variables personnalisables via /etc/recoverybox/custom_config.yml pour la RecoveryBox.">
       
       
-        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/system-tools/">
+      
+        <link rel="canonical" href="http://recovery.box/wiki/fr/admin/ansible-variables/">
       
       
-        <link rel="prev" href="../meshtastic-daemon/">
+        <link rel="prev" href="../rb-update/">
       
       
-        <link rel="next" href="../debug/">
+        <link rel="next" href="../../../en/">
       
       
         
@@ -29,7 +31,7 @@
     
     
       
-        <title>Outils système - RecoveryBox Wiki</title>
+        <title>Variables Ansible personnalisées - RecoveryBox Wiki</title>
       
     
     
@@ -82,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#outils-systeme" class="md-skip">
+        <a href="#variables-ansible-personnalisees" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Outils système
+              Variables Ansible personnalisées
             
           </span>
         </div>
@@ -969,37 +971,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Outils système
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../system-tools/" class="md-nav__link">
         
   
   
@@ -1015,93 +990,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GPSD
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="GPSD">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Chrony
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Chrony">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fichier de configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Driver RTLSDR
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1167,10 +1055,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ansible-variables/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables Ansible
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1186,6 +1101,214 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Présentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-du-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure du fichier
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liste-complete-des-variables-personnalisables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liste complète des variables personnalisables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Liste complète des variables personnalisables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#versions-des-composants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Versions des composants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activationdesactivation-des-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activation/désactivation des services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces-reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interfaces réseau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-du-hotspot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration du Hotspot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-meshtastic-nud-externe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Meshtastic (nœud externe)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#telechargements-kiwix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Téléchargements Kiwix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#telechargements-cartographiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Téléchargements cartographiques
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemple-complet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemple complet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilisation-avec-recoverybox_installsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilisation avec RecoveryBox_install.sh
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilisation avec RecoveryBox_install.sh">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generer-le-fichier-mode-interactif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Générer le fichier (mode interactif)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-avec-config-existante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation avec config existante
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-complete-genere-applique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation complète (génère + applique)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonnes-pratiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonnes pratiques
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1938,22 +2061,110 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gpsd" class="md-nav__link">
+  <a href="#presentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GPSD
+        Présentation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="GPSD">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-du-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure du fichier
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liste-complete-des-variables-personnalisables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liste complète des variables personnalisables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Liste complète des variables personnalisables">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration" class="md-nav__link">
+  <a href="#versions-des-composants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        Versions des composants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activationdesactivation-des-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activation/désactivation des services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces-reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interfaces réseau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-du-hotspot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration du Hotspot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-meshtastic-nud-externe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Meshtastic (nœud externe)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#telechargements-kiwix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Téléchargements Kiwix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#telechargements-cartographiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Téléchargements cartographiques
       
     </span>
   </a>
@@ -1966,22 +2177,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chrony" class="md-nav__link">
+  <a href="#exemple-complet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Chrony
+        Exemple complet
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Chrony">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilisation-avec-recoverybox_installsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilisation avec RecoveryBox_install.sh
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilisation avec RecoveryBox_install.sh">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fichier-de-configuration_1" class="md-nav__link">
+  <a href="#generer-le-fichier-mode-interactif" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fichier de configuration
+        Générer le fichier (mode interactif)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-avec-config-existante" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation avec config existante
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation-complete-genere-applique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation complète (génère + applique)
       
     </span>
   </a>
@@ -1994,10 +2238,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#driver-rtlsdr" class="md-nav__link">
+  <a href="#bonnes-pratiques" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Driver RTLSDR
+        Bonnes pratiques
       
     </span>
   </a>
@@ -2024,26 +2268,446 @@
   
 
 
-<h1 id="outils-systeme">Outils système</h1>
-<h2 id="gpsd">GPSD</h2>
-<p>Le service gpsd permet de gérer la communication avec le GPS et de fournir les informations de position et de temps aux applications qui en ont besoin. Il est configuré pour écouter sur le port 2947 et peut être interrogé par des clients compatibles avec le protocole gpsd.</p>
-<p>Ce service est automatiquement installé et démarré qu'un GPS soit présent ou non sur la RecoveryBox. Le service est conffiguré pour se lancer même si aucune application ne l'intéroge. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.</p>
-<h3 id="fichier-de-configuration">Fichier de configuration</h3>
-<pre><code>/etc/default/gpsd
+<h1 id="variables-ansible-personnalisees">Variables Ansible personnalisées</h1>
+<h2 id="presentation">Présentation</h2>
+<p>Le fichier <strong><code>/etc/recoverybox/custom_config.yml</code></strong> permet de personnaliser le déploiement Ansible de la RecoveryBox sans modifier les fichiers du rôle.</p>
+<p>Ce fichier est <strong>géré automatiquement</strong> par le script <strong><a href="../RecoveryBox_install/">RecoveryBox_install.sh</a></strong> lors de la configuration interactive. Il est ensuite passé en <code>extra-vars</code> au playbook Ansible (<code>ansible/Install.yml</code>).</p>
+<blockquote>
+<p><strong>Note</strong> : Vous pouvez aussi créer/modifier ce fichier manuellement avant de lancer une installation en mode <code>custom</code> (<code>sudo ./RecoveryBox_install.sh custom</code>).</p>
+</blockquote>
+<hr />
+<h2 id="structure-du-fichier">Structure du fichier</h2>
+<p>Le fichier doit contenir un dictionnaire YAML avec les variables à surcharger. Exemple minimal :</p>
+<pre><code class="language-yaml"># /etc/recoverybox/custom_config.yml
+recoverybox_enable_kiwix: false
+recoverybox_hotspot_conf:
+  ssid: &quot;mon-recoverybox&quot;
+  password: &quot;motdepasse123&quot;
 </code></pre>
-<h2 id="chrony">Chrony</h2>
-<p>Le service chrony permet de gérer la synchronisation de l'heure du système. Par défaut il utilise des serveurs NTP publics pour se synchroniser. </p>
-<p>Dans la RecoveryBox, chrony est configuré pour utiliser le GPS comme source de temps principale et fournir l'heure exacte aux équipements connectés à la RecoveryBox.</p>
-<h3 id="fichier-de-configuration_1">Fichier de configuration</h3>
-<pre><code>/etc/chrony/000-gps.conf
+<hr />
+<h2 id="liste-complete-des-variables-personnalisables">Liste complète des variables personnalisables</h2>
+<h3 id="versions-des-composants">Versions des composants</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>recoverybox_version_library</code></td>
+<td><code>"1.1.0"</code></td>
+<td>Version de la bibliothèque RecoveryBox (GitHub releases)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_fonts</code></td>
+<td><code>"master"</code></td>
+<td>Version des polices (branche Git)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_rtlsdr</code></td>
+<td><code>"v1.3.6"</code></td>
+<td>Version RTL-SDR Blog (tag Git)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_brouter_container</code></td>
+<td><code>"v1.7.9"</code></td>
+<td>Version du conteneur BRouter (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_brouter_web</code></td>
+<td><code>"0.18.1"</code></td>
+<td>Version interface web BRouter (GitHub releases)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_meshtastic_web</code></td>
+<td><code>"2.7.1"</code></td>
+<td>Version client web Meshtastic (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_kiwix</code></td>
+<td><code>"3.8.2"</code></td>
+<td>Version Kiwix-serve (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_simple_hotspot</code></td>
+<td><code>"1.0"</code></td>
+<td>Version simple-hotspot (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_owrx</code></td>
+<td><code>"1.2.118"</code></td>
+<td>Version OpenWebRX+ (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_tileserver</code></td>
+<td><code>"v5.6.0"</code></td>
+<td>Version TileServer-GL (Docker)</td>
+</tr>
+<tr>
+<td><code>recoverybox_version_planetiler</code></td>
+<td><code>"0.10.2"</code></td>
+<td>Version Planetiler (Docker)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Attention</p>
+<p>Ne modifiez ces versions que si vous avez une raison précise (compatibilité, bug connu). Les versions listées sont testées et validées, si la version que vous souhaitez utiliser est différente, vérifiez avec <code>rb-update</code> qu'il n'y a pas une nouvelle version de RecoveryBox qui inclut cette modification.</p>
+</div>
+<hr />
+<h3 id="activationdesactivation-des-services">Activation/désactivation des services</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>recoverybox_enable_apache</code></td>
+<td><code>true</code></td>
+<td>Active Apache2 (requis pour Library, Console, Kiwix web)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_library</code></td>
+<td><code>true</code></td>
+<td>Active la bibliothèque PDF locale (nécessite Apache)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_owrx</code></td>
+<td><code>true</code></td>
+<td>Active OpenWebRX+ (SDR web)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_brouter</code></td>
+<td><code>true</code></td>
+<td>Active BRouter (moteur de routage hors-ligne)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_tileserver</code></td>
+<td><code>true</code></td>
+<td>Active TileServer-GL (serveur tuiles vectorielles OSM)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_console</code></td>
+<td><code>true</code></td>
+<td>Active la console web d'administration (ShellInABox)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_kiwix</code></td>
+<td><code>true</code></td>
+<td>Active Kiwix (Wikipédia hors-ligne)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_meshtastic</code></td>
+<td><code>true</code></td>
+<td>Active les services Meshtastic (web client + daemon)</td>
+</tr>
+<tr>
+<td><code>recoverybox_enable_hotspot</code></td>
+<td><code>true</code></td>
+<td>Active le point d'accès Wi-Fi (hotspot)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si <code>recoverybox_enable_apache: false</code>, l'ensemble des services web seront automatiquement désactivés par le playbook.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Attention</p>
+<p>Si <code>recoverybox_enable_hotspot: false</code>, le point d'accès Wi-Fi ne sera pas créé et l'ensemble des services sera inaccessible.</p>
+</div>
+<hr />
+<h3 id="interfaces-reseau">Interfaces réseau</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>recoverybox_interface_wlanap</code></td>
+<td><code>"wlanAP"</code></td>
+<td>Nom de l'interface Wi-Fi renommée pour le hotspot</td>
+</tr>
+<tr>
+<td><code>recoverybox_interface_wan</code></td>
+<td><code>"Wan"</code></td>
+<td>Nom du bridge WAN (côté Internet)</td>
+</tr>
+<tr>
+<td><code>recoverybox_interface_lan</code></td>
+<td><code>"Lan"</code></td>
+<td>Nom du bridge LAN (côté local + hotspot)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="configuration-du-hotspot">Configuration du Hotspot</h3>
+<p>Objet <code>recoverybox_hotspot_conf</code> avec les clés suivantes :</p>
+<table>
+<thead>
+<tr>
+<th>Clé</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ssid</code></td>
+<td><code>"recoverybox"</code></td>
+<td>Nom du réseau Wi-Fi (SSID)</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>"recoverybox"</code></td>
+<td>Clé WPA2-PSK (8 à 63 caractères)</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>"g"</code></td>
+<td>Mode PHY : <code>g</code> (2.4 GHz), <code>a</code> (5 GHz), <code>acs</code> (auto)</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>"11"</code></td>
+<td>Canal Wi-Fi (ex: <code>1</code>, <code>6</code>, <code>11</code>, <code>36</code>, <code>0</code> pour auto/ACS)</td>
+</tr>
+<tr>
+<td><code>auth_algs</code></td>
+<td><code>"1"</code></td>
+<td>Algorithmes d'authentification (1 = Open System)</td>
+</tr>
+<tr>
+<td><code>wpa</code></td>
+<td><code>"2"</code></td>
+<td>Version WPA (2 = WPA2)</td>
+</tr>
+<tr>
+<td><code>wpa_key_mgmt</code></td>
+<td><code>"WPA-PSK"</code></td>
+<td>Gestion des clés</td>
+</tr>
+<tr>
+<td><code>wpa_pairwise</code></td>
+<td><code>"TKIP CCMP"</code></td>
+<td>Chiffrement pairwise</td>
+</tr>
+<tr>
+<td><code>rsn_pairwise</code></td>
+<td><code>"CCMP"</code></td>
+<td>Chiffrement RSN (WPA2)</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td><code>"192.168.200.0"</code></td>
+<td>Réseau IP du hotspot</td>
+</tr>
+<tr>
+<td><code>mask</code></td>
+<td><code>"24"</code></td>
+<td>Masque de sous-réseau (CIDR)</td>
+</tr>
+<tr>
+<td><code>ip</code></td>
+<td><code>"192.168.200.1"</code></td>
+<td>IP passerelle du hotspot</td>
+</tr>
+<tr>
+<td><code>dhcp_range_start</code></td>
+<td><code>"192.168.200.100"</code></td>
+<td>Début plage DHCP</td>
+</tr>
+<tr>
+<td><code>dhcp_range_end</code></td>
+<td><code>"192.168.200.200"</code></td>
+<td>Fin plage DHCP</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Important</strong> : L'interface Wi-Fi doit supporter le mode AP pour le canal et le mode choisis.</p>
+</blockquote>
+<hr />
+<h3 id="configuration-meshtastic-nud-externe">Configuration Meshtastic (nœud externe)</h3>
+<p>Objet <code>recoverybox_meshtastic_node</code> :</p>
+<table>
+<thead>
+<tr>
+<th>Clé</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mac</code></td>
+<td><code>"00:00:00:00:00:00"</code></td>
+<td>Adresse MAC du nœud Meshtastic (pour réservation DHCP statique)</td>
+</tr>
+<tr>
+<td><code>ip</code></td>
+<td><code>"192.168.200.101"</code></td>
+<td>IP fixe attribuée au nœud Meshtastic</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Utilisé uniquement si <code>recoverybox_enable_meshtastic: true</code> et qu'un nœud physique est connecté.</p>
+</blockquote>
+<hr />
+<h3 id="telechargements-kiwix">Téléchargements Kiwix</h3>
+<p>Liste <code>recoverybox_kiwix_files</code> (chaque élément est un objet) :</p>
+<table>
+<thead>
+<tr>
+<th>Clé</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>category</code></td>
+<td>Catégorie : <code>wikipedia</code>, <code>maps</code>, <code>wikivoyage</code>, <code>ted</code>, <code>stackexchange</code>, etc.</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>Code langue ISO 639-1 : <code>fr</code>, <code>en</code>, <code>es</code>, <code>de</code>, etc.</td>
+</tr>
+<tr>
+<td><code>enable</code></td>
+<td><code>true</code>/<code>false</code> pour activer ce téléchargement</td>
+</tr>
+<tr>
+<td><code>arg</code></td>
+<td>Variante : <code>all_mini</code>, <code>all_nopic</code>, <code>all_maxi</code> (voir <a href="https://lb.download.kiwix.org/zim/">download.kiwix.org</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>Exemple :</p>
+<pre><code class="language-yaml">recoverybox_kiwix_files:
+  - category: wikipedia
+    language: fr
+    enable: true
+    arg: &quot;all_nopic&quot;
+  - category: wikipedia
+    language: en
+    enable: true
+    arg: &quot;all_nopic&quot;
+  - category: maps
+    language: en
+    enable: false
+    arg: &quot;france&quot;
 </code></pre>
-<h2 id="driver-rtlsdr">Driver RTLSDR</h2>
+<hr />
+<h3 id="telechargements-cartographiques">Téléchargements cartographiques</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Défaut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>recoverybox_download_brouter</code></td>
+<td><code>true</code></td>
+<td>Télécharge les segments BRouter (routing vélo/rando/voiture)</td>
+</tr>
+<tr>
+<td><code>recoverybox_download_mbtiles</code></td>
+<td><code>true</code></td>
+<td>Télécharge <code>world.mbtiles</code> pour TileServer-GL (carte monde)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Attention</strong> : Ces téléchargements peuvent représenter plusieurs Go. Désactivez (<code>false</code>) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.</p>
+</blockquote>
+<hr />
+<h2 id="exemple-complet">Exemple complet</h2>
+<pre><code class="language-yaml"># /etc/recoverybox/custom_config.yml
+# Exemple de configuration personnalisée
+
+# Versions (optionnel - gardez les défauts sauf besoin spécifique)
+# recoverybox_version_brouter_container: &quot;v1.7.9&quot;
+
+# Services : on désactive Kiwix et OpenWebRX pour gagner de la place
+recoverybox_enable_kiwix: false
+recoverybox_enable_owrx: false
+
+# Hotspot personnalisé
+recoverybox_hotspot_conf:
+  ssid: &quot;RecoveryBox-MonSite&quot;
+  password: &quot;PassSecurise123!&quot;
+  mode: &quot;g&quot;
+  channel: &quot;6&quot;
+  network: &quot;10.0.0.0&quot;
+  mask: &quot;24&quot;
+  ip: &quot;10.0.0.1&quot;
+  dhcp_range_start: &quot;10.0.0.50&quot;
+  dhcp_range_end: &quot;10.0.0.150&quot;
+
+# Nœud Meshtastic connecté en USB/Ethernet
+recoverybox_meshtastic_node:
+  mac: &quot;aa:bb:cc:dd:ee:ff&quot;
+  ip: &quot;10.0.0.10&quot;
+
+# Kiwix : seulement Wikipédia FR sans images
+recoverybox_kiwix_files:
+  - category: wikipedia
+    language: fr
+    enable: true
+    arg: &quot;all_nopic&quot;
+
+# Pas de téléchargement cartes (bande passante limitée)
+recoverybox_download_brouter: false
+recoverybox_download_mbtiles: false
+</code></pre>
+<hr />
+<h2 id="utilisation-avec-recoverybox_installsh">Utilisation avec RecoveryBox_install.sh</h2>
+<h3 id="generer-le-fichier-mode-interactif">Générer le fichier (mode interactif)</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh config
+</code></pre>
+<p>→ Lance uniquement le menu de configuration et écrit <code>/etc/recoverybox/custom_config.yml</code></p>
+<h3 id="installation-avec-config-existante">Installation avec config existante</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh custom
+</code></pre>
+<p>→ Utilise le fichier existant, saute le menu, lance directement le playbook Ansible</p>
+<h3 id="installation-complete-genere-applique">Installation complète (génère + applique)</h3>
+<pre><code class="language-bash">sudo ./RecoveryBox_install.sh
+</code></pre>
+<p>→ Menu interactif → écrit <code>custom_config.yml</code> → lance Ansible</p>
+<hr />
+<h2 id="bonnes-pratiques">Bonnes pratiques</h2>
+<ol>
+<li><strong>Ne modifiez pas</strong> les fichiers du rôle (<code>ansible/roles/recoverybox/defaults/main.yml</code>) — ils sont gérés par Git/Ansible et seront écrasés.</li>
+<li><strong>Utilisez uniquement</strong> <code>/etc/recoverybox/custom_config.yml</code> pour vos surcharges.</li>
+<li><strong>Validez la syntaxe YAML</strong> avant de lancer l'installation :
+   <code>bash
+   python3 -c "import yaml; yaml.safe_load(open('/etc/recoverybox/custom_config.yml'))"</code></li>
+</ol>
+<hr />
 
 
 
 
 
 
+
+  
+  
 
 
 
