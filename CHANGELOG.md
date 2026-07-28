@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.2] - 2026-07-28
+
+### Added
+
+### Fixed
+
+### Changed
+- `rb-library` updated to version 1.1.0 with UI matching the RecoveryBox theme.
+
 ## [1.4.1] - 2026-07-27
 
 ### Added
