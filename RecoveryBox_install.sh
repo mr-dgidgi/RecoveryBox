@@ -142,6 +142,25 @@ install_ansible() {
 
 #######################################################
 
+create_virtualenv() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Creating Python virtual environment..." "$MSGNC"
+    apt-get install -y -qq python3-venv python3-pip > /dev/null
+
+    if ! python3 -m venv /data/recoverybox_env; then
+        echo -e "$MSGRED" "$SRVMSG" "Failed to create Python virtual environment.${MSGNC}"
+        exit 1
+    fi
+
+    if ! /data/recoverybox_env/bin/pip install --upgrade pip > /dev/null; then
+        echo -e "$MSGRED" "$SRVMSG" "Failed to upgrade pip in the virtual environment.${MSGNC}"
+        exit 1
+    fi
+
+    echo -e "$MSGGREEN" "$SRVMSG" "Python virtual environment created successfully.${MSGNC}"
+}
+
+#######################################################
+
 configure_interfaces() {
 
     # set systemd-resolver
@@ -431,6 +450,9 @@ main() {
     fi
     ## Install Ansible prerequisites
     install_ansible
+
+    ## Create virtual environment for python3
+    create_virtualenv
 
     ## Generate the wiki
     "$SCRIPT_DIR/Wiki_Generate.sh"

@@ -1,4 +1,10 @@
 ---
+- name: Install meshtastic python package in virtual environment
+  ansible.builtin.pip:
+    name: meshtastic
+    virtualenv: /data/recoverybox_env
+    state: present
+
 - name: Copy recoverybox-mesh.js to BRouter web directory
   ansible.builtin.copy:
     src: data/brouter/www/recoverybox-mesh.js
