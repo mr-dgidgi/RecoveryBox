@@ -11,6 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs dependencies
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Build wiki with MkDocs
+        run: |
+          mkdocs build -f wiki-sources/mkdocs.yml -d ansible/roles/recoverybox/files/data/www/wiki/
+
       - name: Upload via SFTP
         uses: wangyucode/sftp-upload-action@v3
         with:

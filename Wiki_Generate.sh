@@ -3,6 +3,7 @@
 PATHSOURCES="wiki-sources"
 PATHDESTINATION="../ansible/roles/recoverybox/files/data/www/wiki"
 MKDOCS_PLUGIN="mkdocs-material"
+PATHVENV="/data/recoverybox_env"
 
 print_help() {
     echo "Usage: $0 "
@@ -13,10 +14,10 @@ print_help() {
 
 check_rb_virtualenv() {
     if [[ -z "$VIRTUAL_ENV" ]]; then
-        if [[ -f "/data/meshtastic_env/bin/activate" ]]; then
+        if [[ -f "$PATHVENV/bin/activate" ]]; then
             echo "Activating virtual environment..."
             # shellcheck source=/dev/null
-            source /data/meshtastic_env/bin/activate
+            source "$PATHVENV/bin/activate"
         else
             echo "No virtual environment found. Please create a virtual environment and activate it before running this script."
             exit 1
@@ -47,6 +48,7 @@ main() {
         get_mkdocs
     fi
     generate_wiki
+    deactivate
 }
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then

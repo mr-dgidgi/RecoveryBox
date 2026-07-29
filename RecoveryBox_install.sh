@@ -30,6 +30,7 @@ KIWIXFRWIKIPEDIAARG="all_nopic"
 CUSTOMINSTALL=false
 DOWNLOADMBTILES="true"
 ENABLEHOTSPOT="true"
+ENABLEAPACHE="true"
 
 #######################################################
 # Functions
@@ -137,6 +138,25 @@ install_ansible() {
     fi
 
     echo -e "$MSGGREEN" "$SRVMSG" "Ansible installed successfully.${MSGNC}"
+}
+
+#######################################################
+
+create_virtualenv() {
+    echo -e "$MSGYELLOW" "$SRVMSG" "Creating Python virtual environment..." "$MSGNC"
+    apt-get install -y -qq python3-venv python3-pip > /dev/null
+
+    if ! python3 -m venv /data/recoverybox_env; then
+        echo -e "$MSGRED" "$SRVMSG" "Failed to create Python virtual environment.${MSGNC}"
+        exit 1
+    fi
+
+    if ! /data/recoverybox_env/bin/pip install --upgrade pip > /dev/null; then
+        echo -e "$MSGRED" "$SRVMSG" "Failed to upgrade pip in the virtual environment.${MSGNC}"
+        exit 1
+    fi
+
+    echo -e "$MSGGREEN" "$SRVMSG" "Python virtual environment created successfully.${MSGNC}"
 }
 
 #######################################################
@@ -276,85 +296,68 @@ set_kiwix_files(){
 menu_services() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration menu" "$MSGNC"
 
-    read -rp "Enable Apache web server? yes/no (default : yes) : " QuestionEnableApache
-    QuestionEnableApache=$(yes_no_check "$QuestionEnableApache")
-    if [[ $QuestionEnableApache -eq 0 ]]; then
-        echo -e "$MSGYELLOW" "$SRVMSG" "Apache : disabled." "$MSGNC"
-        EnableApache="false"
+    read -rp "Enable RecoveryBox Library? yes/no (default : yes) : " QuestionEnableLibrary
+    QuestionEnableLibrary=$(yes_no_check "$QuestionEnableLibrary")
+    if [[ $QuestionEnableLibrary -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
         EnableLibrary="false"
-        EnableBrouter="false"
-        EnableTileserver="false"
-        EnableMeshtastic="false"
-        EnableConsole="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Apache : enabled." "$MSGNC"
-        EnableApache="true"
+        echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
+        EnableLibrary="true"
     fi
 
-    if [[ "$EnableApache" == "true" ]]; then
-        read -rp "Enable RecoveryBox Library? yes/no (default : yes) : " QuestionEnableLibrary
-        QuestionEnableLibrary=$(yes_no_check "$QuestionEnableLibrary")
-        if [[ $QuestionEnableLibrary -eq 0 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
-            EnableLibrary="false"
+    read -rp "Enable brouter? yes/no (default : yes) : " QuestionEnableBrouter
+    QuestionEnableBrouter=$(yes_no_check "$QuestionEnableBrouter")
+    if [[ $QuestionEnableBrouter -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
+        EnableBrouter="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
+        EnableBrouter="true"
+        read -rp "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
+        QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
+        if [[ $QuestionDownloadBrouter -eq 0 ]]; then
+            echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
+            DownloadBrouterdata="false"
         else
-            echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
-            EnableLibrary="true"
+            echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
+            DownloadBrouterdata="true"
         fi
+    fi
 
-        read -rp "Enable brouter? yes/no (default : yes) : " QuestionEnableBrouter
-        QuestionEnableBrouter=$(yes_no_check "$QuestionEnableBrouter")
-        if [[ $QuestionEnableBrouter -eq 0 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
-            EnableBrouter="false"
-        else
-            echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
-            EnableBrouter="true"
-            read -rp "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
-            QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
-            if [[ $QuestionDownloadBrouter -eq 0 ]]; then
-                echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
-                DownloadBrouterdata="false"
-            else
-                echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
-                DownloadBrouterdata="true"
-            fi
-        fi
+    read -rp "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
+    QuestionEnableTileserver=$(yes_no_check "$QuestionEnableTileserver")
+    if [[ $QuestionEnableTileserver -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
+        EnableTileserver="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
+        EnableTileserver="true"
+        set_worldmap_download
+    fi
 
-        read -rp "Enable tileserver-gl? yes/no (default : yes) : " QuestionEnableTileserver
-        QuestionEnableTileserver=$(yes_no_check "$QuestionEnableTileserver")
-        if [[ $QuestionEnableTileserver -eq 0 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
-            EnableTileserver="false"
-        else
-            echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
-            EnableTileserver="true"
-            set_worldmap_download
-        fi
+    read -rp "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
+    QuestionEnableMeshtastic=$(yes_no_check "$QuestionEnableMeshtastic")
+    if [[ $QuestionEnableMeshtastic -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
+        EnableMeshtastic="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
+        EnableMeshtastic="true"
+    fi
 
-        read -rp "Enable Meshtastic services? yes/no (default : yes) : " QuestionEnableMeshtastic
-        QuestionEnableMeshtastic=$(yes_no_check "$QuestionEnableMeshtastic")
-        if [[ $QuestionEnableMeshtastic -eq 0 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
-            EnableMeshtastic="false"
-        else
-            echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
-            EnableMeshtastic="true"
-        fi
-
-        read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
-        QuestionEnableConsole=$(yes_no_check "$QuestionEnableConsole")
-        if [[ $QuestionEnableConsole -eq 0 ]]; then
-            echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
-            EnableConsole="false"
-        else
-            echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
-            EnableConsole="true"
-            read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
-            QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
-            if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
-                set_meshtastic_ip
-            fi
+    read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
+    QuestionEnableConsole=$(yes_no_check "$QuestionEnableConsole")
+    if [[ $QuestionEnableConsole -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
+        EnableConsole="false"
+    else
+        echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
+        EnableConsole="true"
+        read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
+        QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
+        if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
+            set_meshtastic_ip
         fi
     fi
     read -rp "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
@@ -384,7 +387,7 @@ menu_services() {
 set_ansible_custom_vars() {
     cat <<EOL > "$RECOVERBOXYDIR/custom_config.yml"
 ## Generated by RecoveryBox_install.sh
-recoverybox_enable_apache: $EnableApache
+recoverybox_enable_apache: $ENABLEAPACHE
 recoverybox_enable_library: $EnableLibrary
 recoverybox_enable_brouter: $EnableBrouter
 recoverybox_download_brouter: $DownloadBrouterdata
@@ -448,6 +451,13 @@ main() {
     ## Install Ansible prerequisites
     install_ansible
 
+    ## Create virtual environment for python3
+    create_virtualenv
+
+    ## Generate the wiki
+    "$SCRIPT_DIR/Wiki_Generate.sh"
+    
+    ## Let's go !
     if [[ -f $RECOVERBOXYDIR/custom_config.yml ]]; then
         echo -e "$MSGYELLOW" "$SRVMSG" "Custom configuration file found at $RECOVERBOXYDIR/custom_config.yml." "$MSGNC"
         read -rp "Do you want to use the existing custom configuration file? yes/no (default : yes) : " UseExistingConfig

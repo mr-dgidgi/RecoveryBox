@@ -23,6 +23,8 @@
       - unzip
       - tippecanoe
       - rsync
+      - python3-pip
+      - python3-venv
     state: present
 
 - name: Create keyrings directory

@@ -55,7 +55,6 @@ sudo ./RecoveryBox_install.sh
 
 | Service | Default | Description |
 |---------|---------|-------------|
-| **Apache (web server)** | `true` | Enables Apache + modules (PHP, etc.) |
 | **RecoveryBox Library** | `true` | Local library (requires Apache) |
 | **BRouter** | `true` | Offline routing (bike, hike, car) |
 | **BRouter map download** | `true` | Downloads cartographic data |
