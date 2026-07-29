@@ -3,7 +3,8 @@
   ansible.builtin.pip:
     name: meshtastic
     virtualenv: /data/recoverybox_env
-    state: present
+    virtualenv_command: python3 -m venv
+    state: latest
 
 - name: Copy recoverybox-mesh.js to BRouter web directory
   ansible.builtin.copy:
