@@ -10,6 +10,8 @@ recoverybox_version_brouter_container: "v1.7.9"
 recoverybox_version_brouter_web: "0.18.1"
 # renovate: datasource=docker depName=mrdgidgi/meshtastic-web-client
 recoverybox_version_meshtastic_web: "2.7.1"
+# renovate: datasource=github-releases depName=meshtastic/python
+recoverybox_version_meshtastic_python: "2.7.11"
 # renovate: datasource=docker depName=ghcr.io/kiwix/kiwix-serve
 recoverybox_version_kiwix: "3.8.2"
 # renovate: datasource=docker depName=mrdgidgi/simple-hotspot
