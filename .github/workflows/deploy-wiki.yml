@@ -22,7 +22,7 @@ jobs:
 
       - name: Build wiki with MkDocs
         run: |
-          mkdocs build -f wiki-sources/mkdocs.yml -d ansible/roles/recoverybox/files/data/www/wiki/
+          mkdocs build -f ${{ github.workspace }}/wiki-sources/mkdocs.yml -d ${{ github.workspace }}/ansible/roles/recoverybox/files/data/www/wiki/
 
       - name: Upload via SFTP
         uses: wangyucode/sftp-upload-action@v3
