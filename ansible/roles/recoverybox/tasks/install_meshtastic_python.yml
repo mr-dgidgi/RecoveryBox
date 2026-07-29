@@ -1,20 +1,4 @@
 ---
-
-- name: Install packages for Meshtastic Python
-  ansible.builtin.apt:
-    name:
-      - python3-pip
-      - python3-venv
-    state: present
-    update_cache: true
-
-- name: Create Meshtastic Python virtual environment
-  ansible.builtin.pip:
-    name: meshtastic
-    virtualenv: /data/meshtastic_env
-    virtualenv_command: python3 -m venv
-    extra_args: --upgrade
-
 - name: Copy recoverybox-mesh.js to BRouter web directory
   ansible.builtin.copy:
     src: data/brouter/www/recoverybox-mesh.js
