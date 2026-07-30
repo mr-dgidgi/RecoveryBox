@@ -85,7 +85,7 @@
         name: brouter
         enabled: "{{ recoverybox_enable_brouter }}"
         daemon_reload: true
-        state: restarted
+        state: started
       when: "'dry_run' not in ansible_run_tags"
 
 - name: Deactivate Brouter

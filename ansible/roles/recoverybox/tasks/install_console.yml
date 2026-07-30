@@ -40,7 +40,7 @@
       ansible.builtin.systemd_service:
         name: shellinabox
         enabled: "{{ recoverybox_enable_console }}"
-        state: restarted
+        state: started
       when: "'dry_run' not in ansible_run_tags"
 
 - name: Deactivate Web Console

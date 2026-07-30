@@ -68,7 +68,7 @@
         name: flatnotes
         daemon_reload: true
         enabled: "{{ recoverybox_enable_flatnotes }}"
-        state: restarted
+        state: started
       when:
         - "'dry_run' not in ansible_run_tags"
         - recoverybox_flatnotes_open == "full"
@@ -78,7 +78,7 @@
         name: flatnotes-ro
         daemon_reload: true
         enabled: "{{ recoverybox_enable_flatnotes }}"
-        state: restarted
+        state: started
       when:
         - "'dry_run' not in ansible_run_tags"
         - recoverybox_flatnotes_open == "full"
