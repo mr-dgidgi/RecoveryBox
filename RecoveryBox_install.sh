@@ -293,6 +293,27 @@ set_kiwix_files(){
 
 #######################################################
 
+set_flatnotes() {
+    read -rp "Choose Flatnotes type (open, secure, full) (default : full) : " QuestionFlatnotesType
+    if [[ "$QuestionFlatnotesType" == "open" ]]; then
+        FLATNOTESTYPE="open"
+    elif [[ "$QuestionFlatnotesType" == "secure" ]]; then
+        FLATNOTESTYPE="secure"
+    else
+        FLATNOTESTYPE="full"
+    fi
+    if [[ "$FLATNOTESTYPE" == "secure" ]] || [[ "$FLATNOTESTYPE" == "full" ]]; then
+        read -rp "Enter Flatnotes admin username (default : recadmin) : " QuestionFlatnotesUsername
+        FLATNOTESUSERNAME=${QuestionFlatnotesUsername:-recadmin}
+        read -rp "Enter Flatnotes admin password (default : RecoveryAdmin) : " QuestionFlatnotesPassword
+        FLATNOTESPASSWORD=${QuestionFlatnotesPassword:-RecoveryAdmin}
+        # Generate a random secret key
+        FLATNOTESSECRETKEY=$(openssl rand -hex 16)
+    fi
+}
+
+#######################################################
+
 menu_services() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration menu" "$MSGNC"
 
@@ -379,8 +400,17 @@ menu_services() {
         EnableKiwix="true"
         set_kiwix_files
     fi
+    read -rp "Enable Flatnotes server? yes/no (default : yes) : " QuestionEnableFlatnotes
+    QuestionEnableFlatnotes=$(yes_no_check "$QuestionEnableFlatnotes")
+    if [[ $QuestionEnableFlatnotes -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Flatnotes server : disabled." "$MSGNC"
+        EnableFlatnotes="false"
+    else
+        set_flatnotes
+        echo -e "$MSGYELLOW" "$SRVMSG" "Flatnotes server : enabled." "$MSGNC"
+        EnableFlatnotes="true"
+    fi
 
-    
     set_ansible_custom_vars
 }
 
@@ -398,6 +428,7 @@ recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
 recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
+recoverybox_enable_flatnotes: $EnableFlatnotes
 recoverybox_kiwix_files:
   - category: wikipedia
     language: fr
@@ -414,6 +445,15 @@ if [[ $CUSTOMMESHTASTIC == true ]]; then
 recoverybox_meshtastic_node:
   mac: ${MeshtasticMAC}
   ip: ${MeshtasticIP}
+EOL
+fi
+
+if [[ $EnableFlatnotes == "true" ]]; then
+    cat <<EOL >> "$RECOVERBOXYDIR/custom_config.yml"
+recoverybox_flatnotes_secure:
+    username: $FLATNOTESUSERNAME
+    password: $FLATNOTESPASSWORD
+    secret_key: $FLATNOTESSECRETKEY
 EOL
 fi
 

@@ -63,6 +63,7 @@ sudo ./RecoveryBox_install.sh
 | **Web Console** | `true` | Console web d'administration (ShellInABox) |
 | **OpenWebRX+** | `true` | SDR web (réception radio) |
 | **Kiwix (Wikipédia hors-ligne)** | `true` | Serveur Kiwix + fichiers ZIM |
+| **Flatnotes** | `true` | Service de prise de notes web (markdown) |
 
 
 !!! info "Fichier de configuration généré"
