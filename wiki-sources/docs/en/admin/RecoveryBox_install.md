@@ -64,6 +64,7 @@ sudo ./RecoveryBox_install.sh
 | **Web Console** | `true` | Admin web console (ShellInABox) |
 | **OpenWebRX+** | `true` | Web SDR (radio reception) |
 | **Kiwix (offline Wikipedia)** | `true` | Kiwix server + ZIM files |
+| **Flatnotes** | `true` | Web note-taking service (markdown) |
 
 !!! info "Generated configuration file"
     After the menu, the script generates **`/etc/recoverybox/custom_config.yml`** containing Ansible variables (`extra-vars`) matching your choices.

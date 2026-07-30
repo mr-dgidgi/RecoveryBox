@@ -73,7 +73,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_enable_flatnotes` | `true` | Active le service Flatnotes (prise de notes web) |
 
 !!! note "Note"
-    Si `recoverybox_enable_apache: false`, l'ensemble des services web seront automatiquement désactivés par le playbook.
+    Si `recoverybox_enable_apache: false`, l'ensemble des services web sera automatiquement **désactivé** par le playbook.
 
 !!! warning "Attention"
     Si `recoverybox_enable_hotspot: false`, le point d'accès Wi-Fi ne sera pas créé et l'ensemble des services sera inaccessible.
@@ -99,7 +99,7 @@ Objet `recoverybox_hotspot_conf` avec les clés suivantes :
 | `ssid` | `"recoverybox"` | Nom du réseau Wi-Fi (SSID) |
 | `password` | `"recoverybox"` | Clé WPA2-PSK (8 à 63 caractères) |
 | `mode` | `"g"` | Mode PHY : `g` (2.4 GHz), `a` (5 GHz), `acs` (auto) |
-| `channel` | `"11"` | Canal Wi-Fi (ex: `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
+| `channel` | `"11"` | Canal Wi-Fi (ex. : `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
 | `auth_algs` | `"1"` | Algorithmes d'authentification (1 = Open System) |
 | `wpa` | `"2"` | Version WPA (2 = WPA2) |
 | `wpa_key_mgmt` | `"WPA-PSK"` | Gestion des clés |
@@ -174,7 +174,7 @@ recoverybox_kiwix_files:
 | Variable | Défaut | Description |
 |----------|--------|-------------|
 | `recoverybox_flatnotes_open` | `"full"` | Type d'installation Flatnotes : `open`, `secure`, `full` |
-| `recoverybox_flatnotes_secure` | Objet | Configuration pour l'installation sécurisée de Flatnotes (nom d'utilisateur, mot de passe, clé secrète) |
+| `recoverybox_flatnotes_secure` | objet | Configuration pour l'installation sécurisée de Flatnotes (nom d'utilisateur, mot de passe, clé secrète) |
 | `recoverybox_flatnotes_secure.username` | `"recadmin"` | Nom d'utilisateur pour l'accès sécurisé |
 | `recoverybox_flatnotes_secure.password` | `"RecoveryAdmin"` | Mot de passe pour l'accès sécurisé |
 | `recoverybox_flatnotes_secure.secret_key` | `"aLongRandomSeriesOfCharacters123"` | Clé secrète pour la session sécurisée |

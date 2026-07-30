@@ -30,7 +30,7 @@ La RecoveryBox propose donc divers outils via le web en se connectant sur le hot
 - **Wiki** : Wiki technique de la RecoveryBox (documentation des services et outils). ([wiki.recovery.box](http://wiki.recovery.box))
 
 ### Connectivité et réseau
-- **Synchro du temps via GPS** : le serveur fourni l'heure exacte aux équipements connecté à celui-ci grâce à son GPS
+- **Synchro du temps via GPS** : le serveur fournit l'heure exacte aux équipements connectés à celui-ci grâce à son GPS
 
 ### Radio et télécommunications
 - **OpenWebRX Plus** : Interface web pour recevoir et écouter les fréquences radio via RTL-SDR. ([owrx.recovery.box](http://owrx.recovery.box))
@@ -43,11 +43,11 @@ La RecoveryBox propose donc divers outils via le web en se connectant sur le hot
 - **shellinabox** Console d'administration disponible via le web ([console.recovery.box](http://console.recovery.box))
 
 ## Outils
-La RecoveryBox intègre plusieurs outils développé dans le but de faciliter l'administration basique du système.
+La RecoveryBox intègre plusieurs outils développés dans le but de faciliter l'administration basique du système.
 - **rbstatus** : Script affichant l'état des services, du GPS et du hardware
 - **network-configurator** : Outils permettant de configurer les interfaces réseau et wifi
-- **generate-map** : Outils permettant de télécharger et aggréger des cartes du monde pour le service de cartographie
-- **Meshtastic Daemon** : Service permettant de récupérer les informations d'un nœud Meshtastic et de les afficher sur la carte BRouter
+- **generate-map** : Outil permettant de télécharger et agréger des cartes du monde pour le service de cartographie
+- **Meshtastic Démon** : Service permettant de récupérer les informations d'un nœud Meshtastic et de les afficher sur la carte BRouter
 
 ## Sommaire
 * [Démarrage Rapide](quickstart.md)

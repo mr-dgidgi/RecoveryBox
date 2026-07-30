@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] - TBD
+
+### Added
+- Service `flatnotes` added to the RecoveryBox for note taking and sharing.
+
 ## [1.4.4] - 2026-07-29
 
 ### Changed

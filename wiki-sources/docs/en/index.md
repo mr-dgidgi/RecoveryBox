@@ -37,7 +37,10 @@ RecoveryBox provides various tools via the web by connecting to the hotspot it h
 - **Meshtastic**: Web client and daemon for Meshtastic nodes (LoRa mesh network). ([meshtastic.recovery.box](http://meshtastic.recovery.box))
 
 ### Cartography
-- **brouter**: A local cartography solution for managing GPX files. ([carto.recovery.box](http://carto.recovery.box))
+- **BRouter**: A local routing solution (bike, hike, car) based on OSM and GPX files. ([carto.recovery.box](http://carto.recovery.box))
+
+### Note-taking
+- **Flatnotes**: Web-based note-taking application accessible via browser. ([flatnotes.recovery.box](http://flatnotes.recovery.box))
 
 ### Administration
 - **shellinabox**: Web-based administration console. ([console.recovery.box](http://console.recovery.box))
@@ -59,6 +62,7 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
     * [Meshtastic](./services/meshtastic.md)
     * [Carto](./services/carto.md)
     * [Console](./services/console.md)
+    * [Flatnotes](./services/flatnotes.md)
 * Administration
     * [Installation](./admin/install.md)
     * [Network Configuration](./admin/network.md)
