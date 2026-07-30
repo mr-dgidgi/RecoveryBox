@@ -1,0 +1,123 @@
+---
+- name: Install flatnotes
+  when:
+    - recoverybox_enable_flatnotes
+    - recoverybox_enable_apache
+  block:
+    - name: Pull flatnotes docker image
+      community.docker.docker_image:
+        name: dullage/flatnotes
+        tag: "{{ recoverybox_version_flatnotes }}"
+        source: pull
+
+    - name: Create flatnotes data directory
+      ansible.builtin.file:
+        path: /data/flatnotes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create flatnotes service
+      ansible.builtin.template:
+        src: etc/systemd/system/flatnotes.service.j2
+        dest: /etc/systemd/system/flatnotes.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create flatnotes Read Only service
+      ansible.builtin.template:
+        src: etc/systemd/system/flatnotes-ro.service.j2
+        dest: /etc/systemd/system/flatnotes-ro.service
+        owner: root
+        group: root
+        mode: '0644'
+      when: recoverybox_flatnotes_open == "full"
+
+    - name: Create flatnotes apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/flatnotes.conf
+        dest: /etc/apache2/sites-available/flatnotes.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create flatnotes Read Only apache2 site
+      ansible.builtin.copy:
+        src: etc/apache2/sites-available/flatnotes-ro.conf
+        dest: /etc/apache2/sites-available/flatnotes-ro.conf
+        owner: root
+        group: root
+        mode: '0644'
+      when: recoverybox_flatnotes_open == "full"
+
+    - name: Enable flatnotes site
+      ansible.builtin.command:
+        cmd: a2ensite flatnotes.conf
+      changed_when: false
+
+    - name: Enable flatnotes Read Only site
+      ansible.builtin.command:
+        cmd: a2ensite flatnotes-ro.conf
+      changed_when: false
+      when: recoverybox_flatnotes_open == "full"
+
+    - name: Enable flatnotes service
+      ansible.builtin.systemd_service:
+        name: flatnotes
+        daemon_reload: true
+        enabled: "{{ recoverybox_enable_flatnotes }}"
+        state: restarted
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - recoverybox_flatnotes_open == "full"
+
+    - name: Enable flatnotes Read Only service
+      ansible.builtin.systemd_service:
+        name: flatnotes-ro
+        daemon_reload: true
+        enabled: "{{ recoverybox_enable_flatnotes }}"
+        state: restarted
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - recoverybox_flatnotes_open == "full"
+
+- name: Disable flatnotes service
+  when: not recoverybox_enable_flatnotes or not recoverybox_enable_apache
+  block:
+    - name: Disable flatnotes service
+      ansible.builtin.systemd_service:
+        name: flatnotes
+        daemon_reload: true
+        enabled: false
+        state: stopped
+
+    - name: Disable flatnotes Read Only service
+      ansible.builtin.systemd_service:
+        name: flatnotes-ro
+        daemon_reload: true
+        enabled: false
+        state: stopped
+
+    - name: Check if flatnotes.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/flatnotes.conf
+      register: recoverybox_apache_file
+
+    - name: Disable flatnotes apache2 site
+      ansible.builtin.command:
+        cmd: a2dissite flatnotes.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
+
+    - name: Check if flatnotes-ro.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/flatnotes-ro.conf
+      register: recoverybox_apache_ro_file
+
+    - name: Disable flatnotes Read Only apache2 site
+      ansible.builtin.command:
+        cmd: a2dissite flatnotes-ro.conf
+      changed_when: false
+      when: recoverybox_apache_ro_file.stat.exists

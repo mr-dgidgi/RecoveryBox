@@ -59,6 +59,7 @@ La RecoveryBox intègre plusieurs outils développé dans le but de faciliter l'
     * [Meshtastic](./services/meshtastic.md)
     * [Carto](./services/carto.md)
     * [Console](./services/console.md)
+    * [Flatnotes](./services/flatnotes.md)
 * Administration
     * [Installation](./admin/install.md)
     * [Configuration Réseau](./admin/network.md)
