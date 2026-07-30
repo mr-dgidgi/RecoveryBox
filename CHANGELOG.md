@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 - Service `flatnotes` added to the RecoveryBox for note taking and sharing.
 
+### Fixed
+- `RecoveryBox_install.sh` do not restart anymore the services during the installation process. This change avoid user to lose the connection to the RecoveryBox during the installation process and crash the installation script.
+
 ## [1.4.4] - 2026-07-29
 
 ### Changed

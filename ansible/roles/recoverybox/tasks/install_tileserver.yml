@@ -39,7 +39,7 @@
         name: tileserver-gl
         enabled: "{{ recoverybox_enable_tileserver }}"
         daemon_reload: true
-        state: restarted
+        state: started
       when: "'dry_run' not in ansible_run_tags"
 
     - name: Create style directory

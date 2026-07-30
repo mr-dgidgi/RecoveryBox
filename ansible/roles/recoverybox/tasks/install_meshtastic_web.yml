@@ -36,7 +36,7 @@
         name: meshtastic-web
         daemon_reload: true
         enabled: "{{ recoverybox_enable_meshtastic }}"
-        state: restarted
+        state: started
       when: "'dry_run' not in ansible_run_tags"
 
 - name: Deactivate Meshtastic Web
