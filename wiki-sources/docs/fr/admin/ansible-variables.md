@@ -50,6 +50,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_version_owrx` | `"1.2.118"` | Version OpenWebRX+ (Docker) |
 | `recoverybox_version_tileserver` | `"v5.6.0"` | Version TileServer-GL (Docker) |
 | `recoverybox_version_planetiler` | `"0.10.2"` | Version Planetiler (Docker) |
+| `recoverybox_version_flatnotes` | `"v5.5.4"` | Version du conteneur Flatnotes (Docker) |
 
 !!! warning "Attention"
     Ne modifiez ces versions que si vous avez une raison précise (compatibilité, bug connu). Les versions listées sont testées et validées, si la version que vous souhaitez utiliser est différente, vérifiez avec `rb-update` qu'il n'y a pas une nouvelle version de RecoveryBox qui inclut cette modification.
@@ -69,9 +70,10 @@ recoverybox_hotspot_conf:
 | `recoverybox_enable_kiwix` | `true` | Active Kiwix (Wikipédia hors-ligne) |
 | `recoverybox_enable_meshtastic` | `true` | Active les services Meshtastic (web client + daemon) |
 | `recoverybox_enable_hotspot` | `true` | Active le point d'accès Wi-Fi (hotspot) |
+| `recoverybox_enable_flatnotes` | `true` | Active le service Flatnotes (prise de notes web) |
 
 !!! note "Note"
-    Si `recoverybox_enable_apache: false`, l'ensemble des services web seront automatiquement désactivés par le playbook.
+    Si `recoverybox_enable_apache: false`, l'ensemble des services web sera automatiquement **désactivé** par le playbook.
 
 !!! warning "Attention"
     Si `recoverybox_enable_hotspot: false`, le point d'accès Wi-Fi ne sera pas créé et l'ensemble des services sera inaccessible.
@@ -97,7 +99,7 @@ Objet `recoverybox_hotspot_conf` avec les clés suivantes :
 | `ssid` | `"recoverybox"` | Nom du réseau Wi-Fi (SSID) |
 | `password` | `"recoverybox"` | Clé WPA2-PSK (8 à 63 caractères) |
 | `mode` | `"g"` | Mode PHY : `g` (2.4 GHz), `a` (5 GHz), `acs` (auto) |
-| `channel` | `"11"` | Canal Wi-Fi (ex: `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
+| `channel` | `"11"` | Canal Wi-Fi (ex. : `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
 | `auth_algs` | `"1"` | Algorithmes d'authentification (1 = Open System) |
 | `wpa` | `"2"` | Version WPA (2 = WPA2) |
 | `wpa_key_mgmt` | `"WPA-PSK"` | Gestion des clés |
@@ -166,6 +168,17 @@ recoverybox_kiwix_files:
 > **Attention** : Ces téléchargements peuvent représenter plusieurs Go. Désactivez (`false`) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.
 
 ---
+
+### Configuration Flatnotes
+
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `recoverybox_flatnotes_open` | `"full"` | Type d'installation Flatnotes : `open`, `secure`, `full` |
+| `recoverybox_flatnotes_secure` | objet | Configuration pour l'installation sécurisée de Flatnotes (nom d'utilisateur, mot de passe, clé secrète) |
+| `recoverybox_flatnotes_secure.username` | `"recadmin"` | Nom d'utilisateur pour l'accès sécurisé |
+| `recoverybox_flatnotes_secure.password` | `"RecoveryAdmin"` | Mot de passe pour l'accès sécurisé |
+| `recoverybox_flatnotes_secure.secret_key` | `"aLongRandomSeriesOfCharacters123"` | Clé secrète pour la session sécurisée |
+
 
 ## Exemple complet
 

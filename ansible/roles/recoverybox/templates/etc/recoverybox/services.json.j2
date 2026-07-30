@@ -116,5 +116,31 @@
     "url": "http://recovery.box/wiki/",
     "version": "null",
     "activated": true
+  },
+  {
+    "id": "flatnotes",
+    {% if recoverybox_flatnotes_open == "full" %}
+    "name": "Flatnotes (Admin)",
+    {% else %}
+    "name": "Flatnotes",
+    {% endif %}
+    "type": "systemd",
+    "unit": "flatnotes.service",
+    "url": "http://flatnotes.recovery.box/",
+    "version": "{{ recoverybox_version_flatnotes }}",
+    "activated": {{ recoverybox_enable_flatnotes | to_json }}
+  },
+    {
+    "id": "flatnotes-ro",
+    "name": "Flatnotes (Lecture)",
+    "type": "systemd",
+    "unit": "flatnotes-ro.service",
+    "url": "http://flatnotes-ro.recovery.box/",
+    "version": "{{ recoverybox_version_flatnotes }}",
+    {% if recoverybox_flatnotes_open == "full" %}
+    "activated": true
+    {% else %}
+    "activated": false
+    {% endif %}
   }
 ]

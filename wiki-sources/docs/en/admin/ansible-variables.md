@@ -50,6 +50,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_version_owrx` | `"1.2.118"` | OpenWebRX+ version (Docker) |
 | `recoverybox_version_tileserver` | `"v5.6.0"` | TileServer-GL version (Docker) |
 | `recoverybox_version_planetiler` | `"0.10.2"` | Planetiler version (Docker) |
+| `recoverybox_version_flatnotes` | `"v5.5.4"` | Flatnotes container version (Docker) |
 
 !!! tip "Tip"
     Only modify these versions if you have a specific reason (compatibility, known bug). Defaults are tested and validated.
@@ -69,6 +70,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_enable_kiwix` | `true` | Enables Kiwix (offline Wikipedia) |
 | `recoverybox_enable_meshtastic` | `true` | Enables Meshtastic services (MQTT, web client, daemon) |
 | `recoverybox_enable_hotspot` | `true` | Enables Wi-Fi hotspot |
+| `recoverybox_enable_flatnotes` | `true` | Enables Flatnotes web note-taking service |
 
 !!! note "Note"
     If `recoverybox_enable_apache: false`, dependent services (Library, Console) will be automatically disabled by the playbook.
@@ -157,6 +159,18 @@ recoverybox_kiwix_files:
 
 ---
 
+### Flatnotes Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `recoverybox_flatnotes_open` | `"full"` | Flatnotes installation type: `open`, `secure`, `full` |
+| `recoverybox_flatnotes_secure` | object | Secure Flatnotes configuration (username, password, secret key) |
+| `recoverybox_flatnotes_secure.username` | `"recadmin"` | Username for secure access |
+| `recoverybox_flatnotes_secure.password` | `"RecoveryAdmin"` | Password for secure access |
+| `recoverybox_flatnotes_secure.secret_key` | `"aLongRandomSeriesOfCharacters123"` | Secret key for session security |
+
+---
+
 ### Map Downloads
 
 | Variable | Default | Description |
@@ -205,6 +219,13 @@ recoverybox_kiwix_files:
     language: fr
     enable: true
     arg: "all_nopic"
+
+# Flatnotes: secure installation with custom credentials
+recoverybox_flatnotes_open: "secure"
+recoverybox_flatnotes_secure:
+  username: "myuser"
+  password: "MySecurePass123!"
+  secret_key: "YourVeryLongRandomSecretKeyHere12345"
 
 # No map downloads (limited bandwidth)
 recoverybox_download_brouter: false

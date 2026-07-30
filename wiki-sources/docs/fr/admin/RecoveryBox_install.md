@@ -46,7 +46,7 @@ Le script orchestre l'ensemble du processus :
 sudo ./RecoveryBox_install.sh
 ```
 - Le script propose de reconfigurer la disposition clavier via `dpkg-reconfigure keyboard-configuration`.
-- ** Installation par défaut ? (oui/non) **
+- **Installation par défaut ? (oui/non)**
   - **Oui** → Tous les services sont activés avec leurs valeurs par défaut. Pas de menu détaillé.
   - **Non** → Menu détaillé de configuration service par service (voir ci-dessous).
 
@@ -63,12 +63,13 @@ sudo ./RecoveryBox_install.sh
 | **Web Console** | `true` | Console web d'administration (ShellInABox) |
 | **OpenWebRX+** | `true` | SDR web (réception radio) |
 | **Kiwix (Wikipédia hors-ligne)** | `true` | Serveur Kiwix + fichiers ZIM |
+| **Flatnotes** | `true` | Service de prise de notes web (markdown) |
 
 
 !!! info "Fichier de configuration généré"
     À l'issue du menu, le script génère **`/etc/recoverybox/custom_config.yml`** contenant les variables Ansible (`extra-vars`) correspondant à vos choix.
 
-- Le script lance automatiquement le playbook `ansible/Install.yml` :
+- Le script lance automatiquement le playbook `ansible/Install.yml`.
 - Le script propose de lancer `/usr/local/bin/generate-map` pour télécharger un continent/pays spécifique (BRouter, TileServer).
 - Si `systemd-networkd` n'est pas encore le gestionnaire réseau unique, le script utilise l'outil `network-configurator` pour :
   - Créer les bridges `WAN` / `LAN`
@@ -76,7 +77,7 @@ sudo ./RecoveryBox_install.sh
   - Lier une interface physique au WAN (DHCP ou statique)
  - Basculer vers `systemd-networkd` + `systemd-resolved`
 
-!!! warning "Redémarrage requis"
+  !!! warning "Redémarrage requis"
     Cette étape **nécessite un redémarrage** pour prendre effet.
 
 - Copie du fichier `VERSION` vers `/etc/recoverybox/rb_version`

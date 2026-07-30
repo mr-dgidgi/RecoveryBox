@@ -114,12 +114,20 @@
     - recoverybox_enable_apache
     - recoverybox_download_brouter
 
+- name: Install Flatnotes
+  ansible.builtin.import_tasks: install_flatnotes.yml
+  tags:
+    - install_flatnotes
+    - dry_run
+  when: recoverybox_enable_flatnotes
+
 - name: Install Meshtastic Web Client
   ansible.builtin.import_tasks: install_meshtastic_web.yml
   tags:
     - install_meshtastic_web
     - meshtastic_tools
     - dry_run
+  when: recoverybox_enable_meshtastic
 
 - name: Install Meshtastic Python
   ansible.builtin.import_tasks: install_meshtastic_python.yml
@@ -127,4 +135,3 @@
     - install_meshtastic_python
     - meshtastic_tools
     - dry_run
-  when: recoverybox_enable_meshtastic
