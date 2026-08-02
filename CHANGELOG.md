@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 - `RecoveryBox_install.sh` do not restart anymore the services during the installation process. This change avoid user to lose the connection to the RecoveryBox during the installation process and crash the installation script.
+- `network-configurator`: WiFi scan reliability improved in `set_wlan_client` by waiting for real scan results before reading `wpa_cli scan_results`, fixing the case where only the column headers were displayed.
 
 ## [1.4.4] - 2026-07-29
 
