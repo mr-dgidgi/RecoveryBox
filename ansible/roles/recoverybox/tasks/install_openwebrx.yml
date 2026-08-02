@@ -55,6 +55,11 @@
         group: root
         mode: '0644'
 
+    - name: Enable openwebrx apache2 site
+      ansible.builtin.command:
+        cmd: a2ensite owrx.conf
+      changed_when: false
+
     - name: Reload apache2 service
       ansible.builtin.systemd_service:
         name: apache2
