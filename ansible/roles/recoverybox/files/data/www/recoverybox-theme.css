@@ -245,7 +245,7 @@ body.rb-app {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.35;
-  color: var(--rb-text-main);
+  color: var(--rb-text-muted);
 }
 
 .rb-service-tile:hover,
