@@ -221,6 +221,8 @@ fi
 set_wlan_client () {
     export WPA_CLI_CTRL_IFACE_DIR="/var/run/wpa_supplicant"
     local WPAConfFile
+    local ScanCache
+    local ScanAttempts
     WPAConfFile="/etc/wpa_supplicant/wpa_supplicant-$1.conf"
     if [[ ! -f "$WPAConfFile" ]];then
         cat <<EOF > "$WPAConfFile"
@@ -233,16 +235,37 @@ EOF
     echo -e "#########################################################"
     echo -e "$MSGYELLOW $SRVMSG Enabling interface $1... $MSGNC"
     sleep 2
-    wpa_cli -i "$1" scan > /dev/null
     echo -e "$MSGYELLOW $SRVMSG Scanning for WiFi networks on $1... $MSGNC"
-    sleep 2
-    ScanCache=$(wpa_cli -i "$1" scan_results)
+
+    # Trigger scan and wait until at least one result line is available.
+    wpa_cli -i "$1" scan > /dev/null 2>&1
+    ScanAttempts=0
+    while true; do
+        ScanCache=$(wpa_cli -i "$1" scan_results 2>/dev/null)
+        if [[ $(echo "$ScanCache" | wc -l) -gt 1 ]]; then
+            break
+        fi
+
+        ScanAttempts=$((ScanAttempts + 1))
+        if [[ $ScanAttempts -ge 10 ]]; then
+            # Retry one scan once previous request had no visible result yet.
+            wpa_cli -i "$1" scan > /dev/null 2>&1
+        fi
+        if [[ $ScanAttempts -ge 20 ]]; then
+            break
+        fi
+        sleep 1
+    done
+
     echo -e "$ScanCache"
+    if [[ $(echo "$ScanCache" | wc -l) -le 1 ]]; then
+        echo -e "$MSGYELLOW $SRVMSG No WiFi network found yet. You can still enter SSID manually. $MSGNC"
+    fi
     while true; do
         read -rp "Enter SSID name: " SSIDChoosed
         if [[ -z "$SSIDChoosed" ]]; then
             echo -e "$MSGRED $SRVMSG SSID cannot be empty. Please enter a valid SSID name. $MSGNC"
-        elif ! echo "$ScanCache" | grep -q "$SSIDChoosed"; then
+        elif [[ $(echo "$ScanCache" | wc -l) -gt 1 ]] && ! echo "$ScanCache" | grep -Fq "$SSIDChoosed"; then
             echo -e "$MSGRED $SRVMSG SSID not found. Please enter a valid SSID name. $MSGNC"
         else
             break

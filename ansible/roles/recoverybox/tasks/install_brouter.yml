@@ -74,6 +74,11 @@
         group: root
         mode: '0644'
 
+    - name: Enable carto site
+      ansible.builtin.command:
+        cmd: a2ensite carto.conf
+      changed_when: false
+
     - name: Reload apache2 service
       ansible.builtin.systemd_service:
         name: apache2
