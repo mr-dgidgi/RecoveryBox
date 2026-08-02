@@ -15,7 +15,6 @@ ExecStart=/usr/bin/docker run --rm --name owrx \
   -e OPENWEBRX_ADMIN_USER=recoverybox \
   -e OPENWEBRX_ADMIN_PASSWORD=recoverybox \
   --device /dev/bus/usb:/dev/bus/usb \
-  -p 18002:8073 \
   -v /etc/owrx/etc:/etc/openwebrx \
   -v /etc/owrx/var:/var/lib/openwebrx \
   -v /etc/owrx/plugins:/usr/lib/python3/dist-packages/htdocs/plugins \
