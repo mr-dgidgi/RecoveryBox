@@ -50,6 +50,7 @@ Get_ServiceStatus() {
         CheckHost=$(echo "$Row" | jq -r '.check_host // empty')
         Activated=$(echo "$Row" | jq -r '.activated // false')
         SvcUrl=$(echo "$Row" | jq -r '.url // empty')
+        SvcLogo=$(echo "$Row" | jq -r '.logo // empty')
 
         if $Light; then
             if [[ "$SvcType" == "ping" ]] || [[ "$SvcType" == "dns" ]]; then
@@ -76,7 +77,14 @@ Get_ServiceStatus() {
             esac
 
             [[ "$First" == "true" ]] && First=false || ServicesJson+=","
-            ServicesJson+="{\"id\":\"$Id\",\"name\":\"$SvcName\",\"status\":$SvcStatus,\"url\":\"$SvcUrl\"}"
+            ServiceJson=$(jq -n \
+                --arg id "$Id" \
+                --arg name "$SvcName" \
+                --argjson status "$SvcStatus" \
+                --arg url "$SvcUrl" \
+                --arg logo "$SvcLogo" \
+                '{id: $id, name: $name, status: $status, url: $url, logo: $logo}')
+            ServicesJson+="$ServiceJson"
         fi
     done < <(jq -c '.[]' "$ConfigFile")
     ServicesJson+="]"
