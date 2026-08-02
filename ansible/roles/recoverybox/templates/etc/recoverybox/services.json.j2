@@ -20,7 +20,7 @@
     "name": "Kiwix Server",
     "type": "systemd",
     "unit": "kiwix.service",
-    "url": "http://recovery.box:8080/",
+    "url": "http://kiwix.recovery.box/",
     "version": "{{ recoverybox_version_kiwix }}",
     "activated": {{ recoverybox_enable_kiwix | to_json }}
   },
@@ -57,7 +57,7 @@
     "name": "OpenWebRX+",
     "type": "systemd",
     "unit": "openwebrx.service",
-    "url": "http://recovery.box:8073/",
+    "url": "http://owrx.recovery.box/",
     "version": "{{ recoverybox_version_owrx }}",
     "activated": {{ recoverybox_enable_owrx | to_json }}
   },
