@@ -234,7 +234,7 @@ set_meshtastic_ip() {
     MeshtasticIP=${MeshtasticIP:-192.168.200.101}
     read -rp "Enter the meshtastic node MAC address (default : 00:00:00:00:00:00) : " MeshtasticMAC
     MeshtasticMAC=${MeshtasticMAC:-00:00:00:00:00:00}
-    echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
     CUSTOMMESHTASTIC=true
 }
 
@@ -259,7 +259,7 @@ set_kiwix_files(){
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : disabled." "$MSGNC"
         KIWIXENWIKIPEDIA="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
         read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
@@ -277,7 +277,7 @@ set_kiwix_files(){
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : disabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
         read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
@@ -323,7 +323,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
         EnableLibrary="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
         EnableLibrary="true"
     fi
 
@@ -333,7 +333,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
         EnableBrouter="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "brouter : enabled." "$MSGNC"
         EnableBrouter="true"
         read -rp "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
         QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
@@ -341,7 +341,7 @@ menu_services() {
             echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
             DownloadBrouterdata="false"
         else
-            echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
+            echo -e "$MSGGREEN" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
             DownloadBrouterdata="true"
         fi
     fi
@@ -352,7 +352,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
         EnableTileserver="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
         EnableTileserver="true"
         set_worldmap_download
     fi
@@ -363,7 +363,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
         EnableMeshtastic="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
         EnableMeshtastic="true"
     fi
 
@@ -373,7 +373,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
         EnableConsole="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Web Console : enabled." "$MSGNC"
         EnableConsole="true"
         read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
         QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
@@ -387,7 +387,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : disabled." "$MSGNC"
         EnableOWRX="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
         EnableOWRX="true"
     fi
     read -rp "Enable Kiwix server? yes/no (default : yes) : " QuestionEnableKiwix
@@ -396,7 +396,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : disabled." "$MSGNC"
         EnableKiwix="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Kiwix server : enabled." "$MSGNC"
         EnableKiwix="true"
         set_kiwix_files
     fi
@@ -407,7 +407,7 @@ menu_services() {
         EnableFlatnotes="false"
     else
         set_flatnotes
-        echo -e "$MSGYELLOW" "$SRVMSG" "Flatnotes server : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Flatnotes server : enabled." "$MSGNC"
         EnableFlatnotes="true"
     fi
 
@@ -419,7 +419,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "HTTPS : disabled." "$MSGNC"
         EnableHTTPS="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "HTTPS : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "HTTPS : enabled." "$MSGNC"
         EnableHTTPS="true"
     fi
 
@@ -528,6 +528,12 @@ main() {
     if [[ $CUSTOMCONF == false ]]; then
         menu_configuration
     fi
+
+    echo -e "$MSGYELLOW" "$SRVMSG" "configuration summary :" "$MSGNC"
+    echo -e "---------------------------------------------------------"
+    cat /etc/recoverybox/custom_config.yml
+    echo -e "---------------------------------------------------------"
+    read -rp "Press Enter to start the installation or Ctrl+C to abort..."
 
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Starting Installation..." "$MSGNC"
