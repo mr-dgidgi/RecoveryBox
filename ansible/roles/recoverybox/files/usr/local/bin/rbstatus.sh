@@ -65,7 +65,11 @@ Get_ServiceStatus() {
                     systemctl is-enabled --quiet "$Unit" || SvcStatus=2
                     ;;
                 http)
-                    HttpCode=$(curl -q -I -H "Host: $CheckHost" "$CheckUrl" 2>/dev/null | head -n 1 | cut -d' ' -f2)
+                    if [[ "$CheckUrl" == *"https"* ]]; then
+                        HttpCode=$(curl -q -I -k -H "Host: $CheckHost" "$CheckUrl" 2>/dev/null | head -n 1 | cut -d' ' -f2)
+                    else
+                        HttpCode=$(curl -q -I -H "Host: $CheckHost" "$CheckUrl" 2>/dev/null | head -n 1 | cut -d' ' -f2)
+                    fi
                     [[ "$HttpCode" == "200" ]] && SvcStatus=0 || SvcStatus=1
                     ;;
                 ping)
