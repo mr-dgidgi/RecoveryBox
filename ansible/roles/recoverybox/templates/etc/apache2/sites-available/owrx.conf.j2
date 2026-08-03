@@ -19,14 +19,13 @@
 {% endif %}
 
     RewriteEngine On
-    # Redirection automatique des requêtes WebSocket (ws://)
     RewriteCond %{HTTP:Upgrade} =websocket [NC]
     RewriteCond %{HTTP:Connection} upgrade [NC]
-    RewriteRule /(.*) ws://127.0.0.1:18002/$1 [P,L]
+    RewriteRule /(.*) ws://127.0.0.1:8073/$1 [P,L]
 
     # Proxy HTTP standard
-    ProxyPass        / http://127.0.0.1:18002/
-    ProxyPassReverse / http://127.0.0.1:18002/
+    ProxyPass        / http://127.0.0.1:8073/
+    ProxyPassReverse / http://127.0.0.1:8073/
 
     <Location />
         Require all granted
