@@ -7,7 +7,7 @@
         name: apache2
         state: present
 
-    - name: Enable proxy modules
+    - name: Enable Apache2 modules
       ansible.builtin.command:
         cmd: "a2enmod {{ item }}"
       changed_when: false
@@ -16,6 +16,7 @@
         - proxy_http
         - proxy_wstunnel
         - rewrite
+        - ssl
 
     - name: Create /data/www directory
       ansible.builtin.file:
@@ -35,8 +36,8 @@
           - "--chown=root:root"
 
     - name: Create recovery.box site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/000-www.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/000-www.conf.j2
         dest: /etc/apache2/sites-available/000-www.conf
         owner: root
         group: root

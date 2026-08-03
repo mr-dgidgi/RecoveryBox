@@ -25,8 +25,8 @@
         mode: '0644'
 
     - name: Create kiwix apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/kiwix.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/kiwix.conf.j2
         dest: /etc/apache2/sites-available/kiwix.conf
         owner: root
         group: root

@@ -13,9 +13,10 @@ tags:
 
 The file **`/etc/recoverybox/custom_config.yml`** allows customizing the Ansible deployment of RecoveryBox without modifying role files.
 
-This file is **managed automatically** by the **[RecoveryBox_install.sh](RecoveryBox_install.md)** script during interactive configuration. It is then passed as `extra-vars` to the Ansible playbook (`ansible/Install.yml`).
+This file is **managed automatically** by the **[install.sh](RecoveryBox_install.md)** script during interactive configuration. It is then passed as `extra-vars` to the Ansible playbook (`ansible/Install.yml`).
 
-> **Note**: You can also create/modify this file manually before running an installation in `custom` mode (`sudo ./RecoveryBox_install.sh custom`).
+!!! note "Note"
+    You can also create/modify this file manually before running an installation in `custom` mode (`sudo ./install.sh custom`).
 
 ---
 
@@ -125,7 +126,8 @@ Object `recoverybox_meshtastic_node`:
 | `mac` | `"00:00:00:00:00:00"` | Meshtastic node MAC (for static DHCP lease) |
 | `ip` | `"192.168.200.101"` | Fixed IP assigned to Meshtastic node |
 
-> Only used if `recoverybox_enable_meshtastic: true` and a physical node is connected.
+!!! note "Note"
+    Only used if `recoverybox_enable_meshtastic: true` and a physical node is connected.
 
 ---
 
@@ -234,26 +236,26 @@ recoverybox_download_mbtiles: false
 
 ---
 
-## Usage with RecoveryBox_install.sh
+## Usage with install.sh
 
 ### Generate the file (interactive mode)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 → Runs only the configuration menu and writes `/etc/recoverybox/custom_config.yml`
 
 ### Install with existing config
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 → Uses existing file, skips menu, runs Ansible playbook directly
 
 ### Full install (generate + apply)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 → Runs configuration menu (unless defaults accepted), then runs playbook with generated config
 

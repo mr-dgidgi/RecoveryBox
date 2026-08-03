@@ -12,8 +12,8 @@ ExecStartPre=docker rm -f owrx 2>/dev/null
 ExecStart=/usr/bin/docker run --rm --name owrx \
   --network=host \
   -e TZ=Europe/Paris \
-  -e OPENWEBRX_ADMIN_USER=recoverybox \
-  -e OPENWEBRX_ADMIN_PASSWORD=recoverybox \
+  -e OPENWEBRX_ADMIN_USER={{ recoverybox_owrx_conf.username }} \
+  -e OPENWEBRX_ADMIN_PASSWORD={{ recoverybox_owrx_conf.password }} \
   --device /dev/bus/usb:/dev/bus/usb \
   -v /etc/owrx/etc:/etc/openwebrx \
   -v /etc/owrx/var:/var/lib/openwebrx \

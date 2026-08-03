@@ -1,16 +1,16 @@
 ---
-title: RecoveryBox_install.sh
+title: install.sh
 description: Script d'installation automatisé de la RecoveryBox sur Debian/amd64.
 tags:
   - outil
   - installation
 ---
 
-# RecoveryBox_install.sh
+# install.sh
 
 ## Présentation
 
-`RecoveryBox_install.sh` est le script d'installation principal du projet **RecoveryBox**. Il automatise le déploiement complet ainsi que la mise à jour et l'activation/désactivation des services.
+`install.sh` est le script d'installation principal du projet **RecoveryBox**. Il automatise le déploiement complet ainsi que la mise à jour et l'activation/désactivation des services.
 
 Le script orchestre l'ensemble du processus :
 - Vérification des prérequis système (root, architecture amd64, point de montage `/data`, interface WiFi)
@@ -32,9 +32,9 @@ Le script orchestre l'ensemble du processus :
 
 | Mode | Commande | Description |
 |------|----------|-------------|
-| **Installation complète (interactive)** | `sudo ./RecoveryBox_install.sh` | Lance l'installation complète avec menus interactifs |
-| **Configuration uniquement** | `sudo ./RecoveryBox_install.sh config` | Affiche uniquement le menu de configuration des services (génère `/etc/recoverybox/custom_config.yml`) |
-| **Installation avec config existante** | `sudo ./RecoveryBox_install.sh custom` | Utilise `/etc/recoverybox/custom_config.yml` existant (passe le menu) |
+| **Installation complète (interactive)** | `sudo ./install.sh` | Lance l'installation complète avec menus interactifs |
+| **Configuration uniquement** | `sudo ./install.sh config` | Affiche uniquement le menu de configuration des services (génère `/etc/recoverybox/custom_config.yml`) |
+| **Installation avec config existante** | `sudo ./install.sh custom` | Utilise `/etc/recoverybox/custom_config.yml` existant (passe le menu) |
 
 ---
 
@@ -43,7 +43,7 @@ Le script orchestre l'ensemble du processus :
 ### Installation complète (mode interactif)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 - Le script propose de reconfigurer la disposition clavier via `dpkg-reconfigure keyboard-configuration`.
 - **Installation par défaut ? (oui/non)**
@@ -88,14 +88,14 @@ sudo ./RecoveryBox_install.sh
 ### Configuration uniquement (mode `config`)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 Lance uniquement le menu de configuration des services (sans exécuter le playbook). Ceci génère ou met à jour le fichier `/etc/recoverybox/custom_config.yml` avec vos choix.
 
 ### Installation avec configuration existante (mode `custom`)
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 Le script utilise le fichier `/etc/recoverybox/custom_config.yml` existant pour exécuter le playbook Ansible sans passer par le menu interactif. Ce mode est utile pour les mises à jour ou les réinstallations avec la même configuration.
 

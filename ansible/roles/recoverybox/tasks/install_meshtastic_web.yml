@@ -19,8 +19,8 @@
         mode: '0644'
 
     - name: Create meshtastic-web apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/meshtastic-web.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/meshtastic-web.conf.j2
         dest: /etc/apache2/sites-available/meshtastic-web.conf
         owner: root
         group: root

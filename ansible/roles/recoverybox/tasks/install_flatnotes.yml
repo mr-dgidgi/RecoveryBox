@@ -36,16 +36,16 @@
       when: recoverybox_flatnotes_open == "full"
 
     - name: Create flatnotes apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/flatnotes.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/flatnotes.conf.j2
         dest: /etc/apache2/sites-available/flatnotes.conf
         owner: root
         group: root
         mode: '0644'
 
     - name: Create flatnotes Read Only apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/flatnotes-ro.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/flatnotes-ro.conf.j2
         dest: /etc/apache2/sites-available/flatnotes-ro.conf
         owner: root
         group: root

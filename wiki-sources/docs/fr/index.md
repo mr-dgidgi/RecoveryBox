@@ -24,13 +24,11 @@ La RecoveryBox propose donc divers outils via le web en se connectant sur le hot
     **Version actuelle : {{ rb_version }}**
 
 ## Services disponibles
-### Ressources hors ligne et accès web
+### Connaissances et informations
 - **Kiwix** : Wikipédia hors ligne (en français et/ou anglais via fichiers ZIM). ([kiwix.recovery.box](http://kiwix.recovery.box))
 - **Librairie** : Serveur web hébergeant une collection de documents PDF liés à la survie et à l'autonomie. ([library.recovery.box](http://library.recovery.box))
 - **Wiki** : Wiki technique de la RecoveryBox (documentation des services et outils). ([wiki.recovery.box](http://wiki.recovery.box))
-
-### Connectivité et réseau
-- **Synchro du temps via GPS** : le serveur fournit l'heure exacte aux équipements connectés à celui-ci grâce à son GPS
+- **Flatnotes** : Service de prise de notes et de partage simple. ([flatnotes.recovery.box](http://flatnotes.recovery.box))
 
 ### Radio et télécommunications
 - **OpenWebRX Plus** : Interface web pour recevoir et écouter les fréquences radio via RTL-SDR. ([owrx.recovery.box](http://owrx.recovery.box))
@@ -48,23 +46,5 @@ La RecoveryBox intègre plusieurs outils développés dans le but de faciliter l
 - **network-configurator** : Outils permettant de configurer les interfaces réseau et wifi
 - **generate-map** : Outil permettant de télécharger et agréger des cartes du monde pour le service de cartographie
 - **Meshtastic Démon** : Service permettant de récupérer les informations d'un nœud Meshtastic et de les afficher sur la carte BRouter
-
-## Sommaire
-* [Démarrage Rapide](quickstart.md)
-* Services
-    * [Hotspot](./services/hotspot.md)
-    * [Librairie](./services/library.md)
-    * [Kiwix](./services/kiwix.md)
-    * [OpenWebRX Plus](./services/owrx.md)
-    * [Meshtastic](./services/meshtastic.md)
-    * [Carto](./services/carto.md)
-    * [Console](./services/console.md)
-    * [Flatnotes](./services/flatnotes.md)
-* Administration
-    * [Installation](./admin/install.md)
-    * [Configuration Réseau](./admin/network.md)
-    * [rbstatus](./admin/rbstatus.md)
-    * [network-configurator](./admin/network-configurator.md)
-    * [generate-map](./admin/generate-map.md)
-    * [Daemon Meshtastic](./admin/meshtastic-daemon.md)
-    * [Debug](./admin/debug.md)
+- **rb-update** : Script permettant de mettre à jour la RecoveryBox et ses services
+- **services-manager** : Script permettant de gérer les services de la RecoveryBox
