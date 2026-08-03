@@ -29,7 +29,7 @@ The 4 pillars of the RecoveryBox project are:
 
 This project is developed to rely on a **Debian 13** installation chain using a custom preseed. See [debian13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) for more details on the base system configuration.
 
-[Documentation inside the repo](https://github.com/mr-dgidgi/RecoveryBox/tree/main/ansible/roles/recoverybox/files/data/wiki/docs)
+Documentation on the website : [recoverybox.fr](https://recoverybox.fr)
 
 ## Installed and Available
 
