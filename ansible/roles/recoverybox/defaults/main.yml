@@ -38,6 +38,14 @@ recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true
 recoverybox_enable_flatnotes: true
 
+# Activate HTTPS
+recoverybox_enable_https: false
+
+# OpenWebRX credentials
+recoverybox_owrx_conf:
+  username: "recoverybox"
+  password: "recoverybox"
+
 # Network interfaces
 recoverybox_interface_wlanap: "wlanAP"
 recoverybox_interface_wan: "Wan"

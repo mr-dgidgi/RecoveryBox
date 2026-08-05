@@ -71,8 +71,11 @@ nav:
           - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
           - Outils système: fr/admin/system-tools.md
           - Debug: fr/admin/debug.md
-          - Mise à jour (rb-update): fr/admin/rb-update.md
+          - Mise à jour: fr/admin/rb-update.md
           - Variables Ansible: fr/admin/ansible-variables.md
+          - Services Manager: fr/admin/services-manager.md
+          - Script d'installation: fr/admin/RecoveryBox_install.md
+          - HTTPS: fr/admin/https.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
@@ -96,3 +99,6 @@ nav:
           - Debug: en/admin/debug.md
           - Update (rb-update): en/admin/rb-update.md
           - Ansible Variables: en/admin/ansible-variables.md
+          - Services Manager: en/admin/services-manager.md
+          - Installation Script: en/admin/RecoveryBox_install.md
+          - HTTPS: en/admin/https.md

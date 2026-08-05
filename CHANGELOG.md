@@ -8,10 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 - Service `flatnotes` added to the RecoveryBox for note taking and sharing.
+- option to enable **HTTPS** for all the services during the installation process. It uses an autosigned certificate.
 
 ### Fixed
 - `RecoveryBox_install.sh` do not restart anymore the services during the installation process. This change avoid user to lose the connection to the RecoveryBox during the installation process and crash the installation script.
 - `network-configurator`: WiFi scan reliability improved in `set_wlan_client` by waiting for real scan results before reading `wpa_cli scan_results`, fixing the case where only the column headers were displayed.
+
+### Changed
+- `RecoveryBox_install.sh` renamed `install.sh` to follow the standard.
 
 ## [1.4.4] - 2026-07-29
 

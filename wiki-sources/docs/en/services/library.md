@@ -99,14 +99,14 @@ An Apache restart via `services-manager` is required for the changes to take eff
 
 #### Enabling / Disabling the service
 
-The service can be completely disabled from the machine by running the `RecoveryBox_install.sh` installation script and choosing a *custom* installation, or directly via the Ansible variable in `/etc/recoverybox/custom_config.yml`:
+The service can be completely disabled from the machine by running the `install.sh` installation script and choosing a *custom* installation, or directly via the Ansible variable in `/etc/recoverybox/custom_config.yml`:
 
 ```yaml
 # In your custom_config.yml
 recoverybox_enable_library: false
 ```
 
-!!! note "RecoveryBox_install.sh"
+!!! note "install.sh"
     If other manual changes have been made to `custom_config.yml`, it is recommended to continue editing the file manually. Recreating the file via the installation script will overwrite your modifications.
 
 !!! warning "Apache2 dependency"

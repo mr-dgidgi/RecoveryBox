@@ -28,8 +28,8 @@
         mode: '0755'
 
     - name: Create library apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/library.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/library.conf.j2
         dest: /etc/apache2/sites-available/library.conf
         owner: root
         group: root

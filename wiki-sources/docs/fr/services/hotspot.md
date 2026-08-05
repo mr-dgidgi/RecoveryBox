@@ -61,7 +61,7 @@ Le réseau Wi-Fi du hotspot est disponible immédiatement au démarrage de la Re
 #### Modification du réseau Wi-Fi
 
 !!! warning "configuration centralisée"
-    Les fichiers de configuration du hotspot Wi-Fi sont gérés par le script `RecoveryBox_install.sh`. Toute modification manuelle de ces fichiers sera écrasée lors d'une mise à jour ou d'une réinstallation. Pour personnaliser le hotspot, il est recommandé d'utiliser les variables `recoverybox_hotspot_conf` dans le fichier `/etc/recoverybox/custom_config.yml`.
+    Les fichiers de configuration du hotspot Wi-Fi sont gérés par le script `install.sh`. Toute modification manuelle de ces fichiers sera écrasée lors d'une mise à jour ou d'une réinstallation. Pour personnaliser le hotspot, il est recommandé d'utiliser les variables `recoverybox_hotspot_conf` dans le fichier `/etc/recoverybox/custom_config.yml`.
 
 Le fichier `/etc/ap_config/hostapd.conf` permet de modifier :
 

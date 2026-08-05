@@ -55,5 +55,4 @@
     name: ap
     enabled: true
     daemon_reload: true
-    state: stopped
   when: "'dry_run' not in ansible_run_tags"
