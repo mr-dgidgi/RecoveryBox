@@ -21,7 +21,14 @@ Le HTTPS utilise un *certificat SSL/TLS* pour établir une connexion sécurisée
 
 Lorsque le HTTPS est activé, toutes les connexions en HTTP sont automatiquement redirigées vers le HTTPS.
 
+!!! note "Meshtastic"
+    Les équipements LoRa à base de puce ESP32 ne supportent pas le HTTPS. Afin de garder une compatibilité avec ces équipements, le HTTPS est toujours désactivé sur ce service.
+
 ## Activation du HTTPS
 
 Le HTTPS est activé lors de l'installation/mise à jour via la [variable Ansible](ansible-variables.md) `recoverybox_enable_https`. Il est possible de l'activer ou de le désactiver à tout moment en modifiant cette variable dans `/etc/recoverybox/custom_config.yml` et en relançant le script d'installation.
+
+## Customisation du certificat SSL/TLS
+
+Il est possible de mettre en place son propre certificat SSL/TLS pour le HTTPS. Pour cela, il faut placer les fichiers du certificat et de la clé privée dans le répertoire `/etc/ssl/recoverybox/` avec les noms `recoverybox.crt` et `recoverybox.key`.
 
