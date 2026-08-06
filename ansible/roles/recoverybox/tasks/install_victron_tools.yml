@@ -1,0 +1,60 @@
+---
+- name: Install Victron Tools
+  when: recoverybox_enable_victron
+  block:
+    - name: Create /etc/victron/ directory
+      ansible.builtin.file:
+        path: /etc/victron/
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy find-victron-mppt.sh script
+      ansible.builtin.copy:
+        src: etc/victron/find-victron-mppt.sh
+        dest: /etc/victron/find-victron-mppt.sh
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy rb-battery.sh script
+      ansible.builtin.copy:
+        src: usr/local/bin/rb-battery.sh
+        dest: /usr/local/bin/rb-battery.sh
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy rb-battery cron file
+      ansible.builtin.copy:
+        src: etc/cron.d/rb-battery
+        dest: /etc/cron.d/rb-battery
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Create find-victron.service
+      ansible.builtin.copy:
+        src: etc/systemd/system/find-victron.service
+        dest: /etc/systemd/system/find-victron.service
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Enable find-victron service
+      ansible.builtin.systemd_service:
+        name: find-victron
+        enabled: true
+        daemon_reload: true
+        state: started
+      when: "'dry_run' not in ansible_run_tags"
+
+- name: Deactivate Victron Tools
+  when: not recoverybox_enable_victron
+  block:
+    - name: Remove cron job for rb-battery
+      ansible.builtin.file:
+        path: /etc/cron.d/rb-battery
+        state: absent
+    - name: Disable find-victron service
+      ansible.builtin.systemd_service:
+        name: find-victron
+        enabled: false
+        state: stopped
+        daemon_reload: true

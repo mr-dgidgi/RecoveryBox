@@ -43,6 +43,7 @@ main() {
     local device
     local found_device
     local Found
+
     
     Found=false
     while [[ $Found == false ]]; do
@@ -51,8 +52,17 @@ main() {
         for device in /dev/ttyUSB*; do
             [[ -e "${device}" ]] || break
 
+            # Check if the device is allready in use by another process
+            if fuser "${device}" >/dev/null 2>&1; then
+                log "device ${device} is in use by another process, skipping"
+                continue
+            fi
+            
+            stty -F "${device}" 19200 raw
+
             if match_vedirect_port "${device}"; then
                 found_device="${device}"
+                break
             fi
         done
 
