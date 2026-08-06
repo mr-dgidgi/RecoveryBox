@@ -14,8 +14,8 @@ MSGYELLOW='\033[0;33m'
 MSGRED='\033[0;31m'
 MSGNC='\033[0m'
 MPPT='/dev/victron-mppt'
-#OUTPUT_FILE='/data/vedirect.json'
-OUTPUT_FILE='/tmp/vedirect.json'
+OUTPUT_FILE='/data/www/vedirect.json'
+#OUTPUT_FILE='/tmp/vedirect.json'
 VOLTAGE_WARNING=12400       # 12.4V in mV   => LifePO4
 VOLTAGE_WARNING_HUM=$(awk "BEGIN {printf \"%.2f\", ${VOLTAGE_WARNING}/1000}")
 VOLTAGE_CRITICAL=12000  # 12.0V in mV       => LifePO4

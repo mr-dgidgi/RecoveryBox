@@ -1,0 +1,84 @@
+{
+    "Values": [
+        {
+            "id": "FW",
+            "name": "Firmware Version",
+            "value": 166,
+            "unit": ""
+        },
+        {
+            "id": "SERIAL",
+            "name": "Serial Number",
+            "value": "HQ2544JW64Q",
+            "unit": ""
+        },
+        {
+            "id": "V",
+            "name": "Battery Voltage",
+            "value": 14190,
+            "unit": "mV"
+        },
+        {
+            "id": "I",
+            "name": "Battery Current",
+            "value": 610,
+            "unit": "mA"
+        },
+        {
+            "id": "VPV",
+            "name": "Panel Voltage",
+            "value": 19300,
+            "unit": "mV"
+        },
+        {
+            "id": "PPV",
+            "name": "Panel Power",
+            "value": 10,
+            "unit": "W"
+        },
+        {
+            "id": "CS",
+            "name": "Charge State",
+            "value": 4,
+            "unit": ""
+        },
+        {
+            "id": "MPPT",
+            "name": "MPPT Channel",
+            "value": 1,
+            "unit": ""
+        },
+        {
+            "id": "OR",
+            "name": "Off-Reason",
+            "value": "0x00000000",
+            "unit": ""
+        },
+        {
+            "id": "ERR",
+            "name": "Error Code",
+            "value": 0,
+            "unit": ""
+        },
+        {
+            "id": "LOAD",
+            "name": "Load Output state",
+            "value": "ON",
+            "unit": ""
+        },
+        {
+            "id": "IL",
+            "name": "Load Output Current",
+            "value": 0,
+            "unit": ""
+        },
+        {
+            "id": "H21",
+            "name": "Maximum Power Today",
+            "value": 145,
+            "unit": "W"
+        }
+    ],
+    "Timestamp": 1786040354,
+    "ErrorMessage": ""
+}

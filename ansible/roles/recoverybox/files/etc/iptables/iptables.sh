@@ -1,8 +1,8 @@
 #!/bin/bash
 ## Managed by network-configurator
 
-EXTRA_INTERFACES=$(cat /etc/iptables/wan_interfaces | grep -vE '^(#|$)' | tr '\n' ' ')
-WAN=("Wan" "$EXTRA_INTERFACES")
+readarray -t EXTRA_INTERFACES < <(grep -vE '^(#|$)' /etc/iptables/wan_interfaces)
+WAN=("Wan" "${EXTRA_INTERFACES[@]}")
 
 if [[ $1 == "start" ]]; then
     ################################################
