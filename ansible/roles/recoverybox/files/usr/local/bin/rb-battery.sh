@@ -3,7 +3,10 @@
 
 # Victron ve-direct script for RecoveryBox
 # This script is used to read data from Victron MPPT devices via the VE.Direct protocol and stop the recoverybox if the battery is low. It is intended to be run as a systemd service.
-
+# This should work at least with  :
+#  - Victron BlueSolar / SmartSolar MPPT 75/10
+#  - Victron BlueSolar / SmartSolar MPPT 75/15
+#  - Victron BlueSolar / SmartSolar MPPT 100/15
 
 SRVMSG=' =+= '
 MSGGREEN='\033[0;32m'
@@ -111,7 +114,7 @@ print_error() {
 
 low_battery_shutdown() {
     echo -e "${MSGRED}${SRVMSG} Battery voltage is below ${VOLTAGE_CRITICAL_HUM} V. Initiating shutdown...${MSGNC}"
-    #systemctl shutdown -P now
+    systemctl shutdown -P now
 }
 
 get_data() {
@@ -282,11 +285,10 @@ print_data() {
             echo -e "${MSGRED}${SRVMSG} $(jq -r '.ErrorMessage' "$OUTPUT_FILE")${MSGNC}"
         fi
 
-        if [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -lt $VOLTAGE_WARNING ]]; then
-            echo -e "${MSGYELLOW}${SRVMSG} Warning : Battery voltage is below ${VOLTAGE_WARNING_HUM} V${MSGNC}"
-
-        elif [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -lt $VOLTAGE_CRITICAL ]]; then
+        if [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -lt $VOLTAGE_CRITICAL ]]; then
             echo -e "${MSGRED}${SRVMSG} Critical : Battery voltage is below ${VOLTAGE_CRITICAL_HUM} V${MSGNC}"
+        elif [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -lt $VOLTAGE_WARNING ]]; then
+            echo -e "${MSGYELLOW}${SRVMSG} Warning : Battery voltage is below ${VOLTAGE_WARNING_HUM} V${MSGNC}"
         fi
 
         if [[ $(jq -r '.ErrorMessage' "$OUTPUT_FILE") == "" ]] && [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -ge $VOLTAGE_WARNING ]]; then
@@ -300,6 +302,16 @@ watch() {
 
     while [[ $RetryCount -lt 3 ]]; do
         get_data
+
+        ## Watch when the MPPT decide to turn off the load output, this is a sign of low battery voltage. Do not use if the server is connected to MPPT Load output.
+        # if [[ $(jq -r '.Values[] | select(.id=="LOAD") | .value' "$OUTPUT_FILE") == "OFF" ]]; then
+        #     echo -e "${MSGRED}${SRVMSG} Load is OFF. Retrying... (${RetryCount}/3)${MSGNC}"
+        #     RetryCount=$((RetryCount + 1))
+        #     sleep 10
+        # else
+        #     exit 0
+        # fi
+
         if [[ $(jq -r '.Values[] | select(.id=="V") | .value' "$OUTPUT_FILE") -lt $VOLTAGE_CRITICAL ]]; then
             RetryCount=$((RetryCount + 1))
             echo -e "${MSGRED}${SRVMSG} Battery voltage is below ${VOLTAGE_CRITICAL_HUM} V. Retrying... (${RetryCount}/3)${MSGNC}"

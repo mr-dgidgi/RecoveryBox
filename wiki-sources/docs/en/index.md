@@ -48,3 +48,4 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
 - **Meshtastic Daemon**: Service for collecting Meshtastic node information and displaying them on the BRouter map
 - **rb-update**: Script for updating RecoveryBox and its services
 - **services-manager**: Script for managing RecoveryBox services
+- **rb-battery**: Battery monitoring and protection script via Victron MPPT VE.Direct

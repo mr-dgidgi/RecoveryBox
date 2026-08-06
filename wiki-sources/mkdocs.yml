@@ -76,6 +76,7 @@ nav:
           - Services Manager: fr/admin/services-manager.md
           - Script d'installation: fr/admin/RecoveryBox_install.md
           - HTTPS: fr/admin/https.md
+          - Gestion de la batterie (rb-battery): fr/admin/rb-battery.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
@@ -98,6 +99,7 @@ nav:
           - System Tools: en/admin/system-tools.md
           - Debug: en/admin/debug.md
           - Update (rb-update): en/admin/rb-update.md
+          - Battery Management (rb-battery): en/admin/rb-battery.md
           - Ansible Variables: en/admin/ansible-variables.md
           - Services Manager: en/admin/services-manager.md
           - Installation Script: en/admin/RecoveryBox_install.md
