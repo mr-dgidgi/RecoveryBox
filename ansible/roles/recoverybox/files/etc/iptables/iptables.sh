@@ -1,6 +1,9 @@
 #!/bin/bash
 ## Managed by network-configurator
-WAN=("Wan")
+
+EXTRA_INTERFACES=$(cat /etc/iptables/wan_interfaces | grep -vE '^(#|$)' | tr '\n' ' ')
+WAN=("Wan" "$EXTRA_INTERFACES")
+
 if [[ $1 == "start" ]]; then
     ################################################
     # All rules should be placed below this line
