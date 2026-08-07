@@ -66,6 +66,7 @@ Documentation on the website : [recoverybox.fr](https://recoverybox.fr)
 - **rbstatus**: Service and network status monitoring directly from the system console.
 - **service-manager**: Utility to manage the main services of the system.
 - **rb-update**: Script to update the RecoveryBox system and its components.
+- **Victron battery monitoring**: Script to monitor the battery voltage and initiate a system shutdown if the voltage drops below a critical threshold.
 
 
 

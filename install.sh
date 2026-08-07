@@ -423,6 +423,16 @@ menu_services() {
         EnableHTTPS="true"
     fi
 
+    read -rp "Enable Victron battery monitoring? yes/no (default : no) : " QuestionEnableBattery
+    QuestionEnableBattery=$(yes_no_check "$QuestionEnableBattery")
+    if [[ $QuestionEnableBattery -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Victron battery monitoring : disabled." "$MSGNC"
+        EnableVictron="false"
+    else
+        echo -e "$MSGGREEN" "$SRVMSG" "Victron battery monitoring : enabled." "$MSGNC"
+        EnableVictron="true"
+    fi
+
     set_ansible_custom_vars
 }
 
@@ -442,6 +452,7 @@ recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
 recoverybox_enable_flatnotes: $EnableFlatnotes
 recoverybox_enable_https: $EnableHTTPS
+recoverybox_enable_victron: $EnableVictron
 recoverybox_kiwix_files:
   - category: wikipedia
     language: fr

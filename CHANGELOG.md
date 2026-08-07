@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 - Service `flatnotes` added to the RecoveryBox for note taking and sharing.
 - option to enable **HTTPS** for all the services during the installation process. It uses an autosigned certificate.
+- **Victron battery monitoring** added through the `rb-battery` script. It monitors the battery voltage and initiates a system shutdown if the voltage drops below a critical threshold.
 
 ### Fixed
 - `RecoveryBox_install.sh` do not restart anymore the services during the installation process. This change avoid user to lose the connection to the RecoveryBox during the installation process and crash the installation script.

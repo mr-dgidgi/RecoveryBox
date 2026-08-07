@@ -143,7 +143,7 @@ set_iptables() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILEEXTRA to ${IPTABLESFILEEXTRA}.bak" "$MSGNC"
         
         # Add The new interface into a new line
-        echo "$1" >> "$IPTABLESFILEEXTRA"
+        echo -e "$1" >> "$IPTABLESFILEEXTRA"
                
         # Restart iptables service
         if ! systemctl restart iptables 2>/dev/null; then

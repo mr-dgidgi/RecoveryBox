@@ -48,3 +48,4 @@ La RecoveryBox intègre plusieurs outils développés dans le but de faciliter l
 - **Meshtastic Démon** : Service permettant de récupérer les informations d'un nœud Meshtastic et de les afficher sur la carte BRouter
 - **rb-update** : Script permettant de mettre à jour la RecoveryBox et ses services
 - **services-manager** : Script permettant de gérer les services de la RecoveryBox
+- **rb-battery** : Script de surveillance et protection batterie via MPPT Victron VE.Direct
