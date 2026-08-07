@@ -58,3 +58,4 @@
         enabled: false
         state: stopped
         daemon_reload: true
+      when: "'dry_run' not in ansible_run_tags"
