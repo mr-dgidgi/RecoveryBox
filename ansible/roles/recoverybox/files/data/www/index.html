@@ -47,6 +47,11 @@
       <div id="system-content"></div>
     </section>
 
+    <section class="rb-card">
+      <h2>Battery</h2>
+      <div id="battery-content"></div>
+    </section>
+
     <footer class="rb-card">
       <p>Si un service ne répond pas, vérifiez qu'il est démarré et que vous êtes connecté au réseau RecoveryBox. / If a service does not respond, check it is started and that you are connected to the RecoveryBox network.</p>
     </footer>
@@ -190,6 +195,74 @@
                     : 'online';
         return '<div class="rb-status-row"><span>' + item.label + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + dotClass + '"></span>' + item.value + '</span></div>';
       }).join('');
+    });
+
+  fetch('/vedirect.json')
+    .then(res => res.json())
+    .then(data => {
+      const battDiv = document.getElementById('battery-content');
+      const values = {};
+      (data.Values || []).forEach(function(v) {
+        values[v.id] = v;
+      });
+
+      const battItems = [];
+
+      function addRow(label, value, dotClass) {
+        battItems.push({ label: label, value: value, dotClass: dotClass });
+      }
+
+      function voltageStatus(mv) {
+        return mv < 12000 ? 'offline' : mv < 12400 ? 'warning' : 'online';
+      }
+
+      if (values.V) {
+        addRow('Battery Voltage', (values.V.value / 1000).toFixed(2) + ' V', voltageStatus(values.V.value));
+      }
+      if (values.I) {
+        addRow('Battery Current', (values.I.value / 1000).toFixed(2) + ' A', 'online');
+      }
+      if (values.VPV) {
+        addRow('Input Voltage', (values.VPV.value / 1000).toFixed(2) + ' V', 'online');
+      }
+      if (values.PPV) {
+        addRow('Input Power', values.PPV.value + ' W', 'online');
+      }
+      if (values.CS) {
+        const csLabels = { 0: 'Off', 2: 'Fault', 3: 'Bulk', 4: 'Absorption', 5: 'Float' };
+        const csValue = csLabels[values.CS.value] !== undefined ? csLabels[values.CS.value] : values.CS.value;
+        addRow('Charge State', csValue, 'online');
+      }
+      if (values.ERR) {
+        addRow('Error Code', values.ERR.value, values.ERR.value === 0 ? 'online' : 'offline');
+      }
+      if (values.LOAD) {
+        addRow('Load Output', values.LOAD.value, values.LOAD.value === 'ON' ? 'online' : 'warning');
+      }
+      if (values.IL) {
+        addRow('Load Output Current', (values.IL.value / 1000).toFixed(2) + ' A', 'online');
+      }
+      if (values.H21) {
+        addRow('Maximum Input Power Today', values.H21.value + ' W', 'online');
+      }
+
+      if (data.ErrorMessage) {
+        addRow('Error', data.ErrorMessage, 'offline');
+      }
+
+      if (battItems.length === 0) {
+        battDiv.innerHTML = '<div class="rb-status-row"><span>Battery</span><span class="rb-badge rb-data"><span class="rb-status-dot offline"></span>No data</span></div>';
+      } else {
+        battDiv.innerHTML = battItems.map(function(item) {
+          return '<div class="rb-status-row"><span>' + item.label + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + item.dotClass + '"></span>' + item.value + '</span></div>';
+        }).join('');
+      }
+    })
+    .catch(function() {
+      const battDiv = document.getElementById('battery-content');
+      if (battDiv) {
+        battDiv.innerHTML = '<div class="rb-status-row"><span>Battery</span><span class="rb-badge rb-data"><span class="rb-status-dot offline"></span>Data unavailable</span></div>';
+      }
     });
   </script>
 </body>
