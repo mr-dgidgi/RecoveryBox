@@ -115,7 +115,7 @@ La surveillance automatique est configurée via une entrée cron dans `/etc/cron
 
 ## Informations fournies (JSON de sortie)
 
-Le script génère un fichier JSON `/tmp/vedirect.json` contenant toutes les métriques lues. Structure :
+Le script génère un fichier JSON `/data/www/vedirect.json` contenant toutes les métriques lues. Structure :
 
 ```json
 {
@@ -195,7 +195,7 @@ Le script utilise deux seuils fixes définis en tête de script :
 |---------|------|
 | `/usr/local/bin/rb-battery.sh` | Script principal (géré par Ansible) |
 | `/etc/cron.d/rb-battery` | Planification cron (géré par Ansible) |
-| `/tmp/vedirect.json` | Fichier de sortie JSON (temporaire) |
+| `/data/www/vedirect.json` | Fichier de sortie JSON (temporaire) |
 | `/dev/victron-mppt` | Périphérique série VE.Direct (symlink udev) |
 
 ## Dépannage basique

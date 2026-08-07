@@ -12,9 +12,9 @@ tags:
 
 ## Overview
 
-`rb-battery` is a command-line utility designed for RecoveryBox to monitor battery status via a Victron MPPT charge controller connected via VE.Direct protocol. It reads raw data from the `/dev/victron-mppt` device, formats it as JSON, and monitors battery voltage to trigger a clean system shutdown in case of critical voltage.
+`rb-battery` is a command-line utility designed for RecoveryBox to monitor battery status via a Victron MPPT charge controller connected via VE.Direct. It reads raw data from the `/dev/victron-mppt` device, formats it as JSON, and monitors battery voltage to trigger a clean system shutdown in case of critical voltage.
 
-Compatible Victron controllers:
+The tool is compatible with the following Victron controllers:
 - BlueSolar / SmartSolar MPPT 75/10
 - BlueSolar / SmartSolar MPPT 75/15
 - BlueSolar / SmartSolar MPPT 100/15
@@ -27,36 +27,6 @@ Compatible Victron controllers:
 
 The `find-victron` (systemd) service handles automatic discovery of the Victron MPPT controller at boot and runtime. It creates the `/dev/victron-mppt` symlink required by `rb-battery.sh`.
 
-### How it Works
-
-The script `/etc/victron/find-victron-mppt.sh`:
-1. Scans serial ports `/dev/ttyUSB*`
-2. Configures port to **19200 baud** (VE.Direct standard)
-3. Reads raw data and searches for VE.Direct markers: `PID`, `FW`, `SER#`, `V`, `CS`
-4. Requires minimum **3 markers** out of 5 to validate the device
-5. Creates symlink `/dev/victron-mppt` pointing to detected device
-6. If no device found: waits **300 seconds (5 min)** and retries (infinite loop)
-7. Removes symlink if it becomes stale (device unplugged)
-
-### systemd Service
-
-File: `/etc/systemd/system/find-victron.service`
-
-```ini
-[Unit]
-Description=Service to find Victron MPPT 
-[Service]
-Type=oneshot
-RemainAfterExit=true
-ExecStart=/etc/victron/find-victron-mppt.sh
-[Install]
-WantedBy=multi-user.target
-```
-
-- **Type=oneshot** + **RemainAfterExit=true**: systemd considers service "active" while script runs (infinite loop)
-- Starts automatically at boot (`WantedBy=multi-user.target`)
-- Can be restarted via `systemctl restart find-victron` if MPPT is hot-plugged
-
 ### Useful Commands
 
 ```bash
@@ -66,22 +36,19 @@ systemctl status find-victron
 # Real-time logs
 journalctl -u find-victron -f
 
-# Restart detection (e.g., MPPT plugged after boot)
-systemctl restart find-victron
-
 # Verify created symlink
 ls -l /dev/victron-mppt
 ```
 
 ### Integration with rb-battery
 
-`rb-battery.sh` expects the `/dev/victron-mppt` device. If MPPT is not detected when cron runs:
+`rb-battery.sh` expects the `/dev/victron-mppt` device. If the MPPT is not detected when cron runs:
 - `rb-battery.sh` displays `No data received from VE.Direct device`
 - `find-victron` continues scanning in background
-- Once detected, symlink is created and next cron execution (max 1 min) works normally
+- Once detected, the symlink is created and the next cron execution (max 1 min) works normally
 
 !!! tip "Hot-plugging"
-    If you plug the MPPT after RecoveryBox boot, either wait for next `find-victron` loop (max 5 min), or run `systemctl restart find-victron` to force immediate detection.
+    If you plug the MPPT after RecoveryBox boot, either wait for the next `find-victron` loop (max 5 min), or run `systemctl restart find-victron` to force immediate detection.
 
 ## Usage Guide
 
@@ -151,7 +118,7 @@ Automatic monitoring is configured via a cron entry in `/etc/cron.d/rb-battery`:
 
 ## Output Information (JSON Output)
 
-The script generates a JSON file `/tmp/vedirect.json` containing all read metrics. Structure:
+The script generates a JSON file `/data/www/vedirect.json` containing all read metrics. Structure:
 
 ```json
 {
@@ -223,7 +190,7 @@ The script uses two fixed thresholds defined at the top of the script:
 | `VOLTAGE_CRITICAL` | 12.0 V (12000 mV) | Triggers shutdown attempt (red) |
 
 !!! tip "Customization"
-    To adapt thresholds for different battery chemistry (e.g., lead-acid), modify `VOLTAGE_WARNING` and `VOLTAGE_CRITICAL` variables in `/usr/local/bin/rb-battery.sh`.
+    To adapt thresholds for different battery chemistry (e.g., lead-acid), modify the `VOLTAGE_WARNING` and `VOLTAGE_CRITICAL` variables in `/usr/local/bin/rb-battery.sh`.
 
 ## Relevant Files
 
@@ -231,7 +198,7 @@ The script uses two fixed thresholds defined at the top of the script:
 |------|------|
 | `/usr/local/bin/rb-battery.sh` | Main script (managed by Ansible) |
 | `/etc/cron.d/rb-battery` | Cron scheduling (managed by Ansible) |
-| `/tmp/vedirect.json` | JSON output file (temporary) |
+| `/data/www/vedirect.json` | JSON output file (temporary) |
 | `/dev/victron-mppt` | VE.Direct serial device (udev symlink) |
 
 ## Basic Troubleshooting

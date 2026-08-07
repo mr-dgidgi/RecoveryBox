@@ -37,7 +37,7 @@ recoverybox_enable_kiwix: true
 recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true
 recoverybox_enable_flatnotes: true
-recoverybox_enable_victron: true
+recoverybox_enable_victron: false
 
 # Activate HTTPS
 recoverybox_enable_https: false
