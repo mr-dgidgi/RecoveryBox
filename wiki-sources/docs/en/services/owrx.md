@@ -16,7 +16,7 @@ For more details about the original project, consult the **[official OpenWebRX d
 
 ### Plus Version
 
-RecoveryBox integrates **OpenWebRX Plus** (OpenWebRX+), an enhanced fork of the original project. This version adds critical features for crisis management and self-reliance, including built-in decoders for digital and analog modes (DMR, P25, D-Star, NXDN, APRS, POCSAG/Pager, SSTV, weather FAX), as well as improved map management and frequency scanning.
+RecoveryBox integrates **OpenWebRX Plus** (OpenWebRX+), an enhanced fork of the original project. This version adds critical features for crisis management and self-reliance, including built-in decoders for digital and analog modes (DMR, P25, D-Star, NXDN, APRS, POCSAG/Pager, SSTV, weather FAX, LORA, Meshtastic, Meshcore), as well as improved map management and frequency scanning.
 
 For more details about this version, visit the **[official OpenWebRX Plus repository](https://github.com/luarvique/openwebrx-plus)**.
 
@@ -35,6 +35,20 @@ The radio reception interface is accessible to all users connected to the Recove
     | Password    | `recoverybox` |
 
 OpenWebRX Plus administration is primarily done through its web interface.
+
+!!! warning "Service startup"
+    The OpenWebRX Plus service only starts if a compatible SDR dongle is detected on the system. If no SDR device is present, the service will remain stopped.
+    If the dongle is connected after the RecoveryBox has started, the service will start automatically.
+
+!!! info "Hardware compatibility"
+    The current OpenWebRX Plus integration is compatible with the following SDR devices:
+    - RTL-SDR
+    - Airspy
+    - HackRF
+    - LimeSDR
+    - SDRplay
+    - FunCube
+    - PlutoSDR
 
 ## Advanced Configuration
 
