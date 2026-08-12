@@ -1,0 +1,45 @@
+# ==============================================================================
+# RTL-SDR (Realtek RTL2832U / RTL2838)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="2838", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="2832", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# Airspy (R2, Mini, HF+)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="60a1", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="60a2", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="f892", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# HackRF (One, Jawbreaker)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="6089", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="604b", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# LimeSDR (USB, Mini)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="601f", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="6108", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# SDRplay (RSP1, RSP1A, RSP2, RSPduo, RSPdx)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1df7", ATTR{idProduct}=="2500", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1df7", ATTR{idProduct}=="3000", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1df7", ATTR{idProduct}=="3010", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1df7", ATTR{idProduct}=="3020", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1df7", ATTR{idProduct}=="3030", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# FunCube Dongle (Pro, Pro+)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="fb56", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", ATTR{idProduct}=="fb31", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+
+# ==============================================================================
+# ADALM-PLUTO / PlutoSDR (Analog Devices)
+# ==============================================================================
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0456", ATTR{idProduct}=="b673", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="0456", ATTR{idProduct}=="b674", TAG+="systemd", ENV{SYSTEMD_WANTS}+="openwebrx.service"

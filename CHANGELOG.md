@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - `network-configurator`: WiFi scan reliability improved in `set_wlan_client` by waiting for real scan results before reading `wpa_cli scan_results`, fixing the case where only the column headers were displayed.
 - `iptables.sh` modified to read the WAN interfaces from `/etc/iptables/wan_interfaces` instead of hardcoding them in the script. This avoids the loss of WAN interfaces rules during updates.
 - `iptables.sh` now create custom subchains to avoid deleting docker rules when restarting the script.
+- `openwebrx.service` now starts automatically if an SDR dongle is connected. This avoids the need to restart the service manually after connecting the dongle.
 
 ### Changed
 - `RecoveryBox_install.sh` renamed `install.sh` to follow the standard.

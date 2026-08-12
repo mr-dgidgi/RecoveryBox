@@ -62,7 +62,9 @@ Get_ServiceStatus() {
             case "$SvcType" in
                 systemd)
                     systemctl is-active --quiet "$Unit" && SvcStatus=0 || SvcStatus=1
-                    systemctl is-enabled --quiet "$Unit" || SvcStatus=2
+                    if [[ "$Unit" != "openwebrx.service" ]]; then
+                        systemctl is-enabled --quiet "$Unit" || SvcStatus=2
+                    fi
                     ;;
                 http)
                     if [[ "$CheckUrl" == *"https"* ]]; then

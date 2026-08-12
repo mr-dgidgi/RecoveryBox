@@ -16,7 +16,7 @@ Pour plus de détails sur le projet d'origine, consultez la **[documentation off
 
 ### Version Plus
 
-La RecoveryBox intègre la version **OpenWebRX Plus** (OpenWebRX+), un fork amélioré du projet initial. Cette version ajoute des fonctionnalités critiques pour la gestion de crise et l'autonomie, notamment des décodeurs intégrés pour les modes numériques et analogiques (DMR, P25, D-Star, NXDN, APRS, POCSAG/Pager, SSTV, météo FAX), ainsi qu'une meilleure gestion des cartes et du balayage des fréquences.
+La RecoveryBox intègre la version **OpenWebRX Plus** (OpenWebRX+), un fork amélioré du projet initial. Cette version ajoute des fonctionnalités critiques pour la gestion de crise et l'autonomie, notamment des décodeurs intégrés pour les modes numériques et analogiques (DMR, P25, D-Star, NXDN, APRS, POCSAG/Pager, SSTV, météo FAX, LORA, Meshtastic, Meshcore), ainsi qu'une meilleure gestion des cartes et du balayage des fréquences.
 
 Pour consulter les spécificités de cette version, visitez le **[dépôt officiel OpenWebRX Plus](https://github.com/luarvique/openwebrx-plus)**.
 
@@ -35,6 +35,20 @@ L'interface de réception radio est accessible à tous les utilisateurs connect�
     | Mot de passe | `recoverybox` |
 
 L'administration d'OpenWebRX Plus se fait principalement via son interface web.
+
+!!! warning "Démarrage du service"
+    Le service OpenWebRX Plus ne démarre que si une clé SDR compatible est détectée sur le système. Si aucun périphérique SDR n'est présent, le service restera stoppé.
+    Si la clé est connectée après le démarrage de la RecoveryBox, le service démarrera automatiquement.
+
+!!! info "Compatibilité matérielle"
+    L'intégration actuelle d'OpenWebRX Plus est compatible avec les périphériques SDR suivants :
+    - RTL-SDR
+    - Airspy
+    - HackRF
+    - LimeSDR
+    - SDRplay
+    - FunCube
+    - PlutoSDR
 
 ## Configuration avancée
 
