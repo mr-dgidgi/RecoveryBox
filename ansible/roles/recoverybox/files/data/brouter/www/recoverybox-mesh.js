@@ -6,10 +6,10 @@
 
     // Custom icon for radio nodes
     const meshIcon = L.icon({
-        iconUrl: 'mesh-node.png', // Create an icon or reuse the existing one
-        iconSize: [23, 38],
-        iconAnchor: [12, 38],
-        popupAnchor: [0, -38]
+        iconUrl: 'M-POWERED_minified.svg',
+        iconSize: [30,29],
+        iconAnchor: [15, 29],
+        popupAnchor: [0, -29]
     });
 
     function formatEpochTimestamp(value) {
@@ -49,7 +49,7 @@
                         const pos = [lat, lon];
                         const nodeId = props.id;
                         activeIds.push(nodeId);
-                        console.log("RecoveryBox Mesh - Position lue :", pos);
+                        console.log("RecoveryBox Mesh - Node :", nodeId, "Position lue :", pos);
 
 
                         const popupContent = `<b>Node: ${props.name}</b><br>
