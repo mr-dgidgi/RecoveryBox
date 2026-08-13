@@ -20,6 +20,7 @@
       loop:
         - segments4
         - www
+        - profiles
 
     - name: Create brouter service
       ansible.builtin.template:
@@ -43,6 +44,30 @@
         owner: root
         group: root
         mode: '0644'
+
+    - name: Add brouter profiles
+      ansible.builtin.copy:
+        src: data/brouter/profiles/
+        dest: /data/brouter/profiles/
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - car-fast.brf
+        - lookups.dat
+        - car-offroad.brf
+
+    - name: Customize translation FR
+      ansible.builtin.lineinfile:
+        path: /data/brouter/www/dist/locales/fr.json
+        regexp: '      "vm-forum-liegerad-schnell": "Vélo couché (rapide)",'
+        line: '      "car-offroad": "4x4 (hors route)",'
+
+    - name: Customize translation EN
+      ansible.builtin.lineinfile:
+        path: /data/brouter/www/dist/locales/en.json
+        regexp: '      "vm-forum-liegerad-schnell": "Vélo couché (rapide)",'
+        line: '      "car-offroad": "4x4 (off road)",'
 
     - name: Add GPS javascript to brouter-web
       ansible.builtin.copy:
