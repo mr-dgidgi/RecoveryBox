@@ -1,6 +1,6 @@
 ---
-title: rb-battery - Gestion de la batterie via MPPT Victron
-description: Documentation de l'utilitaire rb-battery pour la surveillance et la protection de la batterie sur RecoveryBox
+title: batteries - Gestion des batteries
+description: Documentation de la gestion, la surveillance et la protection des batteries sur RecoveryBox
 tags:
   - outil
   - administration
@@ -8,9 +8,22 @@ tags:
   - victron
 ---
 
-# rb-battery - Gestion de la batterie via MPPT Victron
+# Batteries - Gestion et surveillance
 
-## Présentation
+La RecoveryBox intègre deux utilitaires différents en fonction du type de déploiement. Si la RecoveryBox est déployée sur un système autonome avec un contrôleur de charge Victron MPPT, l'outil `rb-battery` est utilisé pour surveiller la batterie. Dans le cas d'une RecoveryBox déployée sur un PC portable ou un serveur avec une batterie interne, l'outil `rb-laptop` est utilisé pour surveiller la batterie. Dans les deux cas, les informations sont remontées dans l'[interface web](http://recovery.box) de la RecoveryBox.
+
+Par défaut, l'utilitaire `rb-laptop` est installé sur la machine. Celui-ci est remplacé par `rb-battery` si l'option est configurée lors de l'installation/mise à jour de la RecoveryBox.
+
+!!! info "Compatibilité"
+    - `rb-battery` est compatible uniquement avec les contrôleurs de charge Victron MPPT connectés via VE.Direct.
+    - `rb-laptop` est compatible uniquement avec les systèmes Linux disposant d'une batterie interne (ex: PC portable, serveur avec batterie).
+
+!!! warning "Attention"
+    Seul `rb-battery` est capable de déclencher un arrêt propre du système en cas de tension critique. `rb-laptop` ne déclenche pas d'arrêt automatique, il se contente de remonter l'état de la batterie.
+
+## rb-battery - Gestion de la batterie via MPPT Victron
+
+### Présentation
 
 `rb-battery` est un utilitaire en ligne de commande conçu pour la RecoveryBox afin de surveiller l'état de la batterie via un contrôleur de charge MPPT Victron connecté en VE.Direct. Il lit les données brutes du périphérique `/dev/victron-mppt`, les formate en JSON et surveille la tension de la batterie pour déclencher un arrêt propre du système en cas de tension critique.
 
@@ -23,11 +36,11 @@ L'outil est compatible avec les contrôleurs Victron suivants :
     Le script est déployé via Ansible dans `/usr/local/bin/rb-battery.sh` et exécuté périodiquement via une tâche cron.
     La détection automatique du périphérique MPPT est gérée par le service **find-victron** (voir section dédiée).
 
-## Service find-victron - Détection automatique du MPPT
+### Service find-victron - Détection automatique du MPPT
 
 Le service `find-victron` (systemd) assure la découverte automatique du contrôleur MPPT Victron au démarrage et en runtime. Il crée le lien symbolique `/dev/victron-mppt` requis par `rb-battery.sh`.
 
-### Commandes utiles
+#### Commandes utiles
 
 ```bash
 # Statut du service
@@ -40,7 +53,7 @@ journalctl -u find-victron -f
 ls -l /dev/victron-mppt
 ```
 
-### Intégration avec rb-battery
+#### Intégration avec rb-battery
 
 `rb-battery.sh` attend le device `/dev/victron-mppt`. Si le MPPT n'est pas détecté au moment où la cron s'exécute :
 - `rb-battery.sh` affiche `No data received from VE.Direct device`
@@ -50,9 +63,9 @@ ls -l /dev/victron-mppt
 !!! tip "Branchement à chaud"
     Si vous branchez le MPPT après le démarrage de la RecoveryBox, soit attendez la prochaine boucle de `find-victron` (max 5 min), soit lancez `systemctl restart find-victron` pour forcer la détection immédiate.
 
-## Guide d'utilisation
+### Guide d'utilisation
 
-### Exécution manuelle (lecture unique)
+#### Exécution manuelle (lecture unique)
 
 Pour afficher l'état actuel de la batterie et du MPPT :
 
@@ -83,7 +96,7 @@ Sortie exemple :
  =+= None
 ```
 
-### Mode surveillance (watch)
+#### Mode surveillance (watch)
 
 Le mode `watch` est utilisé par la cron pour surveiller en continu la tension de la batterie :
 
@@ -97,7 +110,7 @@ Ce mode :
 3. Si critique : attend 10 secondes et réessaie (jusqu'à 3 tentatives)
 4. Après 3 échecs consécutifs : déclenche `low_battery_shutdown` (arrêt système)
 
-## Tâche Cron
+### Tâche Cron
 
 La surveillance automatique est configurée via une entrée cron dans `/etc/cron.d/rb-battery` :
 
@@ -113,9 +126,9 @@ La surveillance automatique est configurée via une entrée cron dans `/etc/cron
 !!! note "Fréquence"
     L'exécution minutée permet une réactivité rapide en cas de chute de tension, tout en limitant la charge système (lecture série courte + traitement JSON).
 
-## Informations fournies (JSON de sortie)
+### Informations fournies (JSON de sortie)
 
-Le script génère un fichier JSON `/data/www/vedirect.json` contenant toutes les métriques lues. Structure :
+Le script génère un fichier JSON `/data/www/battery.json` contenant toutes les métriques lues. Structure :
 
 ```json
 {
@@ -139,7 +152,7 @@ Le script génère un fichier JSON `/data/www/vedirect.json` contenant toutes le
 }
 ```
 
-### Détail des champs
+#### Détail des champs
 
 | ID | Nom | Unité | Description |
 |----|-----|-------|-------------|
@@ -157,7 +170,7 @@ Le script génère un fichier JSON `/data/www/vedirect.json` contenant toutes le
 | `IL` | Load Output Current | mA | Courant sortie charge (milliampères) |
 | `H21` | Maximum Power Today | W | Puissance max aujourd'hui |
 
-### Codes d'erreur Victron (champ `ERR`)
+#### Codes d'erreur Victron (champ `ERR`)
 
 | Code | Signification |
 |------|---------------|
@@ -177,7 +190,7 @@ Le script génère un fichier JSON `/data/www/vedirect.json` contenant toutes le
 | `117` | Firmware invalide/incompatible |
 | `119` | Données de réglages perdues |
 
-## Seuils de tension (LiFePO4)
+#### Seuils de tension (LiFePO4)
 
 Le script utilise deux seuils fixes définis en tête de script :
 
@@ -189,20 +202,72 @@ Le script utilise deux seuils fixes définis en tête de script :
 !!! tip "Personnalisation"
     Pour adapter les seuils à une autre chimie de batterie (ex: plomb), modifier les variables `VOLTAGE_WARNING` et `VOLTAGE_CRITICAL` dans `/usr/local/bin/rb-battery.sh`.
 
-## Fichiers concernés
+#### Fichiers concernés
 
 | Fichier | Rôle |
 |---------|------|
-| `/usr/local/bin/rb-battery.sh` | Script principal (géré par Ansible) |
+| `/usr/local/bin/rb-battery` | Script principal (géré par Ansible) |
 | `/etc/cron.d/rb-battery` | Planification cron (géré par Ansible) |
-| `/data/www/vedirect.json` | Fichier de sortie JSON (temporaire) |
+| `/data/www/battery.json` | Fichier de sortie JSON |
 | `/dev/victron-mppt` | Périphérique série VE.Direct (symlink udev) |
 
-## Dépannage basique
+#### Dépannage basique
 
 | Problème | Cause probable | Solution |
 |----------|----------------|----------|
 | `No data received from VE.Direct device` | MPPT non connecté / mauvais device | Vérifier `/dev/victron-mppt` et câblage USB/VE.Direct |
 | Tension affichée à 0 | Communication série HS | Redémarrer le MPPT, vérifier le port série |
 | `Error Code` non nul | Voir tableau codes d'erreur | Consulter la doc Victron pour le code correspondant |
+| Cron ne s'exécute pas | Service cron arrêté | `systemctl status cron` / `systemctl restart cron` |
+
+## rb-laptop - Surveillance de la batterie interne (PC portable / serveur)
+
+### Présentation
+
+`rb-laptop` est un utilitaire en ligne de commande conçu pour la RecoveryBox afin de surveiller l'état de la batterie interne d'un PC portable ou d'un serveur. Il lit les informations depuis le système Linux via `/sys/class/power_supply/` et génère un fichier JSON avec des informations moins détaillées que `rb-battery`, mais suffisantes pour la surveillance de l'état de la batterie.
+
+Le script peut gérer plusieurs batteries internes si le système en possède. Il remonte uniquement les informations essentielles sur la [page d'accueil](http://recovery.box) de la RecoveryBox.
+
+!!! warning "Attention"
+    `rb-laptop` ne déclenche pas d'arrêt automatique en cas de batterie faible.
+
+### Informations fournies (JSON de sortie)
+
+Le script génère un fichier JSON `/data/www/battery.json` contenant toutes les métriques lues. Structure :
+
+```json
+{
+    "Values": [
+        { 
+            "Name": "Battery", 
+            "Status": "Discharging",
+            "Capacity": 85
+        }
+    ],
+    "Timestamp": 1722945600,
+    "ErrorMessage": ""
+}
+```
+
+### Tâche Cron
+
+La surveillance automatique est configurée via une entrée cron dans `/etc/cron.d/rb-laptop` :
+
+```cron
+* * * * * root /usr/local/bin/rb-laptop.sh watch
+```
+
+#### Fichiers concernés
+
+| Fichier | Rôle |
+|---------|------|
+| `/etc/rb-laptop/rb-laptop.sh` | Script principal (géré par Ansible) |
+| `/etc/cron.d/rb-laptop` | Planification cron (géré par Ansible) |
+| `/data/www/battery.json` | Fichier de sortie JSON |
+
+#### Dépannage basique
+
+| Problème | Cause probable | Solution |
+|----------|----------------|----------|
+| `battery.json` vide ou non créé | Aucune batterie disponible | Vérifier la présence de batteries internes avec `ls /sys/class/power_supply/` |
 | Cron ne s'exécute pas | Service cron arrêté | `systemctl status cron` / `systemctl restart cron` |

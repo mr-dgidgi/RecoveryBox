@@ -27,3 +27,21 @@
     enabled: true
     state: started
   when: "'dry_run' not in ansible_run_tags"
+
+- name: Copy rb-laptop script
+  ansible.builtin.copy:
+    src: etc/rb-laptop
+    dest: /etc/rb-laptop
+    owner: root
+    group: root
+    mode: '0755'
+  when: not recoverybox_enable_victron
+
+- name: Copy rb-laptop cron file
+  ansible.builtin.copy:
+    src: etc/cron.d/rb-laptop
+    dest: /etc/cron.d/rb-laptop
+    owner: root
+    group: root
+    mode: '0644'
+  when: not recoverybox_enable_victron
