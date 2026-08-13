@@ -47,8 +47,8 @@
 
     - name: Add brouter profiles
       ansible.builtin.copy:
-        src: data/brouter/www/profiles/
-        dest: /data/brouter/www/profiles/
+        src: data/brouter/profiles/
+        dest: /data/brouter/profiles/
         owner: root
         group: root
         mode: '0644'
