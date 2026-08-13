@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - `RecoveryBox_install.sh` renamed `install.sh` to follow the standard.
 - Logo for Meshtastic node in Brouter updated
 - OpenwebRX container updated to version **[1.2.120](https://github.com/luarvique/openwebrx/tree/1.2.120)**.
+- Custom Brouter profiles added for car and offroad vehicles.
 
 ## [1.4.4] - 2026-07-29
 
