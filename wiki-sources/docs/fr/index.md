@@ -49,3 +49,4 @@ La RecoveryBox intègre plusieurs outils développés dans le but de faciliter l
 - **rb-update** : Script permettant de mettre à jour la RecoveryBox et ses services
 - **services-manager** : Script permettant de gérer les services de la RecoveryBox
 - **rb-battery** : Script de surveillance et protection batterie via MPPT Victron VE.Direct
+- **rb-laptop** : Script permettant d'afficher le niveau de batterie sur la page d'accueil si le matériel est un ordinateur portable

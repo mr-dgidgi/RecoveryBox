@@ -18,7 +18,7 @@ It can be used:
 * As a local documentation server
 
 The goal is to quickly deploy a self-contained, standalone knowledge base accessible from any standard web browser.
-RecoBox provides various tools via the web by connecting to the hotspot it hosts and accessing [http://recovery.box](http://recovery.box)
+RecoveryBox provides various tools via the web by connecting to the hotspot it hosts and accessing [http://recovery.box](http://recovery.box)
 
 !!! info "Version"
     **Current version: {{ rb_version }}**
@@ -49,3 +49,4 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
 - **rb-update**: Script for updating RecoveryBox and its services
 - **services-manager**: Script for managing RecoveryBox services
 - **rb-battery**: Battery monitoring and protection script via Victron MPPT VE.Direct
+- **rb-laptop**: Script for displaying the battery level on the homepage if the hardware is a laptop
