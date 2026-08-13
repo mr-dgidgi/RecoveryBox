@@ -17,7 +17,7 @@ recoverybox_version_kiwix: "3.8.2"
 # renovate: datasource=docker depName=mrdgidgi/simple-hotspot
 recoverybox_version_simple_hotspot: "1.0"
 # renovate: datasource=docker depName=slechev/openwebrxplus-softmbe
-recoverybox_version_owrx: "1.2.118"
+recoverybox_version_owrx: "1.2.120"
 # renovate: datasource=docker depName=maptiler/tileserver-gl
 recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource=docker depName=ghcr.io/onthegomap/planetiler

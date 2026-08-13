@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.5.0] - TBD
+## [1.5.0] - 13-08-2026
 
 ### Added
 - Service `flatnotes` added to the RecoveryBox for note taking and sharing.
@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Changed
 - `RecoveryBox_install.sh` renamed `install.sh` to follow the standard.
 - Logo for Meshtastic node in Brouter updated
+- OpenwebRX container updated to version **[1.2.120](https://github.com/luarvique/openwebrx/tree/1.2.120)**.
 
 ## [1.4.4] - 2026-07-29
 
