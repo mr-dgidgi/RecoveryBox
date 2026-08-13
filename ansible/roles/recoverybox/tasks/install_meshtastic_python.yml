@@ -24,8 +24,8 @@
 
 - name: Copy mesh-node icon
   ansible.builtin.copy:
-    src: data/brouter/www/mesh-node.png
-    dest: /data/brouter/www/mesh-node.png
+    src: data/brouter/www/M-POWERED_minified.svg
+    dest: /data/brouter/www/M-POWERED_minified.svg
     owner: root
     group: root
     mode: '0644'
