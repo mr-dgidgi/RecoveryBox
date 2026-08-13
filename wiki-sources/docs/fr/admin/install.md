@@ -8,7 +8,7 @@ tags:
 
 # Installation avancée
 
-Cette page décrit plus en détail le fonctionnement du script **[install.sh](RecoveryBox_install.md)**, ses prérequis et les différents scénarios d'installation possibles.
+Cette page décrit plus en détail l'installation de la solution **RecoveryBox**, ses prérequis et les différents scénarios d'installation possibles.
 
 ---
 

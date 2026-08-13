@@ -31,21 +31,8 @@ tags:
     These steps must be performed in WSL or on a Linux system. Using Windows alone is not supported.
     This step must be performed on a **different** computer from the one that will be used as RecoveryBox. The target computer must boot from the generated USB key.
 
-1. Download the [debian-13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) repository.
-2. Download the latest **Debian 13 Netinst** image from https://www.debian.org/download and place it in the `debian13-preseed-RB` folder.
-3. Generate the custom installation image:
-
-```bash
-./make-preseed-iso.sh debian-13.X.X-amd64-netinst.iso
-```
-
-4. Create a bootable USB key from the file:
-
-```text
-preseed-debian-13.X.X-amd64-netinst.iso
-```
-
----
+1. Download the latest release of [debian-13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB/releases/latest).
+2. Use [Rufus](https://rufus.ie/) or [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to create a bootable USB key from the ISO file in the zip.
 
 ## 2. System installation
 
