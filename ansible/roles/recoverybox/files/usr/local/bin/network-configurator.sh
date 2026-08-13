@@ -13,6 +13,7 @@ WAN="Wan"
 LAN="Lan"
 PATHCONFIG="/etc/systemd/network"
 IPTABLESFILE="/etc/iptables/iptables.sh"
+IPTABLESFILEEXTRA="/etc/iptables/wan_interfaces"
 
 
 ## Systemd Networkd files order :
@@ -122,42 +123,33 @@ EOF
 set_iptables() {
     # Verify iptables file exists before modifying
     if [[ ! -f "$IPTABLESFILE" ]]; then
-        echo -e "$MSGRED" "$SRVMSG" "Firewall configuration file not found: $IPTABLESFILE" "$MSGNC"
+        echo -e "$MSGRED" "$SRVMSG" "Firewall script not found: $IPTABLESFILE" "$MSGNC"
         return 1
     fi
+
+    if [[ ! -f "$IPTABLESFILEEXTRA" ]]; then
+        echo "## Managed by network-configurator" > "$IPTABLESFILEEXTRA"
+    fi
+
     
-    if grep -q "WAN=.*$1" "$IPTABLESFILE"; then
+    if grep -q "$1" "$IPTABLESFILEEXTRA"; then
         echo -e "$MSGGREEN" "$SRVMSG" "Interface $1 already set in firewall" "$MSGNC"
     else 
         # Backup existing file
-        if ! cp "$IPTABLESFILE" "${IPTABLESFILE}.bak"; then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to backup $IPTABLESFILE" "$MSGNC"
+        if ! cp "$IPTABLESFILEEXTRA" "${IPTABLESFILEEXTRA}.bak"; then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to backup $IPTABLESFILEEXTRA" "$MSGNC"
             return 1
         fi
-        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILE to ${IPTABLESFILE}.bak" "$MSGNC"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILEEXTRA to ${IPTABLESFILEEXTRA}.bak" "$MSGNC"
         
-        # Extract current WAN interfaces safely
-        if ! ActualWan=$(grep "WAN=" "$IPTABLESFILE" | cut -d'(' -f2 | cut -d')' -f1); then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to extract current WAN configuration" "$MSGNC"
-            return 1
-        fi
-        
-        NewWan="WAN=( $ActualWan \"$1\" )"
-        
-        # Apply sed change
-        if ! sed -i "s#WAN=.*#$NewWan#" "$IPTABLESFILE"; then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to update firewall configuration" "$MSGNC"
-            # Restore backup on failure
-            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
-            echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
-            return 1
-        fi
-        
+        # Add The new interface into a new line
+        echo -e "$1" >> "$IPTABLESFILEEXTRA"
+               
         # Restart iptables service
         if ! systemctl restart iptables 2>/dev/null; then
             echo -e "$MSGRED" "$SRVMSG" "Failed to restart iptables service" "$MSGNC"
             # Restore backup on failure
-            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
+            mv "${IPTABLESFILEEXTRA}.bak" "$IPTABLESFILEEXTRA"
             echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
             return 1
         fi

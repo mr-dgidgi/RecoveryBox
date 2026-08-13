@@ -89,14 +89,14 @@ mkdir /data
 4. Clone the project repository:
 
 ```bash
-git clone https://github.com/mr-dgidgi/RecoveryBox.git
+git clone --branch {{ rb_version }} https://github.com/mr-dgidgi/RecoveryBox.git
 ```
 
 5. Launch the installation script:
 
 ```bash
 cd RecoveryBox
-bash RecoveryBox_install.sh
+bash install.sh
 ```
 
 ---
@@ -123,6 +123,7 @@ The installation script automatically performs the following operations, combini
 | Service configuration | *(custom mode)* Allows enabling or disabling each service individually (Apache, Library, BRouter, TileServer, Meshtastic, Console, OpenWebRX, Kiwix). |
 | Kiwix downloads | *(custom mode)* Configures Wikipedia FR/EN download and desired size (all_mini, all_no_pic, all_maxi). |
 | Meshtastic node configuration | *(custom mode)* Sets the IP address and MAC of a Meshtastic node (optional). |
+| HTTPS activation | *(custom mode)* Allows enabling HTTPS for all web services. |
 | Config file generation | Writes the `/etc/recoverybox/custom_config.yml` file with the selected options. |
 
 ### Phase 3 — Ansible playbook (automatic)

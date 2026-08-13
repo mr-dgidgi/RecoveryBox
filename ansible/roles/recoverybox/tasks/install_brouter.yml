@@ -67,8 +67,8 @@
         line: '\t<script src="recoverybox-gps.js"></script>'
 
     - name: Create brouter apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/carto.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/carto.conf.j2
         dest: /etc/apache2/sites-available/carto.conf
         owner: root
         group: root

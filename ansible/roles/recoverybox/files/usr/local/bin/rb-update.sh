@@ -76,11 +76,11 @@ Update_RecoveryBox() {
         echo -e "${SRVMSG} ${MSGRED}Failed to change directory to $REPODIR${MSGNC}"
         exit 1
     fi
-    if [[ ! -f "$REPODIR/RecoveryBox_install.sh" ]]; then
+    if [[ ! -f "$REPODIR/install.sh" ]]; then
         echo -e "${SRVMSG} ${MSGRED}Recovery Box install script not found!${MSGNC}"
         exit 1
     fi
-    bash "$REPODIR/RecoveryBox_install.sh"
+    bash "$REPODIR/install.sh"
 }
 
 main() {

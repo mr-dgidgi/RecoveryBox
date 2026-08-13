@@ -96,7 +96,7 @@ git clone --branch {{ rb_version }} https://github.com/mr-dgidgi/RecoveryBox.git
 
 ```bash
 cd RecoveryBox
-bash RecoveryBox_install.sh
+bash install.sh
 ```
 
 ---
@@ -123,6 +123,7 @@ Le script d'installation réalise automatiquement les opérations suivantes, com
 | Configuration des services | *(mode personnalisé)* Permet d'activer ou de désactiver chaque service individuellement (Apache, Bibliothèque, BRouter, TileServer, Meshtastic, Console, OpenWebRX, Kiwix). |
 | Téléchargements Kiwix | *(mode personnalisé)* Configure le téléchargement de Wikipédia FR/EN et la taille souhaitée (all_mini, all_no_pic, all_maxi). |
 | Configuration du nœud Meshtastic | *(mode personnalisé)* Définit l'adresse IP et MAC d'un nœud Meshtastic (optionnel). |
+| Activation du HTTPS | *(mode personnalisé)* Permet d'activer le HTTPS pour tous les services web. |
 | Génération du fichier de config | Écrit le fichier `/etc/recoverybox/custom_config.yml` avec les choix effectués. |
 
 ### Phase 3 — Playbook Ansible (automatique)

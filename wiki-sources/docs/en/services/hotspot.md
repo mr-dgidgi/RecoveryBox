@@ -61,7 +61,7 @@ The hotspot Wi-Fi network is available immediately at RecoveryBox startup.
 #### Modifying the Wi-Fi network
 
 !!! warning "Centralized configuration"
-    The hotspot Wi-Fi configuration files are managed by the `RecoveryBox_install.sh` script. Any manual modification of these files will be overwritten during an update or reinstallation. To customize the hotspot, it is recommended to use the `recoverybox_hotspot_conf` variables in the `/etc/recoverybox/custom_config.yml` file.
+    The hotspot Wi-Fi configuration files are managed by the `install.sh` script. Any manual modification of these files will be overwritten during an update or reinstallation. To customize the hotspot, it is recommended to use the `recoverybox_hotspot_conf` variables in the `/etc/recoverybox/custom_config.yml` file.
 
 The file `/etc/ap_config/hostapd.conf` allows modifying:
 

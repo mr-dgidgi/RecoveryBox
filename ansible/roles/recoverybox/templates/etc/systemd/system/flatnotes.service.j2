@@ -9,7 +9,7 @@ Requires=docker.service
 TimeoutStartSec=10
 Restart=always
 ExecStartPre=/usr/bin/docker rm -f flatnotes 2>/dev/null
-ExecStart=/usr/bin/docker run -d \
+ExecStart=/usr/bin/docker run --rm --name flatnotes \
   -e "PUID=1000" \
   -e "PGID=1000" \
   {% if recoverybox_flatnotes_open == "open" %}

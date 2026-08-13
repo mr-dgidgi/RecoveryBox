@@ -85,7 +85,7 @@ Vous pouvez ajouter de nouveaux fichiers `.zim` pour enrichir les contenus dispo
 
 #### Ajouter des fichiers ZIM via `custom_config.yml`
 
-Lors de l'installation/mise à jour via `RecoveryBox_install.sh`, en éditant directement `/etc/recoverybox/custom_config.yml`, vous pouvez configurer le téléchargement automatique de fichiers ZIM depuis le site officiel de Kiwix.
+Lors de l'installation/mise à jour via `install.sh`, en éditant directement `/etc/recoverybox/custom_config.yml`, vous pouvez configurer le téléchargement automatique de fichiers ZIM depuis le site officiel de Kiwix.
 
 **Structure de la variable `recoverybox_kiwix_files` :**
 
@@ -122,7 +122,7 @@ recoverybox_kiwix_files:
 !!! info "Source de téléchargement"
     Les fichiers sont téléchargés depuis `https://lb.download.kiwix.org/zim/`. Le script Ansible récupère automatiquement la dernière version mensuelle disponible correspondant au pattern configuré.
 
-Pour appliquer la configuration après modification il faut relancer le script `RecoveryBox_install.sh`.
+Pour appliquer la configuration après modification il faut relancer le script `install.sh`.
 
 ### C. Debug
 

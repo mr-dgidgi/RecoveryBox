@@ -100,13 +100,13 @@ Un redémarrage du service apacheé via `services-manager` est nécessaire pour 
 #### Activer / Désactiver le service
 
 
-Le service peut être désactivé complètement de la machine en exécutant le script d'installation `RecoveryBox_install.sh` et en choisissant une installation *custom* ou via la variable Ansible directement dans `/etc/recoverybox/custom_config.yml` :
+Le service peut être désactivé complètement de la machine en exécutant le script d'installation `install.sh` et en choisissant une installation *custom* ou via la variable Ansible directement dans `/etc/recoverybox/custom_config.yml` :
 
 ```yaml
 # Dans votre custom_config.yml
 recoverybox_enable_library: false
 ```
-!!! note "RecoveryBox_install.sh"
+!!! note "install.sh"
     Si d'autres modifications manuelles ont été effectuées dans `custom_config.yml` il est recommandé de continuer à modifier le fichier manuellement. En cas de recréation du fichier via le script d'installation, vos modifications seront écrasées.
 
 !!! warning "Dépendance Apache2"

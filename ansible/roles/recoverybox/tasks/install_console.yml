@@ -18,8 +18,8 @@
         mode: '0644'
 
     - name: Create console apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/console.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/console.conf.j2
         dest: /etc/apache2/sites-available/console.conf
         owner: root
         group: root

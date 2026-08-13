@@ -15,7 +15,7 @@ tags:
 It is deployed by Ansible to `/usr/local/bin/rb-update.sh`.
 
 !!! warning "Root execution required"
-    The script **must be run as root** (`sudo rb-update.sh`). It does not explicitly check UID but `apt`, `git`, and the `RecoveryBox_install.sh` call all require root privileges.
+    The script **must be run as root** (`sudo rb-update.sh`). It does not explicitly check UID but `apt`, `git`, and the `install.sh` call all require root privileges.
 
 !!! warning "Reboot may be required"
     Depending on applied updates (kernel, systemd-networkd, Docker, etc.), a **reboot may be necessary** after the update completes.
@@ -48,7 +48,7 @@ sudo rb-update.sh
 2. Queries GitHub API for latest `latest` release tag
 3. If a newer version is available, prompts for confirmation (`Y/N`)
 4. Downloads source code (git fetch/reset/checkout or clone if missing)
-5. Runs `RecoveryBox_install.sh` (interactive or `custom` mode depending on `/etc/recoverybox/custom_config.yml` presence)
+5. Runs `install.sh` (interactive or `custom` mode depending on `/etc/recoverybox/custom_config.yml` presence)
 
 ### Minor Update (1.x Patch Releases)
 
@@ -92,7 +92,7 @@ Adds an `apt-get update && apt-get upgrade -y` step **before** the RecoveryBox u
 
 ### 4. Apply Update (`Update_RecoveryBox`)
 
-- Executes `bash /root/RecoveryBox/RecoveryBox_install.sh`
+- Executes `bash /root/RecoveryBox/install.sh`
 - Install script detects existing `/etc/recoverybox/rb_version` and appends `-upgrading` suffix
 - Re-runs Ansible playbook with existing or interactive configuration
 
@@ -106,9 +106,9 @@ Adds an `apt-get update && apt-get upgrade -y` step **before** the RecoveryBox u
 | `curl` returns empty / timeout | No Internet / GitHub API blocked | Check connectivity, DNS, firewall |
 | `git checkout` fails | Tag doesn't exist / repo corrupted | Remove `/root/RecoveryBox` and re-run |
 | `apt-get upgrade` fails (`--full`) | Package conflict / dpkg lock | `dpkg --configure -a && apt --fix-broken install` then retry |
-| `RecoveryBox_install.sh` not found | Failed clone / wrong tag | Check `/root/RecoveryBox`, delete and retry |
+| `install.sh` not found | Failed clone / wrong tag | Check `/root/RecoveryBox`, delete and retry |
 | Script says no update available | Already at latest version | Normal behavior, nothing to do |
-| Ansible playbook fails | Docker, network, config error | See **[Debug](debug.md)** or **[RecoveryBox_install.sh](RecoveryBox_install.md)** documentation |
+| Ansible playbook fails | Docker, network, config error | See **[Debug](debug.md)** or **[install.sh](RecoveryBox_install.md)** documentation |
 
 ---
 
@@ -117,6 +117,6 @@ Adds an `apt-get update && apt-get upgrade -y` step **before** the RecoveryBox u
 | File | Purpose |
 |------|---------|
 | `/usr/local/bin/rb-update.sh` | Main script (managed by Ansible) |
-| `/etc/recoverybox/rb_version` | Installed version (written by `RecoveryBox_install.sh`) |
+| `/etc/recoverybox/rb_version` | Installed version (written by `install.sh`) |
 | `/etc/recoverybox/custom_config.yml` | User config (re-applied on update) |
 | `/root/RecoveryBox/` | Git clone of repository (update source) |

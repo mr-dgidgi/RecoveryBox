@@ -1,16 +1,16 @@
 ---
-title: RecoveryBox_install.sh
+title: install.sh
 description: Automated installation script for RecoveryBox on Debian/amd64.
 tags:
   - tool
   - installation
 ---
 
-# RecoveryBox_install.sh
+# install.sh
 
 ## Overview
 
-`RecoveryBox_install.sh` is the main installation script for the **RecoveryBox** project. It automates the complete deployment as well as updates and service enable/disable operations.
+`install.sh` is the main installation script for the **RecoveryBox** project. It automates the complete deployment as well as updates and service enable/disable operations.
 
 The script orchestrates the entire process:
 - System prerequisites verification (root, amd64 architecture, `/data` mount point, WiFi interface)
@@ -32,9 +32,9 @@ The script orchestrates the entire process:
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **Full installation (interactive)** | `sudo ./RecoveryBox_install.sh` | Runs complete installation with interactive menus |
-| **Configuration only** | `sudo ./RecoveryBox_install.sh config` | Shows only service configuration menu (generates `/etc/recoverybox/custom_config.yml`) |
-| **Install with existing config** | `sudo ./RecoveryBox_install.sh custom` | Uses existing `/etc/recoverybox/custom_config.yml` (skips menu) |
+| **Full installation (interactive)** | `sudo ./install.sh` | Runs complete installation with interactive menus |
+| **Configuration only** | `sudo ./install.sh config` | Shows only service configuration menu (generates `/etc/recoverybox/custom_config.yml`) |
+| **Install with existing config** | `sudo ./install.sh custom` | Uses existing `/etc/recoverybox/custom_config.yml` (skips menu) |
 
 ---
 
@@ -43,7 +43,7 @@ The script orchestrates the entire process:
 ### Full Installation (Interactive Mode)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 
 - The script offers to reconfigure keyboard layout via `dpkg-reconfigure keyboard-configuration`.
@@ -88,14 +88,14 @@ sudo ./RecoveryBox_install.sh
 ### Configuration Only (mode `config`)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 Runs only the service configuration menu (without executing the playbook). This generates or updates `/etc/recoverybox/custom_config.yml` with your choices.
 
 ### Installation with Existing Configuration (mode `custom`)
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 The script uses the existing `/etc/recoverybox/custom_config.yml` to run the Ansible playbook without the interactive menu. This mode is useful for updates or reinstallations with the same configuration.
 

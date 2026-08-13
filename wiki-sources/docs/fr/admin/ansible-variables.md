@@ -13,9 +13,10 @@ tags:
 
 Le fichier **`/etc/recoverybox/custom_config.yml`** permet de personnaliser le déploiement Ansible de la RecoveryBox sans modifier les fichiers du rôle.
 
-Ce fichier est **géré automatiquement** par le script **[RecoveryBox_install.sh](RecoveryBox_install.md)** lors de la configuration interactive. Il est ensuite passé en `extra-vars` au playbook Ansible (`ansible/Install.yml`).
+Ce fichier est **géré automatiquement** par le script **[install.sh](RecoveryBox_install.md)** lors de la configuration interactive. Il est ensuite passé en `extra-vars` au playbook Ansible (`ansible/Install.yml`).
 
-> **Note** : Vous pouvez aussi créer/modifier ce fichier manuellement avant de lancer une installation en mode `custom` (`sudo ./RecoveryBox_install.sh custom`).
+!!! note "Note"
+    Vous pouvez aussi créer/modifier ce fichier manuellement avant de lancer une installation en mode `custom` (`sudo ./install.sh custom`).
 
 ---
 
@@ -80,6 +81,11 @@ recoverybox_hotspot_conf:
 
 ---
 
+### Activation HTTPS
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `recoverybox_enable_https` | `false` | Active HTTPS pour tous les services web|
+
 ### Interfaces réseau
 
 | Variable | Défaut | Description |
@@ -111,7 +117,8 @@ Objet `recoverybox_hotspot_conf` avec les clés suivantes :
 | `dhcp_range_start` | `"192.168.200.100"` | Début plage DHCP |
 | `dhcp_range_end` | `"192.168.200.200"` | Fin plage DHCP |
 
-> **Important** : L'interface Wi-Fi doit supporter le mode AP pour le canal et le mode choisis.
+!!! warning "Important"
+    L'interface Wi-Fi doit supporter le mode AP pour le canal et le mode choisis.
 
 ---
 
@@ -124,9 +131,18 @@ Objet `recoverybox_meshtastic_node` :
 | `mac` | `"00:00:00:00:00:00"` | Adresse MAC du nœud Meshtastic (pour réservation DHCP statique) |
 | `ip` | `"192.168.200.101"` | IP fixe attribuée au nœud Meshtastic |
 
-> Utilisé uniquement si `recoverybox_enable_meshtastic: true` et qu'un nœud physique est connecté.
+!!! note "Note"
+    Utilisé uniquement si `recoverybox_enable_meshtastic: true` et qu'un nœud physique est connecté.
 
 ---
+
+### Configuration OpenWebRX
+
+Objet `recoverybox_owrx_conf` :
+| Clé | Défaut | Description |
+|-----|--------|-------------|
+| `username` | `"recoverybox"` | Nom d'utilisateur pour l'accès à OpenWebRX |
+| `password` | `"recoverybox"` | Mot de passe pour l'accès à OpenWebRX |
 
 ### Téléchargements Kiwix
 
@@ -165,7 +181,8 @@ recoverybox_kiwix_files:
 | `recoverybox_download_brouter` | `true` | Télécharge les segments BRouter (routing vélo/rando/voiture) |
 | `recoverybox_download_mbtiles` | `true` | Télécharge `world.mbtiles` pour TileServer-GL (carte monde) |
 
-> **Attention** : Ces téléchargements peuvent représenter plusieurs Go. Désactivez (`false`) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.
+!!! warning "Attention"
+    Ces téléchargements peuvent représenter plusieurs Go. Désactivez (`false`) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.
 
 ---
 
@@ -220,30 +237,33 @@ recoverybox_kiwix_files:
 # Pas de téléchargement cartes (bande passante limitée)
 recoverybox_download_brouter: false
 recoverybox_download_mbtiles: false
+
+# Activation HTTPS pour tous les services web
+recoverybox_enable_https: true
 ```
 
 ---
 
-## Utilisation avec RecoveryBox_install.sh
+## Utilisation avec install.sh
 
 ### Générer le fichier (mode interactif)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 → Lance uniquement le menu de configuration et écrit `/etc/recoverybox/custom_config.yml`
 
 ### Installation avec config existante
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 → Utilise le fichier existant, saute le menu, lance directement le playbook Ansible
 
 ### Installation complète (génère + applique)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 → Menu interactif → écrit `custom_config.yml` → lance Ansible
 
