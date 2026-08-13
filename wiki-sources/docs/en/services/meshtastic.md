@@ -22,6 +22,9 @@ RecoveryBox integrates two Meshtastic-related components:
 
 For more details about the project, consult the **[official Meshtastic documentation](https://meshtastic.org)** and the **[GitHub repository](https://github.com/meshtastic/web)**.
 
+!!! info "Local map"
+    The Meshtastic web client is configured by default to use the local map hosted on the RecoveryBox. This allows you to geographically visualize the mesh network, even without internet access.
+
 ### Properties
 
 | Property | Value |

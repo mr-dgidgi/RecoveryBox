@@ -22,6 +22,9 @@ La RecoveryBox intègre deux composants liés à Meshtastic :
 
 Pour plus de détails sur le projet, consultez la **[documentation officielle de Meshtastic](https://meshtastic.org)** et le **[dépôt GitHub](https://github.com/meshtastic/web)**.
 
+!!! info "Carte locale"
+    Le web client Meshtastic est configuré par défaut pour utiliser la carte locale hébergée sur la RecoveryBox. Ceci permet de visualiser géographiquement le réseau maillé, même sans accès à Internet.
+
 ### Caractéristiques
 
 | Propriété | Valeur |
