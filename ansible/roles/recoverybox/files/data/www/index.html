@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="./recoverybox-theme.css">
 </head>
 <body class="rb-app">
+  <div id="rb-clock" class="rb-clock" aria-live="polite"></div>
   <main class="rb-container">
     <form class="rb-theme-toggle">
       <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" aria-label="Passage en mode nuit" type="radio" name="__palette" id="__palette_0">
@@ -25,12 +26,10 @@
 
 
     <h1>RecoveryBox</h1>
-    <p>Bienvenue sur la page d'accueil. / Welcome to the homepage.</p>
-    <p>Choisissez un service ci-dessous. / Choose a service below.</p>
 
     <section class="rb-card">
       <h2>Services</h2>
-      <ul id="services-list"></ul>
+      <div id="services-list" class="rb-service-grid"></div>
     </section>
 
     <section class="rb-card">
@@ -48,6 +47,11 @@
       <div id="system-content"></div>
     </section>
 
+    <section class="rb-card">
+      <h2>Battery</h2>
+      <div id="battery-content"></div>
+    </section>
+
     <footer class="rb-card">
       <p>Si un service ne répond pas, vérifiez qu'il est démarré et que vous êtes connecté au réseau RecoveryBox. / If a service does not respond, check it is started and that you are connected to the RecoveryBox network.</p>
     </footer>
@@ -56,10 +60,15 @@
   (function() {
     const storageKey = 'rb-theme';
     const root = document.documentElement;
+    const clock = document.getElementById('rb-clock');
     const lightInput = document.getElementById('__palette_0');
     const darkInput = document.getElementById('__palette_1');
     const toDark = document.getElementById('theme-to-dark');
     const toLight = document.getElementById('theme-to-light');
+    const clockFormatter = new Intl.DateTimeFormat('fr-FR', {
+      dateStyle: 'short',
+      timeStyle: 'medium'
+    });
 
     function getSavedTheme() {
       try {
@@ -100,6 +109,15 @@
 
     applyTheme(getPreferredTheme());
 
+    function updateClock() {
+      if (clock) {
+        clock.textContent = clockFormatter.format(new Date());
+      }
+    }
+
+    updateClock();
+    window.setInterval(updateClock, 1000);
+
     toDark.addEventListener('click', function(event) {
       event.preventDefault();
       setSavedTheme('dark');
@@ -120,12 +138,24 @@
       data.services
         .filter(s => s.status === 0 && s.url)
         .forEach(s => {
-          const li = document.createElement('li');
           const a = document.createElement('a');
           a.href = s.url;
-          a.textContent = s.name;
-          li.appendChild(a);
-          list.appendChild(li);
+          a.className = 'rb-service-tile';
+          const header = document.createElement('div');
+          header.className = 'rb-service-tile-header';
+          const title = document.createElement('span');
+          title.className = 'rb-service-tile-title';
+          title.textContent = s.name;
+          header.appendChild(title);
+          a.appendChild(header);
+          if (s.logo) {
+            const logo = document.createElement('span');
+            logo.className = 'rb-service-tile-logo';
+            logo.innerHTML = s.logo;
+            header.appendChild(logo);
+          }
+          const label = document.createElement('span');
+          list.appendChild(a);
         });
 
       const statusDiv = document.getElementById('status-content');
@@ -165,6 +195,112 @@
                     : 'online';
         return '<div class="rb-status-row"><span>' + item.label + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + dotClass + '"></span>' + item.value + '</span></div>';
       }).join('');
+    });
+
+  fetch('/battery.json')
+    .then(res => res.json())
+    .then(data => {
+      const battDiv = document.getElementById('battery-content');
+      const source = (data.Source || '').toLowerCase();
+      const values = {};
+      const isLaptopData = source === 'rb-laptop' || (Array.isArray(data.Values) && data.Values.some(function(v) {
+        return v && Object.prototype.hasOwnProperty.call(v, 'Name');
+      }));
+
+      function renderLaptopBattery(items) {
+        const rows = (items || []).map(function(item) {
+          const name = item.Name || 'Battery';
+          const status = item.Status || 'Unknown';
+          const capacity = Number(item.Capacity);
+          const statusLower = String(status).toLowerCase();
+          let dotClass = 'offline';
+
+          if (statusLower === 'charging' || statusLower === 'full' || statusLower === 'ok' || statusLower === 'charged') {
+            dotClass = 'online';
+          } else if (statusLower === 'discharging' || statusLower === 'not charging') {
+            dotClass = 'warning';
+          }
+
+          const capacityText = Number.isFinite(capacity) ? ' (' + capacity + '%)' : '';
+          return '<div class="rb-status-row"><span>' + name + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + dotClass + '"></span>' + status + capacityText + '</span></div>';
+        });
+
+        if (rows.length === 0) {
+          battDiv.innerHTML = '<div class="rb-status-row"><span>Battery</span><span class="rb-badge rb-data"><span class="rb-status-dot offline"></span>No data</span></div>';
+        } else {
+          battDiv.innerHTML = rows.join('');
+        }
+      }
+
+      function renderVictronBattery(items) {
+        (items || []).forEach(function(v) {
+          values[v.id] = v;
+        });
+
+        const battItems = [];
+
+        function addRow(label, value, dotClass) {
+          battItems.push({ label: label, value: value, dotClass: dotClass });
+        }
+
+        function voltageStatus(mv) {
+          return mv < 12000 ? 'offline' : mv < 12400 ? 'warning' : 'online';
+        }
+
+        if (values.V) {
+          addRow('Battery Voltage', (values.V.value / 1000).toFixed(2) + ' V', voltageStatus(values.V.value));
+        }
+        if (values.I) {
+          addRow('Battery Current', (values.I.value / 1000).toFixed(2) + ' A', 'online');
+        }
+        if (values.VPV) {
+          addRow('Input Voltage', (values.VPV.value / 1000).toFixed(2) + ' V', 'online');
+        }
+        if (values.PPV) {
+          addRow('Input Power', values.PPV.value + ' W', 'online');
+        }
+        if (values.CS) {
+          const csLabels = { 0: 'Off', 2: 'Fault', 3: 'Bulk', 4: 'Absorption', 5: 'Float' };
+          const csValue = csLabels[values.CS.value] !== undefined ? csLabels[values.CS.value] : values.CS.value;
+          addRow('Charge State', csValue, 'online');
+        }
+        if (values.ERR) {
+          addRow('Error Code', values.ERR.value, values.ERR.value === 0 ? 'online' : 'offline');
+        }
+        if (values.LOAD) {
+          addRow('Load Output', values.LOAD.value, values.LOAD.value === 'ON' ? 'online' : 'warning');
+        }
+        if (values.IL) {
+          addRow('Load Output Current', (values.IL.value / 1000).toFixed(2) + ' A', 'online');
+        }
+        if (values.H21) {
+          addRow('Maximum Input Power Today', values.H21.value + ' W', 'online');
+        }
+
+        if (data.ErrorMessage) {
+          addRow('Error', data.ErrorMessage, 'offline');
+        }
+
+        if (battItems.length === 0) {
+          battDiv.innerHTML = '<div class="rb-status-row"><span>Battery</span><span class="rb-badge rb-data"><span class="rb-status-dot offline"></span>No data</span></div>';
+        } else {
+          battDiv.innerHTML = battItems.map(function(item) {
+            return '<div class="rb-status-row"><span>' + item.label + '</span><span class="rb-badge rb-data"><span class="rb-status-dot ' + item.dotClass + '"></span>' + item.value + '</span></div>';
+          }).join('');
+        }
+      }
+
+      if (isLaptopData) {
+        renderLaptopBattery(data.Values || []);
+      } else {
+        renderVictronBattery(data.Values || []);
+      }
+    })
+    .catch(function() {
+      const battDiv = document.getElementById('battery-content');
+      if (battDiv) {
+        battDiv.innerHTML = '<div class="rb-status-row"><span>Battery</span><span class="rb-badge rb-data"><span class="rb-status-dot offline"></span>Data unavailable</span></div>';
+      }
     });
   </script>
 </body>

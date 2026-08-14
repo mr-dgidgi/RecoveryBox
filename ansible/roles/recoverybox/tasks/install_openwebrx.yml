@@ -39,6 +39,14 @@
         group: root
         mode: '0644'
 
+    - name: Add udev rules for SDR
+      ansible.builtin.copy:
+        src: etc/udev/rules.d/99-openwebrx-sdr.rules
+        dest: /etc/udev/rules.d/99-openwebrx-sdr.rules
+        owner: root
+        group: root
+        mode: '0644'
+
     - name: Create openwebrx service
       ansible.builtin.template:
         src: etc/systemd/system/openwebrx.service.j2
@@ -48,25 +56,22 @@
         mode: '0644'
 
     - name: Create openwebrx apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/owrx.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/owrx.conf.j2
         dest: /etc/apache2/sites-available/owrx.conf
         owner: root
         group: root
         mode: '0644'
 
+    - name: Enable openwebrx apache2 site
+      ansible.builtin.command:
+        cmd: a2ensite owrx.conf
+      changed_when: false
+
     - name: Reload apache2 service
       ansible.builtin.systemd_service:
         name: apache2
         state: reloaded
-      when: "'dry_run' not in ansible_run_tags"
-
-    - name: Enable openwebrx service
-      ansible.builtin.systemd_service:
-        name: openwebrx
-        daemon_reload: true
-        enabled: "{{ recoverybox_enable_owrx }}"
-        state: restarted
       when: "'dry_run' not in ansible_run_tags"
 
 - name: Deactivate OpenWebRX
@@ -83,11 +88,7 @@
       changed_when: false
       when: recoverybox_apache_file.stat.exists
 
-    - name: Disable owrx service
-      ansible.builtin.systemd_service:
-        name: openwebrx
-        enabled: "{{ recoverybox_enable_owrx }}"
-        state: stopped
-      when:
-        - "'dry_run' not in ansible_run_tags"
-        - "'openwebrx.service' in ansible_facts.services"
+    - name: Remove udev rules for SDR
+      ansible.builtin.file:
+        path: /etc/udev/rules.d/99-openwebrx-sdr.rules
+        state: absent

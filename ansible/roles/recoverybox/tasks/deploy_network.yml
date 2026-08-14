@@ -28,7 +28,7 @@
     name: iptables
     enabled: true
     daemon_reload: true
-    state: restarted
+    state: started
   when: "'dry_run' not in ansible_run_tags"
 
 - name: Enable ipv4 routing

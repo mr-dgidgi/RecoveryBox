@@ -17,6 +17,9 @@ Le service de cartographie de la RecoveryBox est basé sur **Brouter** et **Tile
 
 La carte locale est générée à la volée et intègre la zone choisie en haute définition sur une carte du monde en basse résolution.
 
+!!! info "utilisation externe"
+    Le tileserver peut être utilisé par d'autres applications ou services, pour afficher des cartes sans accès à internet. L'URL à utiliser est : [http://map.recovery.box/tiles/styles/liberty/{z}/{x}/{y}.png](http://map.recovery.box/tiles/styles/liberty/{z}/{x}/{y}.png)
+
 ## Accès au service
 
 L'interface de cartographie est accessible à tous les utilisateurs connectés au hotspot de la RecoveryBox.

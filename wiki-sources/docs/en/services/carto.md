@@ -17,6 +17,9 @@ RecoveryBox's cartography service is based on **Brouter** and **TileServer-GL**.
 
 The local map is generated on the fly and integrates the chosen area in high definition onto a low-resolution world map.
 
+!!! info "External usage"
+    The tileserver can be used by other applications or services to display maps without internet access. The URL to use is: [http://map.recovery.box/tiles/styles/liberty/{z}/{x}/{y}.png](http://map.recovery.box/tiles/styles/liberty/{z}/{x}/{y}.png)
+
 ## Service Access
 
 The cartography interface is accessible to all users connected to the RecoveryBox hotspot.

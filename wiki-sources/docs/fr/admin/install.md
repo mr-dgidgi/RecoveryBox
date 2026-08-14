@@ -8,7 +8,7 @@ tags:
 
 # Installation avancée
 
-Cette page décrit plus en détail le fonctionnement du script **[RecoveryBox_install.sh](RecoveryBox_install.md)**, ses prérequis et les différents scénarios d'installation possibles.
+Cette page décrit plus en détail l'installation de la solution **RecoveryBox**, ses prérequis et les différents scénarios d'installation possibles.
 
 ---
 
@@ -49,7 +49,7 @@ Dans ce cas, il est impératif de :
 - créer le répertoire `/data` ;
 - installer Git ;
 - cloner le dépôt RecoveryBox ;
-|- lancer `RecoveryBox_install.sh`.
+|- lancer `install.sh`.
 
 Le redémarrage de la machine après l'installation reste nécessaire afin d'appliquer l'ensemble de la configuration système.
 
@@ -143,7 +143,7 @@ Une fois le pilote installé, le script `network-configurator` pourra être util
 
 # Déroulement de l'installation
 
-Les étapes principales sont décrites sur la page dédiée de **[RecoveryBox_install.sh](RecoveryBox_install.md)**.
+Les étapes principales sont décrites sur la page dédiée de **[install.sh](RecoveryBox_install.md)**.
 
 La durée de l'installation dépend principalement des téléchargements optionnels sélectionnés.Sans téléchargement de contenu, l'installation est généralement relativement rapide. En revanche, le téléchargement de Wikipédia ou des données cartographiques peut représenter plusieurs dizaines de gigaoctets et nécessiter plusieurs heures selon la connexion Internet.
 
@@ -168,5 +168,5 @@ Une fois le système redémarré, la Recovery Box est accessible via le point d'
 
 ## Voir aussi
 
-- **[RecoveryBox_install.sh](RecoveryBox_install.md)** — Documentation complète du script d'installation principal (modes, configuration, dépannage)
+- **[install.sh](RecoveryBox_install.md)** — Documentation complète du script d'installation principal (modes, configuration, dépannage)
 - **[rb-update](rb-update.md)** — Script de mise à jour automatisée de la RecoveryBox

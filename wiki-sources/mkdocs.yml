@@ -61,6 +61,7 @@ nav:
           - Meshtastic: fr/services/meshtastic.md
           - OpenWebRX +: fr/services/owrx.md
           - Console: fr/services/console.md
+          - Flatnotes: fr/services/flatnotes.md
       - admin:
           - Installation: fr/admin/install.md
           - Rbstatus: fr/admin/rbstatus.md
@@ -70,8 +71,12 @@ nav:
           - Meshtastic-Daemon: fr/admin/meshtastic-daemon.md
           - Outils système: fr/admin/system-tools.md
           - Debug: fr/admin/debug.md
-          - Mise à jour (rb-update): fr/admin/rb-update.md
+          - Mise à jour: fr/admin/rb-update.md
           - Variables Ansible: fr/admin/ansible-variables.md
+          - Services Manager: fr/admin/services-manager.md
+          - Script d'installation: fr/admin/RecoveryBox_install.md
+          - HTTPS: fr/admin/https.md
+          - Gestion de la batterie (rb-battery): fr/admin/rb-battery.md
   - Documentation (EN):
       - Home: en/index.md
       - Quickstart: en/quickstart.md
@@ -83,6 +88,7 @@ nav:
           - Meshtastic: en/services/meshtastic.md
           - OpenWebRX +: en/services/owrx.md
           - Console: en/services/console.md
+          - Flatnotes: en/services/flatnotes.md
       - admin:
           - Installation: en/admin/install.md
           - Rbstatus: en/admin/rbstatus.md
@@ -93,4 +99,8 @@ nav:
           - System Tools: en/admin/system-tools.md
           - Debug: en/admin/debug.md
           - Update (rb-update): en/admin/rb-update.md
+          - Battery Management (rb-battery): en/admin/rb-battery.md
           - Ansible Variables: en/admin/ansible-variables.md
+          - Services Manager: en/admin/services-manager.md
+          - Installation Script: en/admin/RecoveryBox_install.md
+          - HTTPS: en/admin/https.md

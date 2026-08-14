@@ -31,21 +31,8 @@ tags:
     These steps must be performed in WSL or on a Linux system. Using Windows alone is not supported.
     This step must be performed on a **different** computer from the one that will be used as RecoveryBox. The target computer must boot from the generated USB key.
 
-1. Download the [debian-13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB) repository.
-2. Download the latest **Debian 13 Netinst** image from https://www.debian.org/download and place it in the `debian13-preseed-RB` folder.
-3. Generate the custom installation image:
-
-```bash
-./make-preseed-iso.sh debian-13.X.X-amd64-netinst.iso
-```
-
-4. Create a bootable USB key from the file:
-
-```text
-preseed-debian-13.X.X-amd64-netinst.iso
-```
-
----
+1. Download the latest release of [debian-13-preseed-RB](https://github.com/mr-dgidgi/debian13-preseed-RB/releases/latest).
+2. Use [Rufus](https://rufus.ie/) or [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to create a bootable USB key from the ISO file in the zip.
 
 ## 2. System installation
 
@@ -89,14 +76,14 @@ mkdir /data
 4. Clone the project repository:
 
 ```bash
-git clone https://github.com/mr-dgidgi/RecoveryBox.git
+git clone --branch {{ rb_version }} https://github.com/mr-dgidgi/RecoveryBox.git
 ```
 
 5. Launch the installation script:
 
 ```bash
 cd RecoveryBox
-bash RecoveryBox_install.sh
+bash install.sh
 ```
 
 ---
@@ -123,6 +110,7 @@ The installation script automatically performs the following operations, combini
 | Service configuration | *(custom mode)* Allows enabling or disabling each service individually (Apache, Library, BRouter, TileServer, Meshtastic, Console, OpenWebRX, Kiwix). |
 | Kiwix downloads | *(custom mode)* Configures Wikipedia FR/EN download and desired size (all_mini, all_no_pic, all_maxi). |
 | Meshtastic node configuration | *(custom mode)* Sets the IP address and MAC of a Meshtastic node (optional). |
+| HTTPS activation | *(custom mode)* Allows enabling HTTPS for all web services. |
 | Config file generation | Writes the `/etc/recoverybox/custom_config.yml` file with the selected options. |
 
 ### Phase 3 — Ansible playbook (automatic)

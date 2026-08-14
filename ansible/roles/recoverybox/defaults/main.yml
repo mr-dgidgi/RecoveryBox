@@ -17,11 +17,13 @@ recoverybox_version_kiwix: "3.8.2"
 # renovate: datasource=docker depName=mrdgidgi/simple-hotspot
 recoverybox_version_simple_hotspot: "1.0"
 # renovate: datasource=docker depName=slechev/openwebrxplus-softmbe
-recoverybox_version_owrx: "1.2.118"
+recoverybox_version_owrx: "1.2.120"
 # renovate: datasource=docker depName=maptiler/tileserver-gl
 recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource=docker depName=ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
+# renovate: datasource=docker depName=dullage/flatnotes
+recoverybox_version_flatnotes: "v5.5.4"
 
 
 # Enable services on demand
@@ -34,6 +36,16 @@ recoverybox_enable_console: true
 recoverybox_enable_kiwix: true
 recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true
+recoverybox_enable_flatnotes: true
+recoverybox_enable_victron: false
+
+# Activate HTTPS
+recoverybox_enable_https: false
+
+# OpenWebRX credentials
+recoverybox_owrx_conf:
+  username: "recoverybox"
+  password: "recoverybox"
 
 # Network interfaces
 recoverybox_interface_wlanap: "wlanAP"
@@ -83,3 +95,10 @@ recoverybox_kiwix_files:
 recoverybox_download_brouter: true
 # Allow to download world.mbtiles for tileserver-gl
 recoverybox_download_mbtiles: true
+
+# Flatnotes type of conf
+recoverybox_flatnotes_open: "full" # open, secure, full
+recoverybox_flatnotes_secure:
+  username: "recadmin"
+  password: "RecoveryAdmin"
+  secret_key: "aLongRandomSeriesOfCharacters123"

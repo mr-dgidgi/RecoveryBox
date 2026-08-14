@@ -25,12 +25,17 @@
         mode: '0644'
 
     - name: Create kiwix apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/kiwix.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/kiwix.conf.j2
         dest: /etc/apache2/sites-available/kiwix.conf
         owner: root
         group: root
         mode: '0644'
+
+    - name: Enable kiwix site
+      ansible.builtin.command:
+        cmd: a2ensite kiwix.conf
+      changed_when: false
 
     - name: Reload apache2 service
       ansible.builtin.systemd_service:

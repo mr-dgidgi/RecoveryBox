@@ -25,6 +25,8 @@
       - rsync
       - python3-pip
       - python3-venv
+      - python3-cryptography
+      - openssl
     state: present
 
 - name: Create keyrings directory
@@ -41,3 +43,35 @@
 
 - name: Populate service facts
   ansible.builtin.service_facts:
+
+- name: Generate Certificate for HTTPS
+  when: recoverybox_enable_https
+  block:
+    - name: Create SSL directory
+      ansible.builtin.file:
+        path: /etc/ssl/recoverybox
+        state: directory
+        mode: '0755'
+
+    - name: Create private key
+      community.crypto.openssl_privatekey:
+        path: /etc/ssl/recoverybox/recoverybox.key
+        state: present
+
+    - name: Create CSR
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: /etc/ssl/recoverybox/recoverybox.key
+        common_name: "recovery.box"
+        organization_name: "RecoveryBox Project"
+        subject_alt_name:
+          - DNS:recovery.box
+          - DNS:www.recovery.box
+      register: recoverybox_csr
+
+    - name: Create self-signed certificate
+      community.crypto.x509_certificate:
+        path: /etc/ssl/recoverybox/recoverybox.crt
+        csr_content: "{{ recoverybox_csr.csr }}"
+        privatekey_path: /etc/ssl/recoverybox/recoverybox.key
+        provider: selfsigned
+        state: present

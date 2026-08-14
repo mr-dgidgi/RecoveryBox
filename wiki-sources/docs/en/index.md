@@ -24,23 +24,21 @@ RecoveryBox provides various tools via the web by connecting to the hotspot it h
     **Current version: {{ rb_version }}**
 
 ## Available Services
-### Offline resources and web access
+### Knowledge and Information
 - **Kiwix**: Offline Wikipedia (in French and/or English via ZIM files). ([kiwix.recovery.box](http://kiwix.recovery.box))
-- **Library**: Web server hosting a collection of survival and self-reliance PDF documents. ([library.recovery.box](http://library.recovery.box))
+- **Library**: Web server hosting a collection of PDF documents related to survival and self-reliance. ([library.recovery.box](http://library.recovery.box))
 - **Wiki**: RecoveryBox technical wiki (services and tools documentation). ([wiki.recovery.box](http://wiki.recovery.box))
+- **Flatnotes**: Simple web-based note-taking and sharing service. ([flatnotes.recovery.box](http://flatnotes.recovery.box))
 
-### Connectivity and networking
-- **GPS Time Sync**: The server provides the exact time to connected devices via its GPS
-
-### Radio and telecommunications
+### Radio and Telecommunications
 - **OpenWebRX Plus**: Web interface for receiving and listening to radio frequencies via RTL-SDR. ([owrx.recovery.box](http://owrx.recovery.box))
 - **Meshtastic**: Web client and daemon for Meshtastic nodes (LoRa mesh network). ([meshtastic.recovery.box](http://meshtastic.recovery.box))
 
 ### Cartography
-- **brouter**: A local cartography solution for managing GPX files. ([carto.recovery.box](http://carto.recovery.box))
+- **BRouter**: A local cartography solution for managing GPX files ([carto.recovery.box](http://carto.recovery.box))
 
 ### Administration
-- **shellinabox**: Web-based administration console. ([console.recovery.box](http://console.recovery.box))
+- **shellinabox** Web-based administration console ([console.recovery.box](http://console.recovery.box))
 
 ## Tools
 RecoveryBox integrates several tools designed to facilitate basic system administration.
@@ -48,22 +46,7 @@ RecoveryBox integrates several tools designed to facilitate basic system adminis
 - **network-configurator**: Tool for configuring network and WiFi interfaces
 - **generate-map**: Tool for downloading and aggregating world maps for the cartography service
 - **Meshtastic Daemon**: Service for collecting Meshtastic node information and displaying them on the BRouter map
-
-## Table of Contents
-* [Quick Start](quickstart.md)
-* Services
-    * [Hotspot](./services/hotspot.md)
-    * [Library](./services/library.md)
-    * [Kiwix](./services/kiwix.md)
-    * [OpenWebRX Plus](./services/owrx.md)
-    * [Meshtastic](./services/meshtastic.md)
-    * [Carto](./services/carto.md)
-    * [Console](./services/console.md)
-* Administration
-    * [Installation](./admin/install.md)
-    * [Network Configuration](./admin/network.md)
-    * [rbstatus](./admin/rbstatus.md)
-    * [network-configurator](./admin/network-configurator.md)
-    * [generate-map](./admin/generate-map.md)
-    * [Meshtastic Daemon](./admin/meshtastic-daemon.md)
-    * [Debug](./admin/debug.md)
+- **rb-update**: Script for updating RecoveryBox and its services
+- **services-manager**: Script for managing RecoveryBox services
+- **rb-battery**: Battery monitoring and protection script via Victron MPPT VE.Direct
+- **rb-laptop**: Script for displaying the battery level on the homepage if the hardware is a laptop

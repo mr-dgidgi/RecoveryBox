@@ -22,6 +22,9 @@ RecoveryBox integrates two Meshtastic-related components:
 
 For more details about the project, consult the **[official Meshtastic documentation](https://meshtastic.org)** and the **[GitHub repository](https://github.com/meshtastic/web)**.
 
+!!! info "Local map"
+    The Meshtastic web client is configured by default to use the local map hosted on the RecoveryBox. This allows you to geographically visualize the mesh network, even without internet access.
+
 ### Properties
 
 | Property | Value |
@@ -60,7 +63,7 @@ The Meshtastic web interface is accessible to all users connected to the Recover
 !!! note "Optional"
     Configuring a Meshtastic node is optional. The MAC address and IP address are used to create a DHCP reservation in dnsmasq, ensuring the Meshtastic node always receives the same address on the hotspot network. The service does not depend on this reservation and can work with any Meshtastic node connected to the local network or directly via Bluetooth/WebSerial on the client machine.
 
-During installation via `RecoveryBox_install.sh`, it is possible to configure the IP address and MAC address of a Meshtastic node to connect. These values are stored in `/etc/recoverybox/custom_config.yml`:
+During installation via `install.sh`, it is possible to configure the IP address and MAC address of a Meshtastic node to connect. These values are stored in `/etc/recoverybox/custom_config.yml`:
 
 You can also manually modify these values in the configuration file, then relaunch the script to apply the changes.
 

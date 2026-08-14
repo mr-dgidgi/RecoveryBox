@@ -22,6 +22,9 @@ La RecoveryBox intègre deux composants liés à Meshtastic :
 
 Pour plus de détails sur le projet, consultez la **[documentation officielle de Meshtastic](https://meshtastic.org)** et le **[dépôt GitHub](https://github.com/meshtastic/web)**.
 
+!!! info "Carte locale"
+    Le web client Meshtastic est configuré par défaut pour utiliser la carte locale hébergée sur la RecoveryBox. Ceci permet de visualiser géographiquement le réseau maillé, même sans accès à Internet.
+
 ### Caractéristiques
 
 | Propriété | Valeur |
@@ -60,7 +63,7 @@ L'interface web Meshtastic est accessible à tous les utilisateurs connectés au
 !!! note "optionnel"
     La configuration d'un nœud Meshtastic est optionnelle. L'adresse MAC et l'adresse IP sont utilisées pour créer une réservation DHCP dans dnsmasq, garantissant que le nœud Meshtastic reçoive toujours la même adresse sur le réseau du hotspot. Le service n'est pas dépendant de cette réservation et peut fonctionner avec n'importe quel nœud Meshtastic connecté au réseau local ou directement via Bluetooth/WebSerial au poste client.
 
-Lors de l'installation via `RecoveryBox_install.sh`, il est possible de configurer l'adresse IP et l'adresse MAC d'un nœud Meshtastic à connecter. Ces informations sont stockées dans `/etc/recoverybox/custom_config.yml` :
+Lors de l'installation via `install.sh`, il est possible de configurer l'adresse IP et l'adresse MAC d'un nœud Meshtastic à connecter. Ces informations sont stockées dans `/etc/recoverybox/custom_config.yml` :
 
 Vous pouvez également modifier ces valeurs manuellement dans le fichier de configuration, puis relancer le script pour appliquer les changements.
 

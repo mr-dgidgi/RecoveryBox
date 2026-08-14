@@ -13,6 +13,7 @@ WAN="Wan"
 LAN="Lan"
 PATHCONFIG="/etc/systemd/network"
 IPTABLESFILE="/etc/iptables/iptables.sh"
+IPTABLESFILEEXTRA="/etc/iptables/wan_interfaces"
 
 
 ## Systemd Networkd files order :
@@ -122,42 +123,33 @@ EOF
 set_iptables() {
     # Verify iptables file exists before modifying
     if [[ ! -f "$IPTABLESFILE" ]]; then
-        echo -e "$MSGRED" "$SRVMSG" "Firewall configuration file not found: $IPTABLESFILE" "$MSGNC"
+        echo -e "$MSGRED" "$SRVMSG" "Firewall script not found: $IPTABLESFILE" "$MSGNC"
         return 1
     fi
+
+    if [[ ! -f "$IPTABLESFILEEXTRA" ]]; then
+        echo "## Managed by network-configurator" > "$IPTABLESFILEEXTRA"
+    fi
+
     
-    if grep -q "WAN=.*$1" "$IPTABLESFILE"; then
+    if grep -q "$1" "$IPTABLESFILEEXTRA"; then
         echo -e "$MSGGREEN" "$SRVMSG" "Interface $1 already set in firewall" "$MSGNC"
     else 
         # Backup existing file
-        if ! cp "$IPTABLESFILE" "${IPTABLESFILE}.bak"; then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to backup $IPTABLESFILE" "$MSGNC"
+        if ! cp "$IPTABLESFILEEXTRA" "${IPTABLESFILEEXTRA}.bak"; then
+            echo -e "$MSGRED" "$SRVMSG" "Failed to backup $IPTABLESFILEEXTRA" "$MSGNC"
             return 1
         fi
-        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILE to ${IPTABLESFILE}.bak" "$MSGNC"
+        echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILEEXTRA to ${IPTABLESFILEEXTRA}.bak" "$MSGNC"
         
-        # Extract current WAN interfaces safely
-        if ! ActualWan=$(grep "WAN=" "$IPTABLESFILE" | cut -d'(' -f2 | cut -d')' -f1); then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to extract current WAN configuration" "$MSGNC"
-            return 1
-        fi
-        
-        NewWan="WAN=( $ActualWan \"$1\" )"
-        
-        # Apply sed change
-        if ! sed -i "s#WAN=.*#$NewWan#" "$IPTABLESFILE"; then
-            echo -e "$MSGRED" "$SRVMSG" "Failed to update firewall configuration" "$MSGNC"
-            # Restore backup on failure
-            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
-            echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
-            return 1
-        fi
-        
+        # Add The new interface into a new line
+        echo -e "$1" >> "$IPTABLESFILEEXTRA"
+               
         # Restart iptables service
         if ! systemctl restart iptables 2>/dev/null; then
             echo -e "$MSGRED" "$SRVMSG" "Failed to restart iptables service" "$MSGNC"
             # Restore backup on failure
-            mv "${IPTABLESFILE}.bak" "$IPTABLESFILE"
+            mv "${IPTABLESFILEEXTRA}.bak" "$IPTABLESFILEEXTRA"
             echo -e "$MSGYELLOW" "$SRVMSG" "Restored original file from backup" "$MSGNC"
             return 1
         fi
@@ -221,6 +213,8 @@ fi
 set_wlan_client () {
     export WPA_CLI_CTRL_IFACE_DIR="/var/run/wpa_supplicant"
     local WPAConfFile
+    local ScanCache
+    local ScanAttempts
     WPAConfFile="/etc/wpa_supplicant/wpa_supplicant-$1.conf"
     if [[ ! -f "$WPAConfFile" ]];then
         cat <<EOF > "$WPAConfFile"
@@ -233,16 +227,37 @@ EOF
     echo -e "#########################################################"
     echo -e "$MSGYELLOW $SRVMSG Enabling interface $1... $MSGNC"
     sleep 2
-    wpa_cli -i "$1" scan > /dev/null
     echo -e "$MSGYELLOW $SRVMSG Scanning for WiFi networks on $1... $MSGNC"
-    sleep 2
-    ScanCache=$(wpa_cli -i "$1" scan_results)
+
+    # Trigger scan and wait until at least one result line is available.
+    wpa_cli -i "$1" scan > /dev/null 2>&1
+    ScanAttempts=0
+    while true; do
+        ScanCache=$(wpa_cli -i "$1" scan_results 2>/dev/null)
+        if [[ $(echo "$ScanCache" | wc -l) -gt 1 ]]; then
+            break
+        fi
+
+        ScanAttempts=$((ScanAttempts + 1))
+        if [[ $ScanAttempts -ge 10 ]]; then
+            # Retry one scan once previous request had no visible result yet.
+            wpa_cli -i "$1" scan > /dev/null 2>&1
+        fi
+        if [[ $ScanAttempts -ge 20 ]]; then
+            break
+        fi
+        sleep 1
+    done
+
     echo -e "$ScanCache"
+    if [[ $(echo "$ScanCache" | wc -l) -le 1 ]]; then
+        echo -e "$MSGYELLOW $SRVMSG No WiFi network found yet. You can still enter SSID manually. $MSGNC"
+    fi
     while true; do
         read -rp "Enter SSID name: " SSIDChoosed
         if [[ -z "$SSIDChoosed" ]]; then
             echo -e "$MSGRED $SRVMSG SSID cannot be empty. Please enter a valid SSID name. $MSGNC"
-        elif ! echo "$ScanCache" | grep -q "$SSIDChoosed"; then
+        elif [[ $(echo "$ScanCache" | wc -l) -gt 1 ]] && ! echo "$ScanCache" | grep -Fq "$SSIDChoosed"; then
             echo -e "$MSGRED $SRVMSG SSID not found. Please enter a valid SSID name. $MSGNC"
         else
             break

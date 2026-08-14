@@ -13,9 +13,10 @@ tags:
 
 Le fichier **`/etc/recoverybox/custom_config.yml`** permet de personnaliser le déploiement Ansible de la RecoveryBox sans modifier les fichiers du rôle.
 
-Ce fichier est **géré automatiquement** par le script **[RecoveryBox_install.sh](RecoveryBox_install.md)** lors de la configuration interactive. Il est ensuite passé en `extra-vars` au playbook Ansible (`ansible/Install.yml`).
+Ce fichier est **géré automatiquement** par le script **[install.sh](RecoveryBox_install.md)** lors de la configuration interactive. Il est ensuite passé en `extra-vars` au playbook Ansible (`ansible/Install.yml`).
 
-> **Note** : Vous pouvez aussi créer/modifier ce fichier manuellement avant de lancer une installation en mode `custom` (`sudo ./RecoveryBox_install.sh custom`).
+!!! note "Note"
+    Vous pouvez aussi créer/modifier ce fichier manuellement avant de lancer une installation en mode `custom` (`sudo ./install.sh custom`).
 
 ---
 
@@ -50,6 +51,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_version_owrx` | `"1.2.118"` | Version OpenWebRX+ (Docker) |
 | `recoverybox_version_tileserver` | `"v5.6.0"` | Version TileServer-GL (Docker) |
 | `recoverybox_version_planetiler` | `"0.10.2"` | Version Planetiler (Docker) |
+| `recoverybox_version_flatnotes` | `"v5.5.4"` | Version du conteneur Flatnotes (Docker) |
 
 !!! warning "Attention"
     Ne modifiez ces versions que si vous avez une raison précise (compatibilité, bug connu). Les versions listées sont testées et validées, si la version que vous souhaitez utiliser est différente, vérifiez avec `rb-update` qu'il n'y a pas une nouvelle version de RecoveryBox qui inclut cette modification.
@@ -69,14 +71,20 @@ recoverybox_hotspot_conf:
 | `recoverybox_enable_kiwix` | `true` | Active Kiwix (Wikipédia hors-ligne) |
 | `recoverybox_enable_meshtastic` | `true` | Active les services Meshtastic (web client + daemon) |
 | `recoverybox_enable_hotspot` | `true` | Active le point d'accès Wi-Fi (hotspot) |
+| `recoverybox_enable_flatnotes` | `true` | Active le service Flatnotes (prise de notes web) |
 
 !!! note "Note"
-    Si `recoverybox_enable_apache: false`, l'ensemble des services web seront automatiquement désactivés par le playbook.
+    Si `recoverybox_enable_apache: false`, l'ensemble des services web sera automatiquement **désactivé** par le playbook.
 
 !!! warning "Attention"
     Si `recoverybox_enable_hotspot: false`, le point d'accès Wi-Fi ne sera pas créé et l'ensemble des services sera inaccessible.
 
 ---
+
+### Activation HTTPS
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `recoverybox_enable_https` | `false` | Active HTTPS pour tous les services web|
 
 ### Interfaces réseau
 
@@ -97,7 +105,7 @@ Objet `recoverybox_hotspot_conf` avec les clés suivantes :
 | `ssid` | `"recoverybox"` | Nom du réseau Wi-Fi (SSID) |
 | `password` | `"recoverybox"` | Clé WPA2-PSK (8 à 63 caractères) |
 | `mode` | `"g"` | Mode PHY : `g` (2.4 GHz), `a` (5 GHz), `acs` (auto) |
-| `channel` | `"11"` | Canal Wi-Fi (ex: `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
+| `channel` | `"11"` | Canal Wi-Fi (ex. : `1`, `6`, `11`, `36`, `0` pour auto/ACS) |
 | `auth_algs` | `"1"` | Algorithmes d'authentification (1 = Open System) |
 | `wpa` | `"2"` | Version WPA (2 = WPA2) |
 | `wpa_key_mgmt` | `"WPA-PSK"` | Gestion des clés |
@@ -109,7 +117,8 @@ Objet `recoverybox_hotspot_conf` avec les clés suivantes :
 | `dhcp_range_start` | `"192.168.200.100"` | Début plage DHCP |
 | `dhcp_range_end` | `"192.168.200.200"` | Fin plage DHCP |
 
-> **Important** : L'interface Wi-Fi doit supporter le mode AP pour le canal et le mode choisis.
+!!! warning "Important"
+    L'interface Wi-Fi doit supporter le mode AP pour le canal et le mode choisis.
 
 ---
 
@@ -122,9 +131,18 @@ Objet `recoverybox_meshtastic_node` :
 | `mac` | `"00:00:00:00:00:00"` | Adresse MAC du nœud Meshtastic (pour réservation DHCP statique) |
 | `ip` | `"192.168.200.101"` | IP fixe attribuée au nœud Meshtastic |
 
-> Utilisé uniquement si `recoverybox_enable_meshtastic: true` et qu'un nœud physique est connecté.
+!!! note "Note"
+    Utilisé uniquement si `recoverybox_enable_meshtastic: true` et qu'un nœud physique est connecté.
 
 ---
+
+### Configuration OpenWebRX
+
+Objet `recoverybox_owrx_conf` :
+| Clé | Défaut | Description |
+|-----|--------|-------------|
+| `username` | `"recoverybox"` | Nom d'utilisateur pour l'accès à OpenWebRX |
+| `password` | `"recoverybox"` | Mot de passe pour l'accès à OpenWebRX |
 
 ### Téléchargements Kiwix
 
@@ -163,9 +181,21 @@ recoverybox_kiwix_files:
 | `recoverybox_download_brouter` | `true` | Télécharge les segments BRouter (routing vélo/rando/voiture) |
 | `recoverybox_download_mbtiles` | `true` | Télécharge `world.mbtiles` pour TileServer-GL (carte monde) |
 
-> **Attention** : Ces téléchargements peuvent représenter plusieurs Go. Désactivez (`false`) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.
+!!! warning "Attention"
+    Ces téléchargements peuvent représenter plusieurs Go. Désactivez (`false`) si bande passante ou espace disque limité et que ceux-ci sont déjà téléchargés.
 
 ---
+
+### Configuration Flatnotes
+
+| Variable | Défaut | Description |
+|----------|--------|-------------|
+| `recoverybox_flatnotes_open` | `"full"` | Type d'installation Flatnotes : `open`, `secure`, `full` |
+| `recoverybox_flatnotes_secure` | objet | Configuration pour l'installation sécurisée de Flatnotes (nom d'utilisateur, mot de passe, clé secrète) |
+| `recoverybox_flatnotes_secure.username` | `"recadmin"` | Nom d'utilisateur pour l'accès sécurisé |
+| `recoverybox_flatnotes_secure.password` | `"RecoveryAdmin"` | Mot de passe pour l'accès sécurisé |
+| `recoverybox_flatnotes_secure.secret_key` | `"aLongRandomSeriesOfCharacters123"` | Clé secrète pour la session sécurisée |
+
 
 ## Exemple complet
 
@@ -207,30 +237,33 @@ recoverybox_kiwix_files:
 # Pas de téléchargement cartes (bande passante limitée)
 recoverybox_download_brouter: false
 recoverybox_download_mbtiles: false
+
+# Activation HTTPS pour tous les services web
+recoverybox_enable_https: true
 ```
 
 ---
 
-## Utilisation avec RecoveryBox_install.sh
+## Utilisation avec install.sh
 
 ### Générer le fichier (mode interactif)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 → Lance uniquement le menu de configuration et écrit `/etc/recoverybox/custom_config.yml`
 
 ### Installation avec config existante
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 → Utilise le fichier existant, saute le menu, lance directement le playbook Ansible
 
 ### Installation complète (génère + applique)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 → Menu interactif → écrit `custom_config.yml` → lance Ansible
 

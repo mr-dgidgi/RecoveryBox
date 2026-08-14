@@ -20,7 +20,8 @@
     "name": "Kiwix Server",
     "type": "systemd",
     "unit": "kiwix.service",
-    "url": "http://recovery.box:8080/",
+    "url": "http://kiwix.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 1256 1256'><path d='M1165 764.1c-8.3-36.4-68.5-141.3-191.6-234.4-22.5-17.1-42.8-31.3-59.7-42.6 24.6-105.3-103.3-232.3-228.1-172.5-89.6-84.3-189.5-118.7-281.4-117.3-243.3 3.4-431 256.9-229.1 498.8l.4.4c3.1 3.7 6.3 7.4 9.5 11.1 13.1 15.7 21.8 29.6 29.2 54.1L274.4 959h-21.3c-19.6 0-35.6 15.9-35.6 35.6h80.8l135.8 64.2c8.4-17.8.8-39-16.9-47.3l-35.6-16.8H484c0-19.6-15.9-35.6-35.6-35.6h-92.8c-16.2 0-30.6-10.6-35.3-26.1l-47.7-156.7c-11.9-41.2 15.4-68.1 41.1-71.3 23.4-2.9 35.2 12.2 46.2 48.8l42.4 139H381c-19.6 0-35.6 15.9-35.6 35.6h80.8L562 992.6c8.4-17.8.8-39-16.9-47.3l-35.6-16.8h75.1c7.6 12.9 16.9 25.1 28 36.1 70 70 183.7 70 253.7 0s70-183.7 0-253.7-183.7-70-253.7 0c-49.2 49.2-63.9 120-43.9 182h-85c-16.2 0-30.6-10.6-35.3-26.1L378 635.4l12-6.4c167.1-70.1 345.8 55.1 470.2-65.2l.8-.8c15.4-14 30.8-28.3 76.3.2 49 30.7 157.1 110.8 206.1 247.8.1 0 29.8-10.6 21.6-46.9M821.2 460.6c-.4-18.7-15.6-33.7-34.5-33.7-19 0-34.5 15.4-34.5 34.5 0 10.4 4.6 19.6 11.8 25.9-25-4.8-43.8-26.6-43.8-52.9 0-29.8 24.1-53.9 53.9-53.9s53.9 24.1 53.9 53.9c0 9.5-2.5 18.4-6.8 26.2'/></svg>",
     "version": "{{ recoverybox_version_kiwix }}",
     "activated": {{ recoverybox_enable_kiwix | to_json }}
   },
@@ -46,9 +47,14 @@
     "id": "library",
     "name": "PDF Library",
     "type": "http",
+    {% if recoverybox_enable_https %}
+    "check_url": "https://127.0.0.1",
+    {% else %}
     "check_url": "http://127.0.0.1",
+    {% endif %}
     "check_host": "library.recovery.box",
     "url": "http://library.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d='M240 112L128 112C119.2 112 112 119.2 112 128L112 512C112 520.8 119.2 528 128 528L208 528L208 576L128 576C92.7 576 64 547.3 64 512L64 128C64 92.7 92.7 64 128 64L261.5 64C278.5 64 294.8 70.7 306.8 82.7L429.3 205.3C441.3 217.3 448 233.6 448 250.6L448 400.1L400 400.1L400 272.1L312 272.1C272.2 272.1 240 239.9 240 200.1L240 112.1zM380.1 224L288 131.9L288 200C288 213.3 298.7 224 312 224L380.1 224zM272 444L304 444C337.1 444 364 470.9 364 504C364 537.1 337.1 564 304 564L292 564L292 592C292 603 283 612 272 612C261 612 252 603 252 592L252 464C252 453 261 444 272 444zM304 524C315 524 324 515 324 504C324 493 315 484 304 484L292 484L292 524L304 524zM400 444L432 444C460.7 444 484 467.3 484 496L484 560C484 588.7 460.7 612 432 612L400 612C389 612 380 603 380 592L380 464C380 453 389 444 400 444zM432 572C438.6 572 444 566.6 444 560L444 496C444 489.4 438.6 484 432 484L420 484L420 572L432 572zM508 464C508 453 517 444 528 444L576 444C587 444 596 453 596 464C596 475 587 484 576 484L548 484L548 508L576 508C587 508 596 517 596 528C596 539 587 548 576 548L548 548L548 592C548 603 539 612 528 612C517 612 508 603 508 592L508 464z'/></svg>",
     "version": "{{ recoverybox_version_library }}",
     "activated": {{ recoverybox_enable_library | to_json }}
   },
@@ -57,7 +63,8 @@
     "name": "OpenWebRX+",
     "type": "systemd",
     "unit": "openwebrx.service",
-    "url": "http://recovery.box:8073/",
+    "url": "http://owrx.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='94.45 156.43 811.1 691.12'><g style='display:inline'><g style='display:inline;stroke-opacity:1;filter:url(#filter2476)' transform='matrix(1.026 0 0 .99685 -5.2 .992)'><ellipse cx='492.399' cy='351.179' stroke='none' rx='48.666' ry='50.279' style='display:inline;fill-opacity:1;stroke:none;stroke-width:24.733;stroke-opacity:1'/><path d='M492.399 351.179v392.424' style='fill:none;stroke-width:49.4405;stroke-linecap:butt;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1'/><path d='M597.42 444.194c24.967-22.877 40.978-55.81 40.978-93.016s-16.011-70.139-40.977-93.015M684.874 521.624c46.014-41.48 75.19-102.393 75.19-170.446s-29.176-128.965-75.19-170.445M387.376 444.194c-24.966-22.877-40.977-55.81-40.977-93.016s16.011-70.139 40.977-93.015M299.923 521.624c-46.014-41.48-75.19-102.393-75.19-170.446s29.176-128.965 75.19-170.445' style='fill:none;stroke-width:49.4405;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1'/><path d='M199.76 743.603h585.277' style='fill:none;stroke-width:39.5524;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'/><g style='fill-opacity:1;stroke-width:34.6084;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'><ellipse cx='199.76' cy='743.603' rx='85.77' ry='88.278' style='display:inline;fill-opacity:1;stroke-width:34.6084;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'/><ellipse cx='492.399' cy='743.603' rx='85.77' ry='88.278' style='display:inline;fill-opacity:1;stroke-width:34.6084;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'/><ellipse cx='785.037' cy='743.603' rx='85.77' ry='88.278' style='display:inline;fill-opacity:1;stroke-width:34.6084;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'/></g></g></g></svg>",
     "version": "{{ recoverybox_version_owrx }}",
     "activated": {{ recoverybox_enable_owrx | to_json }}
   },
@@ -72,10 +79,11 @@
   },
   {
     "id": "brouter",
-    "name": "Brouter (mapping)",
+    "name": "Map",
     "type": "systemd",
     "unit": "brouter.service",
     "url": "http://map.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d='M576 112C576 103.7 571.7 96 564.7 91.6C557.7 87.2 548.8 86.8 541.4 90.5L416.5 152.1L244 93.4C230.3 88.7 215.3 89.6 202.1 95.7L77.8 154.3C69.4 158.2 64 166.7 64 176L64 528C64 536.2 68.2 543.9 75.1 548.3C82 552.7 90.7 553.2 98.2 549.7L225.5 489.8L396.2 546.7C409.9 551.3 424.7 550.4 437.8 544.2L562.2 485.7C570.6 481.7 576 473.3 576 464L576 112zM208 146.1L208 445.1L112 490.3L112 191.3L208 146.1zM256 449.4L256 148.3L384 191.8L384 492.1L256 449.4zM432 198L528 150.6L528 448.8L432 494L432 198z'/></svg>",
     "version": "{{ recoverybox_version_brouter_web }}",
     "activated": {{ recoverybox_enable_brouter | to_json }}
   },
@@ -94,6 +102,7 @@
     "type": "systemd",
     "unit": "shellinabox.service",
     "url": "http://console.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d='M73.4 182.6C60.9 170.1 60.9 149.8 73.4 137.3C85.9 124.8 106.2 124.8 118.7 137.3L278.7 297.3C291.2 309.8 291.2 330.1 278.7 342.6L118.7 502.6C106.2 515.1 85.9 515.1 73.4 502.6C60.9 490.1 60.9 469.8 73.4 457.3L210.7 320L73.4 182.6zM288 448L544 448C561.7 448 576 462.3 576 480C576 497.7 561.7 512 544 512L288 512C270.3 512 256 497.7 256 480C256 462.3 270.3 448 288 448z'/></svg>",
     "version": null,
     "activated": {{ recoverybox_enable_console | to_json }}
   },
@@ -103,6 +112,7 @@
     "type": "systemd",
     "unit": "meshtastic-web.service",
     "url": "http://meshtastic.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2' viewBox='0 0 100 55'><path d='M64.716 13.073 37.867 52.447l-5.663-3.862L61.878 5.068a3.428 3.428 0 0 1 5.66-.006l29.743 43.45-5.656 3.872zM8.379 52.406 39.74 6.415l-5.663-3.862L2.716 48.544z'/></svg>",
     "version": "{{ recoverybox_version_meshtastic_web }}",
     "activated": {{ recoverybox_enable_meshtastic | to_json }}
   },
@@ -111,10 +121,37 @@
     "name": "Wiki",
     "type": "http",
     "unit": null,
-    "check_url": "http://127.0.0.1/",
+    {% if recoverybox_enable_https %}
+    "check_url": "https://127.0.0.1",
+    {% else %}
+    "check_url": "http://127.0.0.1",
+    {% endif %}
     "check_host": "recovery.box",
     "url": "http://recovery.box/wiki/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d='M640 115.2L639.7 127.4C611.6 128.2 594.7 143.2 583.9 167.7C558.9 225.5 480.6 407.7 428.6 526.3L415 526.3L333.1 333.2C300.6 396.8 264.8 463.2 233.9 526.3C233.6 526.6 218.9 526.3 218.9 526C172 416.3 122.8 307.4 75.8 197.4C64.4 170.7 26.4 127.4 .2 127.7C.2 124.6-.1 117.7-.1 113.5L161.8 113.5L161.8 127.4C142.6 128.5 109 140.7 118.5 161.6C140.4 211.3 222.1 401.9 244.1 450.2C259.1 420.5 301.9 341 319.4 307.4C305.5 279.1 260.8 173.5 246.6 147.4C236.9 129.6 210.5 128 190.8 127.7L190.8 113.8L333.3 114.1L333.3 127.2C313.9 127.8 295.2 135 303.9 153.3C322.8 193.3 334.5 221.4 352 258C357.6 247.2 386.7 188.6 400.1 157.2C409 136.6 396.2 128.6 361.5 127.8C361.8 124.2 361.5 117.5 361.8 114.2C406.2 113.9 472.9 113.9 484.9 113.6L484.9 127.2C462.4 128 439.1 140 426.8 158.9L367.6 281.7C374 297.8 430.9 424.5 436.8 438.4L559.2 155.8C550.6 132.7 522.8 127.7 512 127.5L512 113.6L639.8 114.7L640 115.2z'/></svg>",
     "version": "null",
     "activated": true
+  },
+  {
+    "id": "flatnotes",
+    {% if recoverybox_flatnotes_open == "full" %}
+    "name": "Flatnotes (Admin)",
+    {% else %}
+    "name": "Flatnotes",
+    {% endif %}
+    "type": "systemd",
+    "unit": "flatnotes.service",
+    "url": "http://flatnotes.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 512 512'><path d='M58.9 2.6h394.2c31.1 0 56.3 25.2 56.3 56.3v394.2c0 31.1-25.2 56.3-56.3 56.3H58.9c-31.1 0-56.3-25.2-56.3-56.3V58.9c0-31.1 25.2-56.3 56.3-56.3'/><path class='rb-service-tile-logo-accent' d='M142 409.2c-2.1 0-4.4-1.5-6.8-4.5-2.1-3-3.9-6.5-5.4-10.4-1.2-3.9-1.8-7.1-1.8-9.5q.9-17.55 8.1-39.6c1.5-4.2 3.8-6 6.8-5.4.6-5.1 1.2-11.6 1.8-19.4.9-7.8 2-16.8 3.2-27-1.5-4.2-4.7-6.3-9.5-6.3-1.2 0-5.7.8-13.5 2.3-7.5 1.5-18.6 3.8-33.3 6.8-.3 0-.6.2-.9.5-.3 0-.8-.2-1.4-.5q-4.5 0-4.5-5.4c0-4.2 2-7.2 5.9-9l-.5.5c4.5-2.1 15.5-5.3 32.9-9.5 12.9-3.3 23.3-7.5 31.1-12.6l2.7-23c1.2-11.1 3.2-22.5 5.9-34.2 2.7-12 6.5-24.2 11.3-36.5 9.9-26.7 21.6-48.2 35.1-64.4q17.1-19.8 34.2-19.8c9.9 0 18.6 4.7 26.1 14 1.2 1.2 1.8 2.6 1.8 4.1 0 3.3-1.8 5-5.4 5q-3.15 0-5.4-2.7c-4.8-5.7-10.1-8.6-15.8-8.6-13.5 0-27.8 14.9-42.8 44.6-6 12-11.3 26.3-15.8 42.8-4.5 16.2-8 34.5-10.4 55l-.5 7.7-.9 12.2c8.7 2.7 18.3 4.1 28.8 4.1l28.8-.9q13.5.45 13.5 9c0 5.1-2.4 7.7-7.2 7.7h-35.1c-12.6.9-23.7 4.4-33.3 10.4-9 69.7-16.7 109.5-23 119.4-1.3 1.9-3 3.1-4.8 3.1m111.7-14.4q-10.35 0-16.2-2.7c-3.6-1.8-5.4-3.8-5.4-5.9 0-1.8.9-3.5 2.7-5 2.1-1.5 5.6-2.4 10.4-2.7q9-.45 25.2-.9c10.8-.3 22.7-.6 35.6-.9 13.2-.3 26.1-.5 38.7-.5h19.4c6.3 0 11.9.2 16.7.5 5.1.3 8.9.8 11.3 1.4s3.6 2.3 3.6 5c0 3.3-1.4 5.4-4.1 6.3s-6 1.4-9.9 1.4c-6.9 0-15.9.2-27 .5-11.1.6-23 1.1-35.6 1.4-12.6.6-24.8 1.1-36.5 1.4-11.4.4-21.1.7-28.9.7'/></svg>",    "version": "{{ recoverybox_version_flatnotes }}",
+    "activated": {{ recoverybox_enable_flatnotes | to_json }}
+  },
+    {
+    "id": "flatnotes-ro",
+    "name": "Flatnotes (Lecture)",
+    "type": "systemd",
+    "unit": "flatnotes-ro.service",
+    "url": "http://flatnotes-ro.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 512 512'><path d='M58.9 2.6h394.2c31.1 0 56.3 25.2 56.3 56.3v394.2c0 31.1-25.2 56.3-56.3 56.3H58.9c-31.1 0-56.3-25.2-56.3-56.3V58.9c0-31.1 25.2-56.3 56.3-56.3'/><path class='rb-service-tile-logo-accent' d='M142 409.2c-2.1 0-4.4-1.5-6.8-4.5-2.1-3-3.9-6.5-5.4-10.4-1.2-3.9-1.8-7.1-1.8-9.5q.9-17.55 8.1-39.6c1.5-4.2 3.8-6 6.8-5.4.6-5.1 1.2-11.6 1.8-19.4.9-7.8 2-16.8 3.2-27-1.5-4.2-4.7-6.3-9.5-6.3-1.2 0-5.7.8-13.5 2.3-7.5 1.5-18.6 3.8-33.3 6.8-.3 0-.6.2-.9.5-.3 0-.8-.2-1.4-.5q-4.5 0-4.5-5.4c0-4.2 2-7.2 5.9-9l-.5.5c4.5-2.1 15.5-5.3 32.9-9.5 12.9-3.3 23.3-7.5 31.1-12.6l2.7-23c1.2-11.1 3.2-22.5 5.9-34.2 2.7-12 6.5-24.2 11.3-36.5 9.9-26.7 21.6-48.2 35.1-64.4q17.1-19.8 34.2-19.8c9.9 0 18.6 4.7 26.1 14 1.2 1.2 1.8 2.6 1.8 4.1 0 3.3-1.8 5-5.4 5q-3.15 0-5.4-2.7c-4.8-5.7-10.1-8.6-15.8-8.6-13.5 0-27.8 14.9-42.8 44.6-6 12-11.3 26.3-15.8 42.8-4.5 16.2-8 34.5-10.4 55l-.5 7.7-.9 12.2c8.7 2.7 18.3 4.1 28.8 4.1l28.8-.9q13.5.45 13.5 9c0 5.1-2.4 7.7-7.2 7.7h-35.1c-12.6.9-23.7 4.4-33.3 10.4-9 69.7-16.7 109.5-23 119.4-1.3 1.9-3 3.1-4.8 3.1m111.7-14.4q-10.35 0-16.2-2.7c-3.6-1.8-5.4-3.8-5.4-5.9 0-1.8.9-3.5 2.7-5 2.1-1.5 5.6-2.4 10.4-2.7q9-.45 25.2-.9c10.8-.3 22.7-.6 35.6-.9 13.2-.3 26.1-.5 38.7-.5h19.4c6.3 0 11.9.2 16.7.5 5.1.3 8.9.8 11.3 1.4s3.6 2.3 3.6 5c0 3.3-1.4 5.4-4.1 6.3s-6 1.4-9.9 1.4c-6.9 0-15.9.2-27 .5-11.1.6-23 1.1-35.6 1.4-12.6.6-24.8 1.1-36.5 1.4-11.4.4-21.1.7-28.9.7'/></svg>",    "version": "{{ recoverybox_version_flatnotes }}",
+    "activated": {{ (recoverybox_enable_flatnotes and recoverybox_flatnotes_open == "full") | to_json }}
   }
 ]

@@ -1,0 +1,8 @@
+[Unit]
+Description=Service to find Victron MPPT 
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/etc/victron/find-victron-mppt.sh
+[Install]
+WantedBy=multi-user.target

@@ -8,7 +8,7 @@ tags:
 
 # Advanced Installation
 
-This page describes in more detail how the **[RecoveryBox_install.sh](RecoveryBox_install.md)** script works, its prerequisites, and the various possible installation scenarios.
+This page describes in more detail the installation of **RecoveryBox**, its prerequisites, and the various possible installation scenarios.
 
 ---
 
@@ -49,7 +49,7 @@ In this case, it is mandatory to:
 - create the `/data` directory;
 - install Git;
 - clone the RecoveryBox repository;
-- run `RecoveryBox_install.sh`.
+- run `install.sh`.
 
 Before running the script, **NetworkManager must be disabled**, as RecoveryBox exclusively uses **systemd-networkd** for network interface management.
 
@@ -153,7 +153,7 @@ Once the driver is installed, the `network-configurator` script can be used to c
 
 # Installation Workflow
 
-The main steps are described on the dedicated **[RecoveryBox_install.sh](RecoveryBox_install.md)** page.
+The main steps are described on the dedicated **[install.sh](RecoveryBox_install.md)** page.
 
 Installation duration depends mainly on the optional downloads selected. Without content downloads, installation is generally relatively quick. However, downloading Wikipedia or cartographic data can represent several tens of gigabytes and require several hours depending on the Internet connection.
 
@@ -178,5 +178,5 @@ Once the system has rebooted, RecoveryBox is accessible via the **recoverybox** 
 
 ## See Also
 
-- **[RecoveryBox_install.sh](RecoveryBox_install.md)** — Complete documentation of the main installation script (modes, configuration, troubleshooting)
+- **[install.sh](RecoveryBox_install.md)** — Complete documentation of the main installation script (modes, configuration, troubleshooting)
 - **[rb-update](rb-update.md)** — Automated RecoveryBox update script

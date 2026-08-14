@@ -19,8 +19,8 @@
         mode: '0644'
 
     - name: Create meshtastic-web apache2 site
-      ansible.builtin.copy:
-        src: etc/apache2/sites-available/meshtastic-web.conf
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/meshtastic-web.conf.j2
         dest: /etc/apache2/sites-available/meshtastic-web.conf
         owner: root
         group: root
@@ -36,7 +36,7 @@
         name: meshtastic-web
         daemon_reload: true
         enabled: "{{ recoverybox_enable_meshtastic }}"
-        state: restarted
+        state: started
       when: "'dry_run' not in ansible_run_tags"
 
 - name: Deactivate Meshtastic Web

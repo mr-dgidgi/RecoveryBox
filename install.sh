@@ -234,7 +234,7 @@ set_meshtastic_ip() {
     MeshtasticIP=${MeshtasticIP:-192.168.200.101}
     read -rp "Enter the meshtastic node MAC address (default : 00:00:00:00:00:00) : " MeshtasticMAC
     MeshtasticMAC=${MeshtasticMAC:-00:00:00:00:00:00}
-    echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
+    echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic node IP address set to $MeshtasticIP and MAC address set to $MeshtasticMAC." "$MSGNC"
     CUSTOMMESHTASTIC=true
 }
 
@@ -259,7 +259,7 @@ set_kiwix_files(){
         echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : disabled." "$MSGNC"
         KIWIXENWIKIPEDIA="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
         read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
@@ -277,7 +277,7 @@ set_kiwix_files(){
         echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : disabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
         read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
@@ -293,6 +293,27 @@ set_kiwix_files(){
 
 #######################################################
 
+set_flatnotes() {
+    read -rp "Choose Flatnotes type (open, secure, full) (default : full) : " QuestionFlatnotesType
+    if [[ "$QuestionFlatnotesType" == "open" ]]; then
+        FLATNOTESTYPE="open"
+    elif [[ "$QuestionFlatnotesType" == "secure" ]]; then
+        FLATNOTESTYPE="secure"
+    else
+        FLATNOTESTYPE="full"
+    fi
+    if [[ "$FLATNOTESTYPE" == "secure" ]] || [[ "$FLATNOTESTYPE" == "full" ]]; then
+        read -rp "Enter Flatnotes admin username (default : recadmin) : " QuestionFlatnotesUsername
+        FLATNOTESUSERNAME=${QuestionFlatnotesUsername:-recadmin}
+        read -rp "Enter Flatnotes admin password (default : RecoveryAdmin) : " QuestionFlatnotesPassword
+        FLATNOTESPASSWORD=${QuestionFlatnotesPassword:-RecoveryAdmin}
+        # Generate a random secret key
+        FLATNOTESSECRETKEY=$(openssl rand -hex 16)
+    fi
+}
+
+#######################################################
+
 menu_services() {
     echo -e "$MSGYELLOW" "$SRVMSG" "Services configuration menu" "$MSGNC"
 
@@ -302,7 +323,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : disabled." "$MSGNC"
         EnableLibrary="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "RecoveryBox Library : enabled." "$MSGNC"
         EnableLibrary="true"
     fi
 
@@ -312,7 +333,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "brouter : disabled." "$MSGNC"
         EnableBrouter="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "brouter : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "brouter : enabled." "$MSGNC"
         EnableBrouter="true"
         read -rp "Download brouter maps data? yes/no (default : yes) : " QuestionDownloadBrouter
         QuestionDownloadBrouter=$(yes_no_check "$QuestionDownloadBrouter")
@@ -320,7 +341,7 @@ menu_services() {
             echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : disabled." "$MSGNC"
             DownloadBrouterdata="false"
         else
-            echo -e "$MSGYELLOW" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
+            echo -e "$MSGGREEN" "$SRVMSG" "brouter maps data : enabled." "$MSGNC"
             DownloadBrouterdata="true"
         fi
     fi
@@ -331,7 +352,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : disabled." "$MSGNC"
         EnableTileserver="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "tileserver-gl : enabled." "$MSGNC"
         EnableTileserver="true"
         set_worldmap_download
     fi
@@ -342,8 +363,13 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : disabled." "$MSGNC"
         EnableMeshtastic="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
         EnableMeshtastic="true"
+        read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
+        QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
+        if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
+            set_meshtastic_ip
+        fi
     fi
 
     read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
@@ -352,13 +378,8 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
         EnableConsole="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Web Console : enabled." "$MSGNC"
         EnableConsole="true"
-        read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
-        QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
-        if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
-            set_meshtastic_ip
-        fi
     fi
     read -rp "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
     QuestionEnableOWRX=$(yes_no_check "$QuestionEnableOWRX")
@@ -366,7 +387,7 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : disabled." "$MSGNC"
         EnableOWRX="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "OpenWebRX plus : enabled." "$MSGNC"
         EnableOWRX="true"
     fi
     read -rp "Enable Kiwix server? yes/no (default : yes) : " QuestionEnableKiwix
@@ -375,18 +396,49 @@ menu_services() {
         echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : disabled." "$MSGNC"
         EnableKiwix="false"
     else
-        echo -e "$MSGYELLOW" "$SRVMSG" "Kiwix server : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "Kiwix server : enabled." "$MSGNC"
         EnableKiwix="true"
         set_kiwix_files
     fi
+    read -rp "Enable Flatnotes server? yes/no (default : yes) : " QuestionEnableFlatnotes
+    QuestionEnableFlatnotes=$(yes_no_check "$QuestionEnableFlatnotes")
+    if [[ $QuestionEnableFlatnotes -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Flatnotes server : disabled." "$MSGNC"
+        EnableFlatnotes="false"
+    else
+        set_flatnotes
+        echo -e "$MSGGREEN" "$SRVMSG" "Flatnotes server : enabled." "$MSGNC"
+        EnableFlatnotes="true"
+    fi
 
-    
+    echo -e "$MSGYELLOW" "$SRVMSG" "auto-signed HTTPS enhance security but will display a warning the first time you connect to the services" "$MSGNC"
+    echo -e "$MSGYELLOW" "$SRVMSG" "This is useful if your RecoveryBox is a public Hotspot" "$MSGNC"
+    read -rp "Enable HTTPS for all the services ? yes/no (default : no) : " QuestionEnableHTTPS
+    QuestionEnableHTTPS=$(yes_no_check "$QuestionEnableHTTPS")
+    if [[ $QuestionEnableHTTPS -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "HTTPS : disabled." "$MSGNC"
+        EnableHTTPS="false"
+    else
+        echo -e "$MSGGREEN" "$SRVMSG" "HTTPS : enabled." "$MSGNC"
+        EnableHTTPS="true"
+    fi
+
+    read -rp "Enable Victron battery monitoring? yes/no (default : no) : " QuestionEnableBattery
+    QuestionEnableBattery=$(yes_no_check "$QuestionEnableBattery")
+    if [[ $QuestionEnableBattery -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Victron battery monitoring : disabled." "$MSGNC"
+        EnableVictron="false"
+    else
+        echo -e "$MSGGREEN" "$SRVMSG" "Victron battery monitoring : enabled." "$MSGNC"
+        EnableVictron="true"
+    fi
+
     set_ansible_custom_vars
 }
 
 set_ansible_custom_vars() {
     cat <<EOL > "$RECOVERBOXYDIR/custom_config.yml"
-## Generated by RecoveryBox_install.sh
+## Generated by install.sh
 recoverybox_enable_apache: $ENABLEAPACHE
 recoverybox_enable_library: $EnableLibrary
 recoverybox_enable_brouter: $EnableBrouter
@@ -398,6 +450,9 @@ recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
 recoverybox_enable_hotspot: $ENABLEHOTSPOT
 recoverybox_download_mbtiles: $DOWNLOADMBTILES
+recoverybox_enable_flatnotes: $EnableFlatnotes
+recoverybox_enable_https: $EnableHTTPS
+recoverybox_enable_victron: $EnableVictron
 recoverybox_kiwix_files:
   - category: wikipedia
     language: fr
@@ -414,6 +469,15 @@ if [[ $CUSTOMMESHTASTIC == true ]]; then
 recoverybox_meshtastic_node:
   mac: ${MeshtasticMAC}
   ip: ${MeshtasticIP}
+EOL
+fi
+
+if [[ $EnableFlatnotes == "true" ]]; then
+    cat <<EOL >> "$RECOVERBOXYDIR/custom_config.yml"
+recoverybox_flatnotes_secure:
+    username: $FLATNOTESUSERNAME
+    password: $FLATNOTESPASSWORD
+    secret_key: $FLATNOTESSECRETKEY
 EOL
 fi
 
@@ -455,7 +519,7 @@ main() {
     create_virtualenv
 
     ## Generate the wiki
-    "$SCRIPT_DIR/Wiki_Generate.sh"
+    "$SCRIPT_DIR/Wiki_Generate.sh" >/dev/null 2>&1
     
     ## Let's go !
     if [[ -f $RECOVERBOXYDIR/custom_config.yml ]]; then
@@ -475,6 +539,12 @@ main() {
     if [[ $CUSTOMCONF == false ]]; then
         menu_configuration
     fi
+
+    echo -e "$MSGYELLOW" "$SRVMSG" "configuration summary :" "$MSGNC"
+    echo -e "---------------------------------------------------------"
+    cat /etc/recoverybox/custom_config.yml
+    echo -e "---------------------------------------------------------"
+    read -rp "Press Enter to start the installation or Ctrl+C to abort..."
 
     echo -e "#########################################################"
     echo -e "$MSGYELLOW" "$SRVMSG" "Starting Installation..." "$MSGNC"

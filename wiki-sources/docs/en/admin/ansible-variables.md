@@ -13,9 +13,10 @@ tags:
 
 The file **`/etc/recoverybox/custom_config.yml`** allows customizing the Ansible deployment of RecoveryBox without modifying role files.
 
-This file is **managed automatically** by the **[RecoveryBox_install.sh](RecoveryBox_install.md)** script during interactive configuration. It is then passed as `extra-vars` to the Ansible playbook (`ansible/Install.yml`).
+This file is **managed automatically** by the **[install.sh](RecoveryBox_install.md)** script during interactive configuration. It is then passed as `extra-vars` to the Ansible playbook (`ansible/Install.yml`).
 
-> **Note**: You can also create/modify this file manually before running an installation in `custom` mode (`sudo ./RecoveryBox_install.sh custom`).
+!!! note "Note"
+    You can also create/modify this file manually before running an installation in `custom` mode (`sudo ./install.sh custom`).
 
 ---
 
@@ -50,6 +51,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_version_owrx` | `"1.2.118"` | OpenWebRX+ version (Docker) |
 | `recoverybox_version_tileserver` | `"v5.6.0"` | TileServer-GL version (Docker) |
 | `recoverybox_version_planetiler` | `"0.10.2"` | Planetiler version (Docker) |
+| `recoverybox_version_flatnotes` | `"v5.5.4"` | Flatnotes container version (Docker) |
 
 !!! tip "Tip"
     Only modify these versions if you have a specific reason (compatibility, known bug). Defaults are tested and validated.
@@ -69,6 +71,7 @@ recoverybox_hotspot_conf:
 | `recoverybox_enable_kiwix` | `true` | Enables Kiwix (offline Wikipedia) |
 | `recoverybox_enable_meshtastic` | `true` | Enables Meshtastic services (MQTT, web client, daemon) |
 | `recoverybox_enable_hotspot` | `true` | Enables Wi-Fi hotspot |
+| `recoverybox_enable_flatnotes` | `true` | Enables Flatnotes web note-taking service |
 
 !!! note "Note"
     If `recoverybox_enable_apache: false`, dependent services (Library, Console) will be automatically disabled by the playbook.
@@ -123,7 +126,8 @@ Object `recoverybox_meshtastic_node`:
 | `mac` | `"00:00:00:00:00:00"` | Meshtastic node MAC (for static DHCP lease) |
 | `ip` | `"192.168.200.101"` | Fixed IP assigned to Meshtastic node |
 
-> Only used if `recoverybox_enable_meshtastic: true` and a physical node is connected.
+!!! note "Note"
+    Only used if `recoverybox_enable_meshtastic: true` and a physical node is connected.
 
 ---
 
@@ -154,6 +158,18 @@ recoverybox_kiwix_files:
     enable: false
     arg: "france"
 ```
+
+---
+
+### Flatnotes Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `recoverybox_flatnotes_open` | `"full"` | Flatnotes installation type: `open`, `secure`, `full` |
+| `recoverybox_flatnotes_secure` | object | Secure Flatnotes configuration (username, password, secret key) |
+| `recoverybox_flatnotes_secure.username` | `"recadmin"` | Username for secure access |
+| `recoverybox_flatnotes_secure.password` | `"RecoveryAdmin"` | Password for secure access |
+| `recoverybox_flatnotes_secure.secret_key` | `"aLongRandomSeriesOfCharacters123"` | Secret key for session security |
 
 ---
 
@@ -206,6 +222,13 @@ recoverybox_kiwix_files:
     enable: true
     arg: "all_nopic"
 
+# Flatnotes: secure installation with custom credentials
+recoverybox_flatnotes_open: "secure"
+recoverybox_flatnotes_secure:
+  username: "myuser"
+  password: "MySecurePass123!"
+  secret_key: "YourVeryLongRandomSecretKeyHere12345"
+
 # No map downloads (limited bandwidth)
 recoverybox_download_brouter: false
 recoverybox_download_mbtiles: false
@@ -213,26 +236,26 @@ recoverybox_download_mbtiles: false
 
 ---
 
-## Usage with RecoveryBox_install.sh
+## Usage with install.sh
 
 ### Generate the file (interactive mode)
 
 ```bash
-sudo ./RecoveryBox_install.sh config
+sudo ./install.sh config
 ```
 → Runs only the configuration menu and writes `/etc/recoverybox/custom_config.yml`
 
 ### Install with existing config
 
 ```bash
-sudo ./RecoveryBox_install.sh custom
+sudo ./install.sh custom
 ```
 → Uses existing file, skips menu, runs Ansible playbook directly
 
 ### Full install (generate + apply)
 
 ```bash
-sudo ./RecoveryBox_install.sh
+sudo ./install.sh
 ```
 → Runs configuration menu (unless defaults accepted), then runs playbook with generated config
 
