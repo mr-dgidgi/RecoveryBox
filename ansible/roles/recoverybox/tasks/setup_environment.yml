@@ -25,6 +25,7 @@
       - rsync
       - python3-pip
       - python3-venv
+      - python3-cryptography
       - openssl
     state: present
 

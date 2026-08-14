@@ -28,22 +28,23 @@ print_json() {
 {
     "Values": [
 EOF
+    First=true
     for Battery in "${BATTERY_LIST[@]}"; do
-        if [[ "$Battery" != "${BATTERY_LIST[0]}" ]]; then
-            End=","
-        else
-            End=""
-        fi
-        
         get_data "$Battery"
+        if [[ "$BatteryPresent" -ne 1 ]]; then
+            continue
+        fi
+        if [[ "$First" == "true" ]]; then
+            First=false
+        else
+            echo "    ," >> "${OUTPUT_FILE}"
 
-        if [[ "$BatteryPresent" -eq 1 ]]; then
-            cat <<EOF >> "${OUTPUT_FILE}"
+        cat <<EOF >> "${OUTPUT_FILE}"
     {
         "Name": "${BatteryName}",
         "Status": "${BatteryStatus}",
         "Capacity": ${BatteryCapacity}
-    }$End
+    }
 EOF
 
         fi
@@ -55,3 +56,10 @@ EOF
 }
 EOF
 }
+
+main() {
+    get_batteries
+    print_json
+}
+
+main

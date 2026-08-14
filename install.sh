@@ -365,6 +365,11 @@ menu_services() {
     else
         echo -e "$MSGGREEN" "$SRVMSG" "Meshtastic services : enabled." "$MSGNC"
         EnableMeshtastic="true"
+        read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
+        QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
+        if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
+            set_meshtastic_ip
+        fi
     fi
 
     read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
@@ -375,11 +380,6 @@ menu_services() {
     else
         echo -e "$MSGGREEN" "$SRVMSG" "Web Console : enabled." "$MSGNC"
         EnableConsole="true"
-        read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
-        QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
-        if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
-            set_meshtastic_ip
-        fi
     fi
     read -rp "Enable OpenWebRX plus? yes/no (default : yes) : " QuestionEnableOWRX
     QuestionEnableOWRX=$(yes_no_check "$QuestionEnableOWRX")

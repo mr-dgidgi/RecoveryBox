@@ -63,6 +63,12 @@
       changed_when: false
       when: recoverybox_flatnotes_open == "full"
 
+    - name: Reload apache2 service
+      ansible.builtin.systemd_service:
+        name: apache2
+        state: reloaded
+      when: "'dry_run' not in ansible_run_tags"
+
     - name: Enable flatnotes service
       ansible.builtin.systemd_service:
         name: flatnotes
