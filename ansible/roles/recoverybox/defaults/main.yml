@@ -102,3 +102,26 @@ recoverybox_flatnotes_secure:
   username: "recadmin"
   password: "RecoveryAdmin"
   secret_key: "aLongRandomSeriesOfCharacters123"
+
+
+recoverybox_brouter_rename:
+  fr:
+    car_offroad:
+      old: '      "vm-forum-liegerad-schnell": "Vélo couché (rapide)",'
+      new: '      "car-offroad": "4x4 (hors route)",'
+    gravel:
+      old: '      "moped": "Mobylette",'
+      new: '      "gravel": "Vélo Tout Chemin",'
+    wet:
+      old: '      "river": "Fluvial",'
+      new: '      "walking-wet": "marche (Humide)",'
+  en:
+    car_offroad:
+      old: '      "vm-forum-liegerad-schnell": "Recumbent bike (fast)",'
+      new: '      "car-offroad": "4x4 (off-road)",'
+    gravel:
+      old: '      "moped": "Moped",'
+      new: '      "gravel": "Gravel bike",'
+    wet:
+      old: '      "river": "River",'
+      new: '      "walking-wet": "Walking (wet)",'
