@@ -60,14 +60,16 @@
     - name: Customize translation FR
       ansible.builtin.lineinfile:
         path: /data/brouter/www/dist/locales/fr.json
-        regexp: '      "vm-forum-liegerad-schnell": "Vélo couché (rapide)",'
-        line: '      "car-offroad": "4x4 (hors route)",'
+        regexp: "{{ item.value.old }}"
+        line: "{{ item.value.new }}"
+      loop: "{{ recoverybox_brouter_rename.fr | dict2items }}"
 
     - name: Customize translation EN
       ansible.builtin.lineinfile:
         path: /data/brouter/www/dist/locales/en.json
-        regexp: '      "vm-forum-liegerad-schnell": "Vélo couché (rapide)",'
-        line: '      "car-offroad": "4x4 (off road)",'
+        regexp: "{{ item.value.old }}"
+        line: "{{ item.value.new }}"
+      loop: "{{ recoverybox_brouter_rename.en | dict2items }}"
 
     - name: Add GPS javascript to brouter-web
       ansible.builtin.copy:
