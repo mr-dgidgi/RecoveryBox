@@ -44,8 +44,8 @@
         'trekking',
         'fastbike',
         'shortest',
-        'moped',
-        'river',
+        'gravel',
+        'walking-wet',
         'hiking-mountain',
         'car-fast',
         'car-offroad'
