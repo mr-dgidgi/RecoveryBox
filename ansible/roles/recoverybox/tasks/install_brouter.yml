@@ -56,14 +56,14 @@
     - name: Customize translation FR
       ansible.builtin.lineinfile:
         path: /data/brouter/www/dist/locales/fr.json
-        regexp: "{{ item.value.old }}"
+        regexp: "{{ item.value.old | regex_escape }}"
         line: "{{ item.value.new }}"
       loop: "{{ recoverybox_brouter_rename.fr | dict2items }}"
 
     - name: Customize translation EN
       ansible.builtin.lineinfile:
         path: /data/brouter/www/dist/locales/en.json
-        regexp: "{{ item.value.old }}"
+        regexp: "{{ item.value.old | regex_escape }}"
         line: "{{ item.value.new }}"
       loop: "{{ recoverybox_brouter_rename.en | dict2items }}"
 
