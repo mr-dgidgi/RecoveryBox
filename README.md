@@ -62,7 +62,7 @@ Documentation on the website : [recoverybox.fr](https://recoverybox.fr)
 - **Apache2**: Makes the various web services available.
 - **Docker**: Containers for Kiwix, the access point, OpenWebRX Plus, BRouter, tileserver-gl and planetiler.
 - **iptables**: Customizable iptables configuration in the iptables.sh file.
-- **Web Console**: Terminal available via the web browser.
+- **Cockpit**: Web interface to easily manage the system and its services. It also provide a web terminal.
 - **rbstatus**: Service and network status monitoring directly from the system console.
 - **service-manager**: Utility to manage the main services of the system.
 - **rb-update**: Script to update the RecoveryBox system and its components.

@@ -39,6 +39,7 @@ RecoveryBox provides various tools via the web by connecting to the hotspot it h
 
 ### Administration
 - **shellinabox** Web-based administration console ([console.recovery.box](http://console.recovery.box))
+- **Cockpit** : Web-based administration console based on Cockpit, accessible via `https://cockpit.recovery.box`. *(Note: self-signed certificate on first access)*
 
 ## Tools
 RecoveryBox integrates several tools designed to facilitate basic system administration.

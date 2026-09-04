@@ -367,14 +367,14 @@ menu_services() {
         EnableMeshtastic="true"
     fi
 
-    read -rp "Enable Web Console? yes/no (default : yes) : " QuestionEnableConsole
-    QuestionEnableConsole=$(yes_no_check "$QuestionEnableConsole")
-    if [[ $QuestionEnableConsole -eq 0 ]]; then
-        echo -e "$MSGYELLOW" "$SRVMSG" "Web Console : disabled." "$MSGNC"
-        EnableConsole="false"
+    read -rp "Enable Cockpit? yes/no (default : yes) : " QuestionEnableCockpit
+    QuestionEnableCockpit=$(yes_no_check "$QuestionEnableCockpit")
+    if [[ $QuestionEnableCockpit -eq 0 ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "Cockpit : disabled." "$MSGNC"
+        EnableCockpit="false"
     else
-        echo -e "$MSGGREEN" "$SRVMSG" "Web Console : enabled." "$MSGNC"
-        EnableConsole="true"
+        echo -e "$MSGGREEN" "$SRVMSG" "Cockpit : enabled." "$MSGNC"
+        EnableCockpit="true"
         read -rp "Would you set a meshtastic node IP address? yes/no (default : no) : " QuestionSetMeshtasticIP
         QuestionSetMeshtasticIP=$(yes_no_check "$QuestionSetMeshtasticIP")
         if [[ $QuestionSetMeshtasticIP -eq 1 ]]; then
@@ -445,7 +445,7 @@ recoverybox_enable_brouter: $EnableBrouter
 recoverybox_download_brouter: $DownloadBrouterdata
 recoverybox_enable_tileserver: $EnableTileserver
 recoverybox_enable_meshtastic: $EnableMeshtastic
-recoverybox_enable_console: $EnableConsole
+recoverybox_enable_cockpit: $EnableCockpit
 recoverybox_enable_owrx: $EnableOWRX
 recoverybox_enable_kiwix: $EnableKiwix
 recoverybox_enable_hotspot: $ENABLEHOTSPOT

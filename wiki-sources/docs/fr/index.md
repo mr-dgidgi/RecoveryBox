@@ -39,6 +39,7 @@ La RecoveryBox propose donc divers outils via le web en se connectant sur le hot
 
 ### Administration
 - **shellinabox** Console d'administration disponible via le web ([console.recovery.box](http://console.recovery.box))
+- **Cockpit** : Interface d'administration web basée sur Cockpit, accessible via `https://cockpit.recovery.box`. *(Note: certificat autosigné au premier accès)*
 
 ## Outils
 La RecoveryBox intègre plusieurs outils développés dans le but de faciliter l'administration basique du système.

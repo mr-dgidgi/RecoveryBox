@@ -78,10 +78,10 @@
     - install_library
     - dry_run
 
-- name: Install Web Console
-  ansible.builtin.import_tasks: install_console.yml
+- name: Install Cockpit
+  ansible.builtin.import_tasks: install_cockpit.yml
   tags:
-    - install_console
+    - install_cockpit
     - dry_run
 
 - name: Install Tileserver-gl
