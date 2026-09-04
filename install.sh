@@ -261,7 +261,7 @@ set_kiwix_files(){
     else
         echo -e "$MSGGREEN" "$SRVMSG" "English Wikipedia : enabled." "$MSGNC"
         KIWIXENWIKIPEDIA="true"
-        read -rp "Which size of English Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
+        read -rp "Which size of English Wikipedia do you want to download? (all_mini[+12Go], all_nopic[+50Go], all_maxi[+110Go]) (default : all_nopic) : " QuestionDownloadKiwixEnWikipediaSize
         if [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_mini" ]];then
             KIWIXENWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixEnWikipediaSize" == "all_maxi" ]];then
@@ -279,7 +279,7 @@ set_kiwix_files(){
     else
         echo -e "$MSGGREEN" "$SRVMSG" "French Wikipedia : enabled." "$MSGNC"
         KIWIXFRWIKIPEDIA="true"
-        read -rp "Which size of French Wikipedia do you want to download? (all_mini, all_nopic, all_maxi) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
+        read -rp "Which size of French Wikipedia do you want to download? (all_mini[+3Go], all_nopic[+12Go], all_maxi[+50Go]) (default : all_nopic) : " QuestionDownloadKiwixFrWikipediaSize
         if [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_mini" ]];then
             KIWIXFRWIKIPEDIAARG="all_mini"
         elif [[ "$QuestionDownloadKiwixFrWikipediaSize" == "all_maxi" ]];then
