@@ -6,21 +6,20 @@
   Redirect permanent / https://cockpit.recovery.box/
 </VirtualHost>
 <VirtualHost *:443>
-
     ServerName cockpit.recovery.box
 
     SSLEngine on
     SSLCertificateFile /etc/ssl/recoverybox/recoverybox.crt
     SSLCertificateKeyFile /etc/ssl/recoverybox/recoverybox.key
 
+    SSLProxyEngine On
+    SSLProxyVerify none
+    SSLProxyCheckPeerName off
+    SSLProxyCheckPeerCN off
+
     ProxyPreserveHost On
-    ProxyRequests Off
 
-    RequestHeader set X-Forwarded-Proto "https"
-    RequestHeader set X-Forwarded-Host "cockpit.recovery.box"
-    RequestHeader set X-Forwarded-Port "443"
-
-    ProxyPass        / https://127.0.0.1:9090/
+    ProxyPass / https://127.0.0.1:9090/ upgrade=websocket
     ProxyPassReverse / https://127.0.0.1:9090/
 
     <Location />
