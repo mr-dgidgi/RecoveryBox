@@ -540,9 +540,11 @@ main() {
         menu_configuration
     fi
 
-    echo -e "$MSGYELLOW" "$SRVMSG" "configuration summary :" "$MSGNC"
-    echo -e "---------------------------------------------------------"
-    cat /etc/recoverybox/custom_config.yml
+    if [[ -f /etc/recoverybox/custom_config.yml ]]; then
+        echo -e "$MSGYELLOW" "$SRVMSG" "configuration summary :" "$MSGNC"
+        echo -e "---------------------------------------------------------"
+        cat /etc/recoverybox/custom_config.yml
+    fi
     echo -e "---------------------------------------------------------"
     read -rp "Press Enter to start the installation or Ctrl+C to abort..."
 
