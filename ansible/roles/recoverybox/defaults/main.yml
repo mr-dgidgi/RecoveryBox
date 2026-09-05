@@ -32,7 +32,7 @@ recoverybox_enable_library: true
 recoverybox_enable_owrx: true
 recoverybox_enable_brouter: true
 recoverybox_enable_tileserver: true
-recoverybox_enable_console: true
+recoverybox_enable_cockpit: true
 recoverybox_enable_kiwix: true
 recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true

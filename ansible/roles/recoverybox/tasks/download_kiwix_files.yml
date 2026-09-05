@@ -9,8 +9,15 @@
   ansible.builtin.set_fact:
     recoverybox_zim_file: "{{ recoverybox_kiwix_page.content | regex_findall(item.category + '_' + item.language + '_' + item.arg + '_\\d{4}-\\d{2}\\.zim') | sort | last }}" # noqa: yaml[line-length]
 
-- name: Download the ZIM file
-  ansible.builtin.get_url:
-    url: "https://lb.download.kiwix.org/zim/{{ item.category }}/{{ recoverybox_zim_file }}"
-    dest: "/data/kiwix/{{ recoverybox_zim_file }}"
-    mode: '0644'
+- name: Downloading
+  block:
+    - name: Download the ZIM file
+      ansible.builtin.get_url:
+        url: "https://lb.download.kiwix.org/zim/{{ item.category }}/{{ recoverybox_zim_file }}"
+        dest: "/data/kiwix/{{ recoverybox_zim_file }}"
+        mode: '0644'
+        timeout: 10800
+  rescue:
+    - name: Log Kiwix download failure
+      ansible.builtin.debug:
+        msg: "Download failed for {{ item.category }} / {{ item.language }}. Continuing playbook."

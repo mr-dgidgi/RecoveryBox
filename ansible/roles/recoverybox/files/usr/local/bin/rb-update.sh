@@ -24,7 +24,7 @@ yes_no_check () {
 
 Check_Update() {
     CurrentVersion=$(cat "$RECOVERBOXYDIR/rb_version" 2>/dev/null || echo "0.0.0")
-    echo -e "${SRVMSG} ${MSGYELLOW}Current Recovery Box version: ${CurrentVersion}${MSGNC}"
+    echo -e "${SRVMSG} ${MSGYELLOW}Current RecoveryBox version: ${CurrentVersion}${MSGNC}"
     echo -e "${SRVMSG} ${MSGYELLOW} Checking for updates...${MSGNC}"
     if [[ $TYPE == "major" ]]; then
         LastVersion=$(curl -s https://api.github.com/repos/mr-dgidgi/recoverybox/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
@@ -33,7 +33,7 @@ Check_Update() {
     fi
 
     if [[ $CurrentVersion == "$LastVersion" ]]; then
-        echo -e "${SRVMSG} ${MSGGREEN}Recovery Box is up to date.${MSGNC}"
+        echo -e "${SRVMSG} ${MSGGREEN}RecoveryBox is up to date.${MSGNC}"
         return 1
     else
         echo -e "${SRVMSG} ${MSGGREEN}New version available: ${LastVersion}"
@@ -43,7 +43,7 @@ Check_Update() {
 }
 
 Download_Update() {
-    echo -e "${SRVMSG} ${MSGYELLOW}Downloading Recovery Box version ${LastVersion}...${MSGNC}"
+    echo -e "${SRVMSG} ${MSGYELLOW}Downloading RecoveryBox version ${LastVersion}...${MSGNC}"
     if [[ -d "$REPODIR" ]]; then
         cd "$REPODIR" || exit 1
         git fetch --all >/dev/null 2>&1
@@ -51,11 +51,11 @@ Download_Update() {
         git checkout "$LastVersion" >/dev/null 2>&1
     else
         echo -e "${SRVMSG} ${MSGRED}Missing $REPODIR folder ${MSGNC}"
-        echo -e "${SRVMSG} ${MSGYELLOW}Cloning Recovery Box repository...${MSGNC}"
+        echo -e "${SRVMSG} ${MSGYELLOW}Cloning RecoveryBox repository...${MSGNC}"
         git clone --depth 1 --branch "$LastVersion" https://github.com/mr-dgidgi/recoverybox.git "$REPODIR" >/dev/null 2>&1
         cd "$REPODIR" || exit 1
     fi
-    echo -e "${SRVMSG} ${MSGGREEN}Recovery Box version ${LastVersion} downloaded.${MSGNC}"
+    echo -e "${SRVMSG} ${MSGGREEN}RecoveryBox version ${LastVersion} downloaded.${MSGNC}"
 
 }
 
@@ -77,7 +77,7 @@ Update_RecoveryBox() {
         exit 1
     fi
     if [[ ! -f "$REPODIR/install.sh" ]]; then
-        echo -e "${SRVMSG} ${MSGRED}Recovery Box install script not found!${MSGNC}"
+        echo -e "${SRVMSG} ${MSGRED}RecoveryBox install script not found!${MSGNC}"
         exit 1
     fi
     bash "$REPODIR/install.sh"
@@ -89,7 +89,7 @@ main() {
         echo -e "${SRVMSG} ${MSGGREEN}No update needed.${MSGNC}"
         exit 0
     else
-        read -rp "Do you want to update Recovery Box? (Y/N):" ChooseUpdate
+        read -rp "Do you want to update RecoveryBox? (Y/N):" ChooseUpdate
         if [[ $(yes_no_check "$ChooseUpdate") -eq 1 ]]; then
             Download_Update
             if [[ $FULL == true ]]; then

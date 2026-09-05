@@ -1,0 +1,44 @@
+---
+- name: Install Cockpit
+  when:
+    - recoverybox_enable_cockpit
+    - recoverybox_enable_apache
+  block:
+    - name: Enable Cockpit socket
+      ansible.builtin.systemd_service:
+        name: cockpit.socket
+        enabled: "{{ recoverybox_enable_cockpit }}"
+        daemon_reload: true
+      when: "'dry_run' not in ansible_run_tags"
+
+    - name: Create cockpit apache2 site
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/cockpit.conf.j2
+        dest: /etc/apache2/sites-available/cockpit.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable cockpit site
+      ansible.builtin.command:
+        cmd: a2ensite cockpit.conf
+      changed_when: false
+
+- name: Deactivate Cockpit
+  when: not recoverybox_enable_cockpit or not recoverybox_enable_apache
+  block:
+    - name: Check if cockpit.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/cockpit.conf
+      register: recoverybox_apache_file
+
+    - name: Disable cockpit site
+      ansible.builtin.command:
+        cmd: a2dissite cockpit.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
+
+    - name: Remove Cockpit
+      ansible.builtin.apt:
+        name: cockpit
+        state: absent
