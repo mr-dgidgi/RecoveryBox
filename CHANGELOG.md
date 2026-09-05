@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 - Timeout customization added for Kiwix file downloads during installation.
+- Openwebrx plus container updated to 1.2.123
 - flatnotes updated to 5.5.5
 - meshtastic-web-client updated to v2.7.2
 
