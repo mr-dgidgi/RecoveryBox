@@ -9,7 +9,7 @@ recoverybox_version_brouter_container: "v1.7.9"
 # renovate: datasource=github-releases depName=nrenner/brouter-web
 recoverybox_version_brouter_web: "0.18.1"
 # renovate: datasource=docker depName=mrdgidgi/meshtastic-web-client
-recoverybox_version_meshtastic_web: "2.7.1"
+recoverybox_version_meshtastic_web: "2.7.2"
 # renovate: datasource=github-releases depName=meshtastic/python
 recoverybox_version_meshtastic_python: "2.7.11"
 # renovate: datasource=docker depName=ghcr.io/kiwix/kiwix-serve
@@ -23,7 +23,7 @@ recoverybox_version_tileserver: "v5.6.0"
 # renovate: datasource=docker depName=ghcr.io/onthegomap/planetiler
 recoverybox_version_planetiler: "0.10.2"
 # renovate: datasource=docker depName=dullage/flatnotes
-recoverybox_version_flatnotes: "v5.5.4"
+recoverybox_version_flatnotes: "v5.5.5"
 
 
 # Enable services on demand
