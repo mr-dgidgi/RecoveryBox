@@ -49,6 +49,7 @@
     name: systemd-networkd-wait-online
     enabled: false
     state: stopped
+  when: "'dry_run' not in ansible_run_tags"
 
 - name: Generate Certificate for HTTPS
   block:
