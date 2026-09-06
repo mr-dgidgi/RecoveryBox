@@ -18,6 +18,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - flatnotes updated to 5.5.5
 - meshtastic-web-client updated to v2.7.2
 
+### Fixed
+- `systemd-networkd-wait-online` failed start : Issue due to wlanAP being managed by hostapd. Service disabled.
+
 ## [1.5.1] - 2026-09-02
 
 ## Fixed

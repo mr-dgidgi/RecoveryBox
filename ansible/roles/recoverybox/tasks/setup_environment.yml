@@ -44,6 +44,13 @@
 - name: Populate service facts
   ansible.builtin.service_facts:
 
+- name: Disable systemd-networkd-wait-online
+  ansible.builtin.systemd:
+    name: systemd-networkd-wait-online
+    enabled: false
+    state: stopped
+  when: "'dry_run' not in ansible_run_tags"
+
 - name: Generate Certificate for HTTPS
   block:
     - name: Create SSL directory
