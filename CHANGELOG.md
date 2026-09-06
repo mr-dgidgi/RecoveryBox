@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - meshtastic-web-client updated to v2.7.2
 
 ### Fixed
-- `systemd-networkd-wait-online` failed start : fixed by adding `OptionalForOnline=yes` to the network configuration files of all interfaces, except wlanAP, to prevent blocking the boot process when some interfaces are not yet online.
+- `systemd-networkd-wait-online` failed start : Issue due to wlanAP being managed by hostapd. Service disabled.
 
 ## [1.5.1] - 2026-09-02
 

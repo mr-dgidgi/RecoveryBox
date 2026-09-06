@@ -70,6 +70,7 @@ Name=${Interface}
 
 [Network]
 Bridge=${VInterface}
+OptionalForOnline=yes
 EOF
     echo -e "$MSGGREEN" "$SRVMSG" "Linked ${Interface} to ${VInterface}" "$MSGNC"
 }
@@ -132,7 +133,7 @@ set_iptables() {
     fi
 
     
-    if grep -q "$1" "$IPTABLESFILEEXTRA"; then
+    if [[ "$1" == "Wan" ]] || grep -q "$1" "$IPTABLESFILEEXTRA"; then
         echo -e "$MSGGREEN" "$SRVMSG" "Interface $1 already set in firewall" "$MSGNC"
     else 
         # Backup existing file
@@ -141,10 +142,15 @@ set_iptables() {
             return 1
         fi
         echo -e "$MSGYELLOW" "$SRVMSG" "Backing up existing $IPTABLESFILEEXTRA to ${IPTABLESFILEEXTRA}.bak" "$MSGNC"
-        
-        # Add The new interface into a new line
-        echo -e "$1" >> "$IPTABLESFILEEXTRA"
-               
+
+        # Add a newline only if the file does not already end with one.
+        if [[ -s "$IPTABLESFILEEXTRA" ]] && [[ "$(tail -c 1 "$IPTABLESFILEEXTRA" 2>/dev/null | od -An -tx1 | tr -d ' \n')" != "0a" ]]; then
+            printf '\n' >> "$IPTABLESFILEEXTRA"
+        fi
+
+        # Add the interface on its own line without creating an empty line.
+        printf '%s\n' "$1" >> "$IPTABLESFILEEXTRA"
+
         # Restart iptables service
         if ! systemctl restart iptables 2>/dev/null; then
             echo -e "$MSGRED" "$SRVMSG" "Failed to restart iptables service" "$MSGNC"
@@ -168,12 +174,16 @@ set_interfaces() {
     local NetworkOptions=$6
     local DHCPv4Options=$7
     local IPv6AcceptRAOption=$8
+    if [[ -f "$PATHCONFIG"/30-"${VInterface}".network ]]; then
+        mv "$PATHCONFIG"/30-"${VInterface}".network "$PATHCONFIG"/30-"${VInterface}".network.bak
+    fi
     cat <<EOF > "$PATHCONFIG"/30-"${VInterface}".network
 ## Managed by network-configurator
 [Match]
 Name=${VInterface}
 
 [Network]
+OptionalForOnline=yes
 DHCP=${Dhcp}
 EOF
 if [[ $Dhcp == "no" ]]; then
@@ -185,7 +195,6 @@ fi
 if [[ $Dns != "no" ]]; then
     cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 DNS=${Dns}
-OptionalForOnline=yes
 EOF
 fi
 if [[ $NetworkOptions != "no" ]]; then
