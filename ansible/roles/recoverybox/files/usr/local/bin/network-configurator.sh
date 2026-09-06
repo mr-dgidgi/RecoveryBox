@@ -185,6 +185,7 @@ fi
 if [[ $Dns != "no" ]]; then
     cat <<EOF >> "$PATHCONFIG"/30-"${VInterface}".network
 DNS=${Dns}
+OptionalForOnline=yes
 EOF
 fi
 if [[ $NetworkOptions != "no" ]]; then
