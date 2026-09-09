@@ -9,13 +9,54 @@
         tag: "{{ recoverybox_version_filebrowser }}"
         source: pull
 
-    - name: Create filebrowser data directory
+    - name: Create filebrowser data directory base
       ansible.builtin.file:
         path: /data/filebrowser
         state: directory
         owner: root
         group: root
         mode: '0755'
+
+    - name: Create filebrowser data directory
+      ansible.builtin.file:
+        path: /data/filebrowser/{{ item }}
+        state: directory
+        owner: 1000
+        group: 1000
+        mode: '0755'
+      loop:
+        - "config"
+        - "database"
+        - "custom"
+        - "custom/img"
+        - "custom/img/icons"
+
+    - name: Copy filebrowser.db # admin password RecAdmin1234
+      ansible.builtin.copy:
+        src: data/filebrowser/database/filebrowser.db
+        dest: /data/filebrowser/database/filebrowser.db
+        owner: 1000
+        group: 1000
+        mode: '0640'
+      when: not ansible_check_mode
+
+    - name: Copy logo.svg
+      ansible.builtin.copy:
+        src: RB_logo_light.svg
+        dest: /data/filebrowser/custom/img/logo.svg
+        owner: 1000
+        group: 1000
+        mode: '0644'
+      when: not ansible_check_mode
+
+    - name: Copy favicon.ico
+      ansible.builtin.copy:
+        src: RB_favicon.ico
+        dest: /data/filebrowser/custom/img/icons/favicon.ico
+        owner: 1000
+        group: 1000
+        mode: '0644'
+      when: not ansible_check_mode
 
     - name: Create filebrowser service
       ansible.builtin.template:

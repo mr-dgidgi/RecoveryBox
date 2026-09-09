@@ -11,9 +11,10 @@ Restart=always
 ExecStartPre=/usr/bin/docker rm -f filebrowser 2>/dev/null
 ExecStart=/usr/bin/docker run --rm --name filebrowser \
   -v /data/kiwix:/srv/kiwix \
-  -v /data/library:/srv/library \
+  -v /data/library/PDF/custom:/srv/library \
   -v /data/filebrowser/database:/database \
   -v /data/filebrowser/config:/config \
+  -v /data/custom/branding:/custom \
   -p "18005:80" \
   filebrowser/filebrowser:{{ recoverybox_version_filebrowser }}
 
