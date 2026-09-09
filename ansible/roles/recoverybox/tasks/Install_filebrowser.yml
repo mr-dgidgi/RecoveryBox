@@ -1,0 +1,69 @@
+- name: Install Filebrowser
+  when:
+    - recoverybox_enable_filebrowser
+    - recoverybox_enable_apache
+  block:
+    - name: Pull filebrowser docker image
+      community.docker.docker_image:
+        name: filebrowser/filebrowser
+        tag: "{{ recoverybox_version_filebrowser }}"
+        source: pull
+
+    - name: Create filebrowser data directory
+      ansible.builtin.file:
+        path: /data/filebrowser
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create filebrowser service
+      ansible.builtin.template:
+        src: etc/systemd/system/filebrowser.service.j2
+        dest: /etc/systemd/system/filebrowser.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create filebrowser apache2 site
+      ansible.builtin.template:
+        src: etc/apache2/sites-available/filebrowser.conf.j2
+        dest: /etc/apache2/sites-available/filebrowser.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable filebrowser site
+      ansible.builtin.command:
+        cmd: a2ensite filebrowser.conf
+      changed_when: false
+
+    - name: Enable filebrowser service
+      ansible.builtin.systemd_service:
+        name: filebrowser
+        daemon_reload: true
+        enabled: "{{ recoverybox_enable_filebrowser }}"
+        state: started
+      when:
+        - "'dry_run' not in ansible_run_tags"
+
+- name: Disable filebrowser service
+  when: not recoverybox_enable_filebrowser or not recoverybox_enable_apache
+  block:
+    - name: Disable filebrowser service
+      ansible.builtin.systemd_service:
+        name: filebrowser
+        daemon_reload: true
+        enabled: false
+        state: stopped
+
+    - name: Check if filebrowser.conf file exists
+      ansible.builtin.stat:
+        path: /etc/apache2/sites-available/filebrowser.conf
+      register: recoverybox_apache_file
+
+    - name: Disable filebrowser apache2 site
+      ansible.builtin.command:
+        cmd: a2dissite filebrowser.conf
+      changed_when: false
+      when: recoverybox_apache_file.stat.exists
