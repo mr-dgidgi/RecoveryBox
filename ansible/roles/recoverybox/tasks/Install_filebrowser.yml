@@ -58,6 +58,15 @@
         mode: '0644'
       when: not ansible_check_mode
 
+    - name: Copy custom.css
+      ansible.builtin.copy:
+        src: data/filebrowser/custom/custom.css
+        dest: /data/filebrowser/custom/custom.css
+        owner: 1000
+        group: 1000
+        mode: '0644'
+      when: not ansible_check_mode
+
     - name: Create filebrowser service
       ansible.builtin.template:
         src: etc/systemd/system/filebrowser.service.j2

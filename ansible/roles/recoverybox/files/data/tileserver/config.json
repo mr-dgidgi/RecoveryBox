@@ -22,7 +22,7 @@
   },
   "data": {
     "v3": {
-      "mbtiles": "map.mbtiles"
+      "mbtiles": "map/map.mbtiles"
     }
   }
 }
