@@ -113,6 +113,7 @@ Le script d'installation réalise automatiquement les opérations suivantes, com
 | Téléchargements Kiwix | *(mode personnalisé)* Configure le téléchargement de Wikipédia FR/EN et la taille souhaitée (all_mini, all_no_pic, all_maxi). |
 | Configuration du nœud Meshtastic | *(mode personnalisé)* Définit l'adresse IP et MAC d'un nœud Meshtastic (optionnel). |
 | Activation du HTTPS | *(mode personnalisé)* Permet d'activer le HTTPS pour tous les services web. |
+| Génération du wiki | compile le wiki pour que celui-ci soit en html. |
 | Génération du fichier de config | Écrit le fichier `/etc/recoverybox/custom_config.yml` avec les choix effectués. |
 
 ### Phase 3 — Playbook Ansible (automatique)
@@ -129,15 +130,16 @@ Le script d'installation réalise automatiquement les opérations suivantes, com
 | **Point d'accès Wi-Fi** | Installe et configure le hotspot **recoverybox** (simple-hotspot, hostapd, dnsmasq). |
 | **Apache2** | Installe et configure le serveur web Apache2 avec les VirtualHosts des services. |
 | **Bibliothèque PDF** | Télécharge les documents de survie correspondant à la langue choisie. |
-| **Console Web** | Déploie ShellInABox pour l'administration distante. |
+| **Cockpit** | Déploie Cockpit pour l'administration du système en web. |
 | **TileServer-GL** | Installe le serveur de cartographie et le style cartographique Liberty. |
 | **Outils cartographiques** | Installe Planetiler (conteneur Docker) et l'outil `generate-map`. |
 | **BRouter** | Installe le moteur de calcul d'itinéraire et télécharge les données de routage. |
+| **Flatnotes** | Déploie le service de prise de notes accessible via le navigateur. |
+| **Filebrowser** | Déploie le service de gestion de fichiers accessible via le navigateur. |
 | **OpenWebRX Plus** | Déploie l'interface SDR accessible depuis le navigateur. |
 | **Pilotes RTL-SDR** | Compile et installe les derniers pilotes RTL-SDR Blog. |
 | **Meshtastic Web Client** | Déploie le client web Meshtastic (conteneur Docker). |
 | **Meshtastic Daemon** | Installe le daemon Python et l'intégration cartographique BRouter. |
-| **MkDocs** | Déploie le wiki technique RecoveryBox (conteneur Docker MkDocs Material). |
 
 ### Phase 4 — Finalisation (script)
 

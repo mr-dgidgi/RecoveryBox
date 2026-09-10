@@ -57,6 +57,8 @@ Si vous possédez déjà votre fichier `.mbtiles`, celui-ci peut être installé
 /data/tileserver/map/map.mbtiles
 ```
 
+Le fichier peut aussi être déposé dans le répertoire **map** via filebrowser
+
 !!! warning "Nom du fichier"
     Le fichier doit impérativement être nommé `map.mbtiles`.
 

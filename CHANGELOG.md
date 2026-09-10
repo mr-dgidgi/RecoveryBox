@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 - Cockpit service added to the RecoveryBox for system management and web terminal access.
+- Filebrowser service added to the RecoveryBox for file management.
 
 ### Removed
 - Shellinabox removed in favor of Cockpit.
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Openwebrx plus container updated to 1.2.123
 - flatnotes updated to 5.5.5
 - meshtastic-web-client updated to v2.7.2
+- Tileserver configuration updated to use `/data/tileserver/map/map.mbtiles` instead of `/data/tileserver/map.mbtiles`.
 
 ### Fixed
 - `systemd-networkd-wait-online` failed start : Issue due to wlanAP being managed by hostapd. Service disabled.

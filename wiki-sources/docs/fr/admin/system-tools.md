@@ -14,7 +14,7 @@ tags:
 
 Le service **gpsd** permet de gérer la communication avec le GPS et de fournir les informations de position et de temps aux applications qui en ont besoin. Il est configuré pour écouter sur le port 2947 et peut être interrogé par des clients compatibles avec le protocole gpsd.
 
-Ce service est automatiquement installé et démarré qu'un GPS soit présent ou non sur la RecoveryBox. Le service est **configuré** pour se lancer même si aucune application ne l'**interroge**. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.
+Ce service est automatiquement installé et démarré, qu'un GPS soit présent ou non, sur la RecoveryBox. Le service est **configuré** pour se lancer même si aucune application ne l'**interroge**. Cela permet de s'assurer que le GPS est toujours disponible pour les applications qui en ont besoin, même si elles ne sont pas encore lancées.
 
 ### Fichier de configuration
 
@@ -53,3 +53,7 @@ source /data/recoverybox_env/bin/activate
 ```bash
 deactivate
 ```
+
+## Terminal / Console
+
+Cockpit met à disposition un terminal afin de pouvoir accéder à la console de la RecoveryBox directement depuis l'interface web. Cela permet d'exécuter des commandes, de gérer les services et de dépanner le système sans avoir besoin d'un équipement capable de faire du SSH.

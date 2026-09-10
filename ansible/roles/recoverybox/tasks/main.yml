@@ -120,6 +120,12 @@
     - install_flatnotes
     - dry_run
 
+- name: Install Filebrowser
+  ansible.builtin.import_tasks: install_filebrowser.yml
+  tags:
+    - install_filebrowser
+    - dry_run
+
 - name: Install Meshtastic Web Client
   ansible.builtin.import_tasks: install_meshtastic_web.yml
   tags:

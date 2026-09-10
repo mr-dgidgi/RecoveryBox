@@ -65,6 +65,7 @@ Documentation on the website : [recoverybox.fr](https://recoverybox.fr)
 - **Cockpit**: Web interface to easily manage the system and its services. It also provide a web terminal.
 - **rbstatus**: Service and network status monitoring directly from the system console.
 - **service-manager**: Utility to manage the main services of the system.
+- **Filebrowser**: Service for managing files on the RecoveryBox, providing a web interface to browse, upload, and organize files.
 - **rb-update**: Script to update the RecoveryBox system and its components.
 - **Victron battery monitoring**: Script to monitor the battery voltage and initiate a system shutdown if the voltage drops below a critical threshold.
 - **rb-laptop**: Script to display the battery level on the home page if the hardware is a laptop.
