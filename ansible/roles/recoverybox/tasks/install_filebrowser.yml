@@ -107,6 +107,9 @@
         daemon_reload: true
         enabled: false
         state: stopped
+      when:
+        - "'dry_run' not in ansible_run_tags"
+        - "'filebrowser.service' in ansible_facts.services"
 
     - name: Check if filebrowser.conf file exists
       ansible.builtin.stat:
