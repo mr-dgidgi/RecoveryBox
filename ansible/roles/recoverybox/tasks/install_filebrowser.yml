@@ -51,7 +51,7 @@
 
     - name: Copy favicon.ico
       ansible.builtin.copy:
-        src: RB_favicon.ico
+        src: RB_logo_light.ico
         dest: /data/filebrowser/custom/img/icons/favicon.ico
         owner: 1000
         group: 1000
