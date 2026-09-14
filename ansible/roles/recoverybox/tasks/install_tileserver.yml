@@ -18,6 +18,14 @@
         group: root
         mode: '0755'
 
+    - name: Create /data/tileserver/map/ directory
+      ansible.builtin.file:
+        path: /data/tileserver/map
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Create tileserver-gl service
       ansible.builtin.template:
         src: etc/systemd/system/tileserver-gl.service.j2
