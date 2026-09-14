@@ -39,6 +39,7 @@ recoverybox_enable_meshtastic: true
 recoverybox_enable_hotspot: true
 recoverybox_enable_flatnotes: true
 recoverybox_enable_victron: false
+recoverybox_enable_filebrowser: true
 
 # Activate HTTPS
 recoverybox_enable_https: false

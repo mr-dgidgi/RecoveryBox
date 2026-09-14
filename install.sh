@@ -387,6 +387,7 @@ menu_services() {
         EnableFilebrowser="false"
     else
         echo -e "$MSGGREEN" "$SRVMSG" "filebrowser : enabled." "$MSGNC"
+        echo -e "$MSGGREEN" "$SRVMSG" "filebrowser : default password admin/RecAdmin1234" "$MSGNC"
         EnableFilebrowser="true"
     fi
 
