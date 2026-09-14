@@ -111,6 +111,7 @@ The installation script automatically performs the following operations, combini
 | Kiwix downloads | *(custom mode)* Configures Wikipedia FR/EN download and desired size (all_mini, all_no_pic, all_maxi). |
 | Meshtastic node configuration | *(custom mode)* Sets the IP address and MAC of a Meshtastic node (optional). |
 | HTTPS activation | *(custom mode)* Allows enabling HTTPS for all web services. |
+| Wiki generation | Compiles the wiki into HTML. |
 | Config file generation | Writes the `/etc/recoverybox/custom_config.yml` file with the selected options. |
 
 ### Phase 3 — Ansible playbook (automatic)
@@ -127,15 +128,16 @@ The installation script automatically performs the following operations, combini
 | **Wi-Fi access point** | Installs and configures the **recoverybox** hotspot (simple-hotspot, hostapd, dnsmasq). |
 | **Apache2** | Installs and configures the Apache2 web server with service VirtualHosts. |
 | **PDF Library** | Downloads survival documents matching the selected language. |
-| **Web Console** | Deploys ShellInABox for remote administration. |
+| **Cockpit** | Deploys Cockpit for web-based system administration. |
 | **TileServer-GL** | Installs the cartography server and the Liberty map style. |
 | **Mapping tools** | Installs Planetiler (Docker container) and the `generate-map` tool. |
 | **BRouter** | Installs the routing engine and downloads routing data. |
+| **Flatnotes** | Deploys the note-taking service accessible via the browser. |
+| **Filebrowser** | Deploys the file management service accessible via the browser. |
 | **OpenWebRX Plus** | Deploys the browser-accessible SDR interface. |
 | **RTL-SDR drivers** | Compiles and installs the latest RTL-SDR Blog drivers. |
 | **Meshtastic Web Client** | Deploys the Meshtastic web client (Docker container). |
 | **Meshtastic Daemon** | Installs the Python daemon and BRouter cartography integration. |
-| **MkDocs** | Deploys the RecoveryBox technical wiki (MkDocs Material Docker container). |
 
 ### Phase 4 — Finalization (script)
 

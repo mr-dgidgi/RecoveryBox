@@ -62,6 +62,7 @@ nav:
           - OpenWebRX +: fr/services/owrx.md
           - Cockpit: fr/services/cockpit.md
           - Flatnotes: fr/services/flatnotes.md
+          - Filebrowser: fr/services/filebrowser.md
       - admin:
           - Installation: fr/admin/install.md
           - Rbstatus: fr/admin/rbstatus.md
@@ -89,6 +90,7 @@ nav:
           - OpenWebRX +: en/services/owrx.md
           - Cockpit: en/services/cockpit.md
           - Flatnotes: en/services/flatnotes.md
+          - Filebrowser: en/services/filebrowser.md
       - admin:
           - Installation: en/admin/install.md
           - Rbstatus: en/admin/rbstatus.md

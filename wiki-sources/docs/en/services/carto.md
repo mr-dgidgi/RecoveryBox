@@ -57,6 +57,8 @@ If you already have your own `.mbtiles` file, it can be installed at the followi
 /data/tileserver/map/map.mbtiles
 ```
 
+The file can also be placed in the **map** directory via filebrowser.
+
 !!! warning "File name"
     The file must be named `map.mbtiles`.
 

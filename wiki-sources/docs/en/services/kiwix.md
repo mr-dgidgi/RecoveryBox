@@ -75,7 +75,9 @@ You can add new `.zim` files to enrich the available content (other Wikipedia la
 **Procedure:**
 
 1. Download the `.zim` file of your choice from the [official Kiwix library](https://browse.library.kiwix.org/).
-2. Transfer the file to the RecoveryBox (via SCP, USB, etc.) and place it in the `/data/kiwix/` directory:
+2. Transfer the file to the RecoveryBox
+    - Use filebrowser to transfer the file via the web interface into the **kiwix** directory
+    - Use SCP, USB, etc. to transfer the file and place it in the `/data/kiwix/` directory:
    ```bash
    scp my-file.zim root@<recoverybox-ip>:/data/kiwix/
    ```

@@ -38,6 +38,7 @@
         owner: 1000
         group: 1000
         mode: '0640'
+        force: false
       when: not ansible_check_mode
 
     - name: Copy logo.svg
@@ -49,10 +50,10 @@
         mode: '0644'
       when: not ansible_check_mode
 
-    - name: Copy favicon.ico
+    - name: Copy favicon.svg
       ansible.builtin.copy:
-        src: RB_logo_light.ico
-        dest: /data/filebrowser/custom/img/icons/favicon.ico
+        src: RB_logo_light.svg
+        dest: /data/filebrowser/custom/img/icons/favicon.svg
         owner: 1000
         group: 1000
         mode: '0644'

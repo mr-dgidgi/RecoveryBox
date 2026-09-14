@@ -8,7 +8,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=10
 Restart=always
-ExecStartPre=/usr/bin/docker rm -f filebrowser 2>/dev/null
+ExecStartPre=-/usr/bin/docker rm -f filebrowser
 ExecStart=/usr/bin/docker run --rm --name filebrowser \
   -v /data/kiwix:/srv/kiwix \
   -v /data/library/PDF/custom:/srv/library \
@@ -16,7 +16,7 @@ ExecStart=/usr/bin/docker run --rm --name filebrowser \
   -v /data/tileserver/map:/srv/map \
   -v /data/filebrowser/database:/database \
   -v /data/filebrowser/config:/config \
-  -v /data/custom/branding:/custom \
+  -v /data/filebrowser/custom:/custom \
   -p "18005:80" \
   filebrowser/filebrowser:{{ recoverybox_version_filebrowser }}
 

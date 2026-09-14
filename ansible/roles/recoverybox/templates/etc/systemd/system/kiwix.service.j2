@@ -8,7 +8,7 @@ Requires=docker.service
 [Service]
 Restart=always
 RestartSec=3
-ExecStartPre=docker rm -f kiwix-server 2>/dev/null
+ExecStartPre=-/usr/bin/docker rm -f kiwix-server
 ExecStart=/usr/bin/docker run --rm --name kiwix-server\
   -p 18001:8080\
   -v /data/kiwix:/data\

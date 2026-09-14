@@ -64,7 +64,7 @@
         dest: /data/tileserver/fonts
         version: "{{ recoverybox_version_fonts }}"
 
-    - name: Check if map.mbtiles already exists
+    - name: Check if map.mbtiles exists
       ansible.builtin.stat:
         path: "/data/tileserver/map/map.mbtiles"
       register: recoverybox_mbtiles_file
