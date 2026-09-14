@@ -53,3 +53,7 @@ source /data/recoverybox_env/bin/activate
 ```bash
 deactivate
 ```
+
+## Terminal / Console
+
+Cockpit provides a terminal to access the RecoveryBox console directly from the web interface. This makes it possible to run commands, manage services and troubleshoot the system without needing equipment capable of SSH.

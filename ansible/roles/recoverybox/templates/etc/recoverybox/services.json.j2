@@ -100,11 +100,21 @@
     "id": "cockpit",
     "name": "Cockpit",
     "type": "systemd",
-    "unit": "cockpit.service",
+    "unit": "cockpit.socket",
     "url": "http://cockpit.recovery.box/",
     "logo": "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 512 512'><path d='M256 0C114.8 0 0 114.8 0 256s114.8 256 256 256 256-114.8 256-256S397.2 0 256 0m0 38.4c120.1-.2 217.5 97 217.7 217v.6c.1 120.1-97.1 217.5-217.2 217.6h-.6c-120 .2-217.4-97-217.6-217v-.6c-.2-120 97-217.4 217-217.6zm85.7 112.7c-10.5-.4-26.3 7.9-40.5 22l-30.7 30.5-91.9-30.9-18 18.5 69.4 52.7-15.5 15.4c-5.1 5.1-9.7 10.7-13.6 16.8l-41.8-3.1-10.2 10.3 41.5 30.8 30.4 41.5 10.2-10.2-3.1-42.2c5.2-3.4 10.6-7.7 15.8-12.9l16.3-16.2 53.2 69.8 18.5-17.9-31-92.4 29.7-29.5c19-18.9 27.7-41 19.6-49.5-2.2-2.3-5.2-3.5-8.3-3.5'/></svg>",
     "version": null,
     "activated": {{ recoverybox_enable_cockpit | to_json }}
+  },
+  {
+    "id": "filebrowser",
+    "name": "filebrowser",
+    "type": "systemd",
+    "unit": "filebrowser.service",
+    "url": "http://filebrowser.recovery.box/",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d='M64 400l384 0c8.8 0 16-7.2 16-16l0-240c0-8.8-7.2-16-16-16l-149.3 0c-17.3 0-34.2-5.6-48-16L212.3 83.2c-2.8-2.1-6.1-3.2-9.6-3.2L64 80c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16zm384 48L64 448c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4L448 80c35.3 0 64 28.7 64 64l0 240c0 35.3-28.7 64-64 64z'/></svg>",
+    "version": null,
+    "activated": {{ recoverybox_enable_filebrowser | to_json }}
   },
   {
     "id": "meshtastic",

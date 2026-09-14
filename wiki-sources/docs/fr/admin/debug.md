@@ -85,7 +85,7 @@ journalctl -u tileserver-gl.service
 
 ```bash
 # Vérifier que le fichier map.mbtiles existe
-ls -lh /data/tileserver/map.mbtiles
+ls -lh /data/tileserver/map/map.mbtiles
 
 # Vérifier que brouter répond
 curl -I http://localhost:17777/

@@ -34,7 +34,7 @@ The cartography interface is accessible to all users connected to the RecoveryBo
 
 | Item | Description |
 | --- | --- |
-| `/data/tileserver/map.mbtiles` | Main map file |
+| `/data/tileserver/map/map.mbtiles` | Main map file |
 | `/var/log/apache2/carto_access.log` | Apache access logs for the carto service |
 | `/var/log/apache2/carto_error.log` | Apache error logs for the carto service |
 
@@ -54,8 +54,10 @@ The script automatically generates tiles and then merges the new data with exist
 If you already have your own `.mbtiles` file, it can be installed at the following location:
 
 ```text
-/data/tileserver/map.mbtiles
+/data/tileserver/map/map.mbtiles
 ```
+
+The file can also be placed in the **map** directory via filebrowser.
 
 !!! warning "File name"
     The file must be named `map.mbtiles`.

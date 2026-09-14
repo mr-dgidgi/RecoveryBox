@@ -94,8 +94,14 @@ You then need to run the `library-update.py` Python script to update the library
 # Run the update script
 python3 /data/library/library-update.py
 ```
+!!! info "Terminal"
+    The commands can be run directly in the Cockpit terminal
+
 
 An Apache restart via `services-manager` is required for the changes to take effect.
+
+!!! info "Filebrowser"
+    It is also possible to add custom PDFs via the filebrowser web interface by placing the files in the **library** directory. However, you still need to run the `library-update.py` script for the new files to be taken into account.
 
 #### Enabling / Disabling the service
 

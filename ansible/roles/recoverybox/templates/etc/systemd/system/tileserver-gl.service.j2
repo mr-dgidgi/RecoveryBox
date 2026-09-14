@@ -8,7 +8,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=10
 Restart=always
-ExecStartPre=/usr/bin/docker rm -f tileserver-gl 2>/dev/null
+ExecStartPre=-/usr/bin/docker rm -f tileserver-gl
 ExecStart=/usr/bin/docker run --rm --name tileserver-gl \
     -v /data/tileserver:/data \
     -p 18003:8080 \

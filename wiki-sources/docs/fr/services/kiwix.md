@@ -74,7 +74,9 @@ Vous pouvez ajouter de nouveaux fichiers `.zim` pour enrichir les contenus dispo
 **Procédure :**
 
 1. Téléchargez le fichier `.zim` de votre choix depuis la [bibliothèque officielle Kiwix](https://browse.library.kiwix.org/).
-2. Transférez le fichier sur la RecoveryBox (via SCP, USB, etc.) et placez-le dans le répertoire `/data/kiwix/` :
+2. Transférez le fichier sur la RecoveryBox 
+    - Utiliser filebrowser pour transférer le fichier via l'interface web dans le dossier **kiwix**
+    - Utilisez SCP, USB, etc. pour transférer le fichier et placez-le dans le répertoire `/data/kiwix/` :
    ```bash
    scp mon-fichier.zim root@<ip-recoverybox>:/data/kiwix/
    ```

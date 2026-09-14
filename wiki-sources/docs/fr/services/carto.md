@@ -34,7 +34,7 @@ L'interface de cartographie est accessible à tous les utilisateurs connectés a
 
 | Élément | Description |
 | --- | --- |
-| `/data/tileserver/map.mbtiles` | Fichier principal de la carte |
+| `/data/tileserver/map/map.mbtiles` | Fichier principal de la carte |
 | `/var/log/apache2/carto_access.log` | Logs d'accès Apache du service carto |
 | `/var/log/apache2/carto_error.log` | Logs d'erreur Apache du service carto |
 
@@ -54,8 +54,10 @@ Le script génère les tuiles automatiquement puis fusionne les nouvelles donné
 Si vous possédez déjà votre fichier `.mbtiles`, celui-ci peut être installé à l'emplacement suivant :
 
 ```text
-/data/tileserver/map.mbtiles
+/data/tileserver/map/map.mbtiles
 ```
+
+Le fichier peut aussi être déposé dans le répertoire **map** via filebrowser
 
 !!! warning "Nom du fichier"
     Le fichier doit impérativement être nommé `map.mbtiles`.

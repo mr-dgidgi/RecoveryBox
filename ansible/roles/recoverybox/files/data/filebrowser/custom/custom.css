@@ -1,0 +1,43 @@
+/* Thème clair*/
+:root {
+  --background: #F4F1EA;
+  --surfacePrimary: #FFFFFF;
+  --surfaceSecondary: #EAE5DC;
+  --iconPrimary: #1A1815;
+  --iconSecondary: #F4F1EA;
+  --iconTertiary: #000000;
+  --textPrimary: #5C554E;
+  --textSecondary: #5C554E;
+  --action: #5C554E;
+
+  --blue: #C28B53;
+  --dark-blue: #8d643c;
+  --icon-blue: #C28B53;
+
+}
+
+
+/* Thème sombre*/
+:root.dark {
+  --background: #121110;
+  --surfacePrimary: #1E1C1A;
+  --surfaceSecondary: #2A2724;
+  --iconPrimary: #C28B53;
+  --iconSecondary: #F4F1EA;
+  --iconTertiary: #FFFFFF;
+  --textPrimary: #E8E2D9;
+  --textSecondary: #A39B90;
+  --action: #A39B90;
+
+  --blue: #C28B53;
+  --dark-blue: #f0ac68;
+  --icon-blue: #C28B53;
+}
+
+.vue-simple-progress-bar {
+  background: var(--blue) !important;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--blue);
+}

@@ -71,7 +71,6 @@
         state: started
       when:
         - "'dry_run' not in ansible_run_tags"
-        - recoverybox_flatnotes_open == "full"
 
     - name: Enable flatnotes Read Only service
       ansible.builtin.systemd_service:

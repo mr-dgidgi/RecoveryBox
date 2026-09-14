@@ -94,8 +94,14 @@ Il faut ensuite exécuter le script python `library-update.py` pour mettre à jo
 # Exécuter le script de mise à jour
 python3 /data/library/library-update.py
 ```
+!!! info "Terminal"
+    Les commandes peuvent être exécutées directement dans le terminal de Cockpit
 
-Un redémarrage du service apacheé via `services-manager` est nécessaire pour que les changements soient pris en compte.
+
+Un redémarrage du service apache via `services-manager` est nécessaire pour que les changements soient pris en compte.
+
+!!! info "filebrowser"
+    Il est également possible d'ajouter des PDF personnalisés via l'interface web de filebrowser en déposant les fichiers dans le répertoire **library**. Il est tout de même nécessaire d'exécuter le script `library-update.py` pour que les nouveaux fichiers soient pris en compte.
 
 #### Activer / Désactiver le service
 

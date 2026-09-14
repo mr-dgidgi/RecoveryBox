@@ -18,6 +18,14 @@
         group: root
         mode: '0755'
 
+    - name: Create /data/tileserver/map/ directory
+      ansible.builtin.file:
+        path: /data/tileserver/map
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Create tileserver-gl service
       ansible.builtin.template:
         src: etc/systemd/system/tileserver-gl.service.j2
@@ -64,16 +72,16 @@
         dest: /data/tileserver/fonts
         version: "{{ recoverybox_version_fonts }}"
 
-    - name: Check if map.mbtiles already exists
+    - name: Check if map.mbtiles exists
       ansible.builtin.stat:
-        path: "/data/tileserver/map.mbtiles"
+        path: "/data/tileserver/map/map.mbtiles"
       register: recoverybox_mbtiles_file
       when: recoverybox_download_mbtiles
 
     - name: Download world.mbtiles
       ansible.builtin.get_url:
         url: "https://archive.org/download/osm-vector-mbtiles/planet/2019-09-planet-11.mbtiles"
-        dest: "/data/tileserver/map.mbtiles"
+        dest: "/data/tileserver/map/map.mbtiles"
         mode: '0644'
       when:
         - recoverybox_download_mbtiles
