@@ -6,11 +6,24 @@ dhcp-range={{ recoverybox_hotspot_conf.dhcp_range_start }},{{ recoverybox_hotspo
 dhcp-option=option:router,{{ recoverybox_hotspot_conf.ip }}
 
 ### DNS ###
-domain=recovery.box
+domain=recovery.box,{{ recoverybox_hotspot_conf.network }}/{{ recoverybox_hotspot_conf.mask }},local
+# Disable option 15 & 119 (issue #162)
+dhcp-option=15,
+dhcp-option=119,
+
 # DNS Locaux (Enregistrements A)
 address=/recovery.box/{{ recoverybox_hotspot_conf.ip }}
 
 dhcp-option=option:dns-server,{{ recoverybox_hotspot_conf.ip }}
+
+# Block captive portal detection
+address=/connectivitycheck.gstatic.com/0.0.0.0
+address=/connectivitycheck.android.com/0.0.0.0
+address=/clients3.google.com/0.0.0.0
+address=/captive.apple.com/0.0.0.0
+address=/gsp1.apple.com/0.0.0.0
+address=/www.msftconnecttest.com/0.0.0.0
+address=/detectportal.firefox.com/0.0.0.0
 
 # meshtastic node reservation
 dhcp-host={{ recoverybox_meshtastic_node.mac }},{{ recoverybox_meshtastic_node.ip }}
