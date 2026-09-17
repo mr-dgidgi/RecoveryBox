@@ -27,6 +27,7 @@
       - python3-venv
       - openssl
       - cockpit
+      - fping
     state: present
 
 - name: Create keyrings directory

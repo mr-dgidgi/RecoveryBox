@@ -14,11 +14,9 @@ Light=false
 # --- Fonctions de collecte (écriture JSON) ---
 
 Get_InternetPing() {
-    PingGoogle=$(ping -c 1 8.8.8.8 &> /dev/null; echo $?)
-    PingCloudflare=$(ping -c 1 1.1.1.1 &> /dev/null; echo $?)
-    PingYandex=$(ping -c 1 77.88.8.8 &> /dev/null; echo $?)
+    PingResult=$(fping 8.8.8.8 1.1.1.1 77.88.8.8 -t 3000 -r0 -a | wc -l)
 
-    if [ "$PingGoogle" -eq 0 ] || [ "$PingCloudflare" -eq 0 ] || [ "$PingYandex" -eq 0 ]; then
+    if [ "$PingResult" -ge 1 ]; then
         echo "0"
     else
         echo "1"

@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - `systemd-networkd-wait-online` failed start : Issue due to wlanAP being managed by hostapd. Service disabled.
 - Message from the web browser indicating captive portal when the Recoverybox isn't connected to the internet is now blocked by dnsmasq configuration.
 - Redirection to homepage when trying to access to a website when the recoverybox isn't connected to the internet.
+- ping in rbstatus modified to add timeout and avoid hanging indefinitely.
 
 ## [1.5.1] - 2026-09-02
 
