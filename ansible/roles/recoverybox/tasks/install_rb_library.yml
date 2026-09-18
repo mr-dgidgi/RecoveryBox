@@ -26,6 +26,7 @@
         owner: "{{ recoverybox_user_1000 }}"
         group: "{{ recoverybox_group_1000 }}"
         mode: '0755'
+      when: "'dry_run' not in ansible_run_tags"
 
     - name: Create /data/library/PDF/custom/custom-library.json file
       ansible.builtin.file:
@@ -34,6 +35,7 @@
         owner: "{{ recoverybox_user_1000 }}"
         group: "{{ recoverybox_group_1000 }}"
         mode: '0644'
+      when: "'dry_run' not in ansible_run_tags"
 
     - name: Install python package in virtual environment
       ansible.builtin.pip:
