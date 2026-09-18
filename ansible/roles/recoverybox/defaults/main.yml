@@ -71,6 +71,7 @@ recoverybox_hotspot_conf:
   dhcp_range_start: "192.168.200.100"
   dhcp_range_end: "192.168.200.200"
 
+recoverybox_virtualenv_dir: "/data/recoverybox_env"
 
 # fill this if you have a meshtastic node to connect to
 recoverybox_meshtastic_node:

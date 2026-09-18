@@ -16,16 +16,51 @@
       ansible.builtin.git:
         repo: "https://github.com/mr-dgidgi/rb-library.git"
         dest: /data/library
-        version: "{{ recoverybox_version_library }}"
+        version: "129-web-indexation"
         force: true
 
     - name: Create /data/library/PDF/custom directory
       ansible.builtin.file:
         path: /data/library/PDF/custom
         state: directory
+        owner: "{{ recoverybox_user_1000 }}"
+        group: "{{ recoverybox_group_1000 }}"
+        mode: '0755'
+
+    - name: Create /data/library/PDF/custom/custom-library.json file
+      ansible.builtin.file:
+        path: /data/library/PDF/custom/custom-library.json
+        state: touch
+        owner: "{{ recoverybox_user_1000 }}"
+        group: "{{ recoverybox_group_1000 }}"
+        mode: '0644'
+
+    - name: Install python package in virtual environment
+      ansible.builtin.pip:
+        requirements: /data/library/backend/requirements.txt
+        virtualenv: "{{ recoverybox_virtualenv_dir }}"
+        virtualenv_command: python3 -m venv
+        state: present
+
+    - name: Generate library secret key
+      ansible.builtin.set_fact:
+        recoverybox_library_key: "{{ lookup('community.general.random_string', length=32) }}"
+
+    - name: Copy admin-config.json
+      ansible.builtin.template:
+        src: data/library/backend/admin-config.json.j2
+        dest: /data/library/backend/admin-config.json
         owner: root
         group: root
-        mode: '0755'
+        mode: '0644'
+
+    - name: Copy apache-vhost-snippet.conf
+      ansible.builtin.template:
+        src: data/library/backend/apache-vhost-snippet.conf.j2
+        dest: /data/library/backend/apache-vhost-snippet.conf
+        owner: root
+        group: root
+        mode: '0644'
 
     - name: Create library apache2 site
       ansible.builtin.template:
