@@ -95,3 +95,4 @@
         recoverybox_group_1000: >-
           {{ recoverybox_groups_list.ansible_facts.getent_group | dict2items
           | selectattr('value.1', 'equalto', '1000') | map(attribute='key') | first }}
+      when: "'dry_run' not in ansible_run_tags"
