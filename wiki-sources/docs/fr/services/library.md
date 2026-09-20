@@ -10,7 +10,8 @@ tags:
 
 ## Présentation
 
-La **Librairie** est un serveur web statique hébergeant une collection de documents PDF liés à la survie, à l'autonomie et aux techniques de vie en plein air. Le contenu provient du dépôt Git [rb-library](https://github.com/mr-dgidgi/rb-library) et est servi localement via un VirtualHost Apache2, accessible à tous les utilisateurs connectés au hotspot de la RecoveryBox.
+La **Librairie** est un serveur web hébergeant une collection de documents PDF liés à la survie, à l'autonomie et aux techniques de vie en plein air. Le contenu provient du dépôt Git [rb-library](https://github.com/mr-dgidgi/rb-library) et est servi localement via un VirtualHost Apache2, accessible à tous les utilisateurs connectés au hotspot de la RecoveryBox.
+L'interface comporte une interface d'administration permettant de gérer les documents PDF, d'ajouter des fichiers personnalisés et de mettre à jour la librairie. Celle-ci fonctionne de manière optimale en combinaison avec service filebrowser.
 
 !!! info "Architecture"
     Contrairement à la plupart des autres services de la RecoveryBox, la Librairie n'est **pas** conteneurisée via Docker. Il s'agit d'un VirtualHost Apache2 natif servant des fichiers statiques clonés depuis un dépôt Git.
@@ -35,6 +36,13 @@ Les documents PDF sont accessibles à tous les utilisateurs connectés au hotspo
 | ---------------------------------------- | ------------------------------------ |
 | [http://library.recovery.box](http://library.recovery.box) | Accès direct à la librairie          |
 | [http://recovery.box](http://recovery.box) | Page d'accueil RecoveryBox (lien vers la librairie) |
+| [http://library.recovery.box/admin.html](http://library.recovery.box/admin.html) | Interface d'administration de la librairie |
+
+Le compte d'administration se base sur l'utilisateur par défaut de la RecoveryBox :
+
+| Nom d'utilisateur | Mot de passe par défaut |
+| ---------------- | ---------------------- |
+| recuser            | Recovery                  |
 
 !!! note "Accès réseau"
     Le service est accessible uniquement depuis le réseau local du hotspot RecoveryBox. Le résolution DNS `library.recovery.box` est assurée par le serveur DNS local de la RecoveryBox.
