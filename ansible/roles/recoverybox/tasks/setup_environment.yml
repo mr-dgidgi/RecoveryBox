@@ -89,5 +89,9 @@
 
     - name: Set user and group 1000
       ansible.builtin.set_fact:
-        recoverybox_user_1000: "{{ recoverybox_users_list | dict2items | selectattr('value', 'search', '1000') | map(attribute='key') }}"
-        recoverybox_group_1000: "{{ recoverybox_groups_list | dict2items | selectattr('value', 'search', '1000') | map(attribute='key') }}"
+        recoverybox_user_1000: >-
+          {{ recoverybox_users_list.ansible_facts.getent_passwd | dict2items
+          | selectattr('value.1', 'equalto', '1000') | map(attribute='key') | first }}
+        recoverybox_group_1000: >-
+          {{ recoverybox_groups_list.ansible_facts.getent_group | dict2items
+          | selectattr('value.1', 'equalto', '1000') | map(attribute='key') | first }}

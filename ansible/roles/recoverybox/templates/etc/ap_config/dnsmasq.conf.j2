@@ -6,7 +6,7 @@ dhcp-range={{ recoverybox_hotspot_conf.dhcp_range_start }},{{ recoverybox_hotspo
 dhcp-option=option:router,{{ recoverybox_hotspot_conf.ip }}
 
 ### DNS ###
-domain=recovery.box,{{ recoverybox_hotspot_conf.network }}/{{ recoverybox_hotspot_conf.mask }},local
+domain=recovery.box,{{ recoverybox_hotspot_conf.network }}/{{ recoverybox_hotspot_conf.mask }}
 # Disable option 15 & 119 (issue #162)
 dhcp-option=15,
 dhcp-option=119,
