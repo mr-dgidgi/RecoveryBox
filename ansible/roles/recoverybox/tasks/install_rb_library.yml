@@ -16,7 +16,7 @@
       ansible.builtin.git:
         repo: "https://github.com/mr-dgidgi/rb-library.git"
         dest: /data/library
-        version: "{{ recoverybox_rb_library_version }}"
+        version: "{{ recoverybox_version_library }}"
         force: true
 
     - name: Create /data/library/PDF/custom directory
