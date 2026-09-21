@@ -17,6 +17,7 @@
         - proxy_wstunnel
         - rewrite
         - ssl
+        - wsgi
 
     - name: Create /data/www directory
       ansible.builtin.file:

@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - flatnotes updated to 5.5.5
 - meshtastic-web-client updated to v2.7.2
 - Tileserver configuration updated to use `/data/tileserver/map/map.mbtiles` instead of `/data/tileserver/map.mbtiles`.
+- `rb-library` updated to version 1.2.0. Adding an admin page to classify new files. The upload is done with filebrowser.
 
 ### Fixed
 - `systemd-networkd-wait-online` failed start : Issue due to wlanAP being managed by hostapd. Service disabled.

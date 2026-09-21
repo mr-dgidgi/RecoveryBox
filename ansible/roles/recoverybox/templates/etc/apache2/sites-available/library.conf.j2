@@ -32,4 +32,6 @@
     ErrorLog ${APACHE_LOG_DIR}/library.error.log
     CustomLog ${APACHE_LOG_DIR}/library.access.log combined
     
+    Include /data/library/backend/apache-vhost-snippet.conf
+    
 </VirtualHost>

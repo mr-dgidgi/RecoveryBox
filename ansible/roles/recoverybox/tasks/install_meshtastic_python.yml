@@ -2,7 +2,7 @@
 - name: Install meshtastic python package in virtual environment
   ansible.builtin.pip:
     name: meshtastic=={{ recoverybox_version_meshtastic_python }}
-    virtualenv: /data/recoverybox_env
+    virtualenv: "{{ recoverybox_virtualenv_dir }}"
     virtualenv_command: python3 -m venv
     state: present
 

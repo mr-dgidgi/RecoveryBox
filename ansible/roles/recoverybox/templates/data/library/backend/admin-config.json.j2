@@ -1,0 +1,8 @@
+{
+    "secret_key": "{{ recoverybox_library_key }}",
+    "admin_enabled": true,
+    "filebrowser_enabled": "{{ recoverybox_enable_filebrowser | to_json }}",
+    "filebrowser_url": "http://filebrowser.recovery.box",
+    "session_lifetime_minutes": 30,
+    "session_cookie_secure": "{{ recoverybox_enable_https | to_json}}"
+}
